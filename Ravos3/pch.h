@@ -9,6 +9,19 @@
 #ifndef PCH_H
 #define PCH_H
 
-// TODO: add headers that you want to pre-compile here
+#include <cctype>
+#include <assert.h>
+#include <string.h>
+#include <stdio.h>
+#include <map>
+#include <iostream>
+//#include  <cstddef> //includes byte
+
+#include "Memory.h"
+#include "PCB.h"
+#include "CPU.h"
+#include "Scheduler.h"
+#include "Computer.h"
+#include "OS.h"
 
 #endif //PCH_H

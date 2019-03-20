@@ -2,11 +2,25 @@
 //
 
 #include "pch.h"
-#include <iostream>
+//#include <iostream>
 
+//This is ther Driver for now
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	Computer *theComputer = new Computer();
+	OS theOS(theComputer);
+
+
+	if (!theOS.Boot("Filename"))
+	{
+		std::cout << "OS Could not boot\n";
+		return 0;
+	}
+
+	theOS.m_Scheduler.Dispatch();
+
+	std::cout << "Ready to run\n";
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
