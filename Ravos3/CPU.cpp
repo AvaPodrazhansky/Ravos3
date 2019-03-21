@@ -14,21 +14,44 @@ Instruction CPU::Decode(const MemoryWord &Word)
 	return i;
 }
 
-void CPU::DumpMemoryAsInstructions(int Start, int Length)
+void CPU::DumpMemoryAsInstructions(MemoryWord w, std::string instruc)
 {
-	int End = Start + Length;
-	for (int i = Start; i < End; ++i)
-	{
-		//MemoryWord w = m_Memory->read(i);
-		//printf("%3d ", i);
-		//printf("%d ", w.InstuctionType());
-		//printf("%2d ", w.HexToInt(0, 2) & 0x3f);
+	//int End = Start + Length;
+	//for (int i = Start; i < End; ++i)
+	//{
+	//	//MemoryWord w = m_Memory->read(i);
+	//	//printf("%3d ", i);
+	//	//printf("%d ", w.InstuctionType());
+	//	//printf("%2d ", w.HexToInt(0, 2) & 0x3f);
 
 
-		//printf("\n");
+	//	//printf("\n");
 
-	}
+	//}
+	//std::cout << w.Contents << std::endl;
+	//std::cout << w.Instruction.InstType << " ";
+	////std::cout << execute(w) << " ";
+	////execute(w);
+	//std::cout << " " << w.Instruction.Reg1 << " ";
+	//std::cout << w.Instruction.Reg2 << " ";
+	//std::cout << w.Instruction.GetAddress() << std::endl;
+	printf("%2d %8d %3 %3d %8d \n", w.Instruction.InstType, instruc, w.Instruction.Reg1, w.Instruction.Reg2, w.Instruction.GetAddress());
+
 }
+
+//void CPU::ExecuteIt(MemoryWord w, std::string inst /*, pointer to instruction's equation*/)
+//{
+//	//Print formatted instruction if true
+//	if (printInstruction) { DumpMemoryAsInstructions(w, inst); }
+//
+//	//Print contents if true
+//	if (printContents) { std::cout << w.Contents; }
+//
+//	//Execute if true
+//	if(!isExecuting) {/*pointer to equation to be executed*/ }
+//}
+
+
 
 void CPU::Execute()
 {
@@ -40,27 +63,39 @@ void CPU::Execute()
 			//Reads content of I/P buffer into a accumulator
 		case I_RD:
 		{
-			std::cout << " " << "I_RD";// << std::endl;
+			//std::cout << " " << "I_RD";// << std::endl;
+			if (printInstruction) DumpMemoryAsInstructions(w, "I_RD");
 			w.AssertInstructionTypeIO();
 			if (!isExecuting)break;
-			//if (w.Address16() != 0)// if address field is non-zero 
-			//{
-			//	//Address is destination in RAM
-			//		//find data in buffer location - 23
-			//		m_Register[w.RegR1()] = Disk.read(w.Address16()).HexToInt(0, 7); //converts MemoryWord in buffer to int to be stored in m_Register
-			//}
-			//else // if address field is zero
-			//	{
-			//	m_Register[w.RegR1()] = m_Register[w.RegR2()];
-			//	}
+			if (w.Address16() != 0)// if address field is non-zero, read from buffers in m_Disk
+			{
+				//m_Register[w.RegR1()] = m_Disk.read(w.Address16()); //converts MemoryWord in buffer to int to be stored in m_Register
+			}
+			else // if address field is zero, read from m_Register
+			{
+				m_Register[w.RegR1()] = m_Register[w.RegR2()];
+			}
 			break;
 		}
 		//Writes the content of accumulator into O/P buffer
 		case I_WR:
 		{
 			std::cout << " " << "I_WR";// << std::endl;
+			if (printInstruction) DumpMemoryAsInstructions(w, "I_RD");
+			
 			w.AssertInstructionTypeIO();
+			
 			if (!isExecuting)break;
+			if (w.Address16() != 0)// if address field is non-zero, write to buffers in m_Disk
+			{
+				//m_Disk.write(w.Address16(), m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
+			}
+			else // if address field is zero, write to m_Register
+			{
+				m_Register[w.RegR2()] = m_Register[w.RegR1()];
+			}
+			break;
+
 			break;
 		}
 		//Stores content of a reg.  into an address

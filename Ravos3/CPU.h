@@ -26,9 +26,12 @@ public:
 
 	Memory *m_Memory = NULL;
 	PCB *m_PCB = NULL;
-	bool isExecuting = false;
+	
+	//Variables for Testing
+	bool isExecuting = false;  //Executes instructions if true
+	bool printInstruction = true; //Prints formatted instruction if true
+	bool printContents = false; //Prints hex value of instruction if true
 
-
-	void DumpMemoryAsInstructions(int Start, int Length);
+	void DumpMemoryAsInstructions(MemoryWord w, std::string i);
 
 };
