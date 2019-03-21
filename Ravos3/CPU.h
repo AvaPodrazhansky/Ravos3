@@ -25,6 +25,7 @@ public:
 	int m_Register[MAX_REGISTERS];
 
 	Memory *m_Memory = NULL;
+	Memory *m_Disk = NULL;
 	PCB *m_PCB = NULL;
 	
 	//Variables for Testing
