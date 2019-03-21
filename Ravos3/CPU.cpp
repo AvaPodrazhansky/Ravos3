@@ -37,32 +37,32 @@ void CPU::Execute()
 	++m_PC;
 	switch (i)
 	{
-			//Reads content of I/P buffer into a accumulator
+		//Reads content of I/P buffer in m_Disk or m_Register into a accumulator
 		case I_RD:
 		{
 			PreExecute(w, "I_RD", AssertInstructionTypeIO);
 
-			if (w.Address16() != 0)// if address field is non-zero, read from buffers in m_Disk
+			if (w.Address16() != 0)
 			{
 				m_Register[w.RegR1()] = m_Disk->readContents(w.Address16()); //converts MemoryWord in buffer to int to be stored in m_Register
 			}
-			else // if address field is zero, read from m_Register
+			else
 			{
 				m_Register[w.RegR1()] = m_Register[w.RegR2()];
 			}
 			break;
 		}
-		//Writes the content of accumulator into O/P buffer
+		//Writes the content of accumulator into O/P buffer in m_Disk or m_Register
 		case I_WR:
 		{
 			PreExecute(w, "I_WR", AssertInstructionTypeIO);
 
-			if (w.Address16() != 0)// if address field is non-zero, write to buffers in m_Disk
+			if (w.Address16() != 0)
 			{
 				//Need to check if the conversion to memory word is correct
 				m_Disk->write(w.Address16(), (MemoryWord) m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
 			}
-			else // if address field is zero, write to m_Register
+			else
 			{
 				m_Register[w.RegR2()] = m_Register[w.RegR1()];
 			}

@@ -30,6 +30,7 @@ struct MemoryWord
 
 	};
 
+	// Returns contents of S1-reg field
 	int RegS1() const { return Instruction.Reg1; }
 	// Returns contents of S2-reg field (second S register index of type R instruction)
 	int RegS2() const { return Instruction.Reg2; }
