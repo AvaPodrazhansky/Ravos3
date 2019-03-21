@@ -135,10 +135,8 @@ void CPU::Execute()
 		//Logical OR of two S-regs into D-reg
 		case I_OR:
 		{
-			std::cout << " I_OR";// << I_OR << std::endl;
-			w.AssertInstructionTypeR();
-			if (!isExecuting)break;
 			PreExecute(w, "I_OR", AssertInstructionTypeR);
+
 			m_Register[w.RegD()] = (m_Register[w.RegS1()] | m_Register[w.RegS2()]);
 			break;
 		}

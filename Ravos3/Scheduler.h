@@ -3,6 +3,8 @@
 
 // TODO: Design scheduler.  First we'll do the simplest long-term Dispatcher.  Afterwards we'll improve
 
+//TODO: Add enum for scheduler types: FIFO, SJF, Priority (This is for Phase 2)
+
 class Scheduler
 {
 public:
