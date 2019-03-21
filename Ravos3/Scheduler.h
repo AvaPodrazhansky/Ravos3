@@ -17,4 +17,8 @@ public:
 
 	//Returns the PID of next program to be executed.
 	int FIFOScheduler();
+
+	int SJFScheduler();
+
+	int PriorityScheduler();
 };

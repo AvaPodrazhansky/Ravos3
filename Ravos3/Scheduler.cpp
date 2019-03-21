@@ -18,3 +18,15 @@ int Scheduler::FIFOScheduler()
 	// TODO: Return the PID of process with lowest arivial time. 
 	return 0;
 }
+
+int Scheduler::SJFScheduler()
+{
+	// TODO: Return the PID of process with the least amount of instructions. 
+	return 0;
+}
+
+int Scheduler::PriorityScheduler()
+{
+	// TODO: Return the PID of process with highest prority. 
+	return 0;
+}
