@@ -4,7 +4,10 @@
 
 struct MemoryWord
 {
-	//	MemoryWord() {Clear(); }
+	MemoryWord() {Clear(); }
+	void Clear() { Contents = 0; }
+
+	MemoryWord(int TheContents) { Contents = TheContents; }
 
 	union
 	{
@@ -31,7 +34,7 @@ struct MemoryWord
 	// Returns contents of S2-reg field (second S register index of type R instruction)
 	int RegS2() const { return Instruction.Reg2; }
 	// Returns contents of D-reg field for R type instructions (only)
-	int RegD_R() const { return Instruction.ShortAddress; }//this might need to change
+	int RegD_R() const { return Instruction.ShortAddress / 4096; }//this might need to change
 	// Returns contents of B-reg field for I type instructions (only)
 	int RegB() const { return Instruction.Reg1; }
 	// Returns contents of D-reg field for I type instructions (only)
@@ -49,6 +52,7 @@ struct MemoryWord
 	// Returns contents of the 24-bit address field for J type instructions (only)
 	int Address24() const { return Instruction.Reg1 * (65536 * 16) + Instruction.Reg2 * 65536 + Instruction.ShortAddress;; }
 
+	// Asserts that an instruction type is R
 	void AssertInstructionTypeR() { assert(Instruction.InstType == 0); }
 	// Asserts that an instruction type is I
 	void AssertInstructionTypeI() { assert(Instruction.InstType == 1); }
@@ -56,8 +60,6 @@ struct MemoryWord
 	void AssertInstructionTypeJ() { assert(Instruction.InstType == 2); }
 	// Asserts that an instruction type is I/O
 	void AssertInstructionTypeIO() { assert(Instruction.InstType == 3); }
-
-	void Clear();
 
 };
 
@@ -75,6 +77,7 @@ public:
 
 	void write(int index, MemoryWord t);
 	MemoryWord read(int index);
+	unsigned int readContents(int index) { return read(index).Contents; }
 
 
 };

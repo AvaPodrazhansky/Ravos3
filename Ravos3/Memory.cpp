@@ -1,11 +1,5 @@
 #include "pch.h"
 
-void MemoryWord::Clear()
-{
-	//for (int i = 0; i < sizeof(Contents); ++i) Contents[i] = '0';
-}
-
-
 
 Memory::Memory(int SIZE)
 {
