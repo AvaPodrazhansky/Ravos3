@@ -220,7 +220,7 @@ void CPU::Execute()
 		{
 			std::cout << " I_NOP"; // << I_NOP << std::endl;
 			if (printInstruction) { DumpMemoryAsInstructions(w, "I_NOP"); } 
-			if (printContents) { std::cout << w.Contents; } 
+			if (printContents) { std::cout << std::hex << w.Contents; } 
 			if (!isExecuting) break;
 
 			m_PC++;
