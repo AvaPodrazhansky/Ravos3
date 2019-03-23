@@ -4,7 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <math.h>//for pow in the HexNumToInt
-bool OS::Load(const char *Filename)
+bool OS::Load(std::string filename)
 {
 	//PCB(int ID, int priority_Val, int status, int arr, int len)
 	//int for current job
@@ -12,7 +12,7 @@ bool OS::Load(const char *Filename)
 	int indexForInstruc = 0;//keeps track of the index in RAM
 	int indexForData = 0;//keeps rack of index in DISK
 	//std::ifstream in(Filename, ios::in);//opens file to be read
-	std::ifstream infile("filename.txt");
+	std::ifstream infile(filename);
 	std::string str;
 	std::string instruct;
 	std::string data;
