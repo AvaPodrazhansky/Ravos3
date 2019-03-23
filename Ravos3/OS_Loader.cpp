@@ -6,8 +6,8 @@
 #include <math.h>//for pow in the HexNumToInt
 
 int HexNumToInt(std::string hexstr);
-int assignPCB(std::string info);
-int assignDataBuffToPCB(std::string info, int startIndex);
+int assignPCB(PCB* tpcb, std::string info);
+int assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex);
 
 bool OS::Load(std::string filename)
 {
@@ -21,6 +21,7 @@ bool OS::Load(std::string filename)
 	std::string str;
 	std::string instruct;
 	std::string data;
+	PCB *tempcb = new PCB();
 	//Memory::MemoryWord instruc;
 	while (std::getline(infile, str))
 	{
@@ -28,7 +29,7 @@ bool OS::Load(std::string filename)
 		if (str.find("JOB"))//if the string contains JOB
 		{
 			std::string jobInfo = str.substr(0, str.find("//JOB"));
-			int jlen = assignPCB(jobInfo);//parses and assigns info to PCB and returns length of instructions
+			int jlen = assignPCB(tempcb, jobInfo);//parses and assigns info to PCB and returns length of instructions
 			for (int i = 0; i < jlen; i++)
 			{
 				std::getline(infile, instruct, '\n');
@@ -44,7 +45,7 @@ bool OS::Load(std::string filename)
 		if (str.find("DATA"))//if the string contains JOB
 		{
 			std::string dataBufInfo = str.substr(0, str.find("//DATA"));
-			int blen = assignDataBuffToPCB(dataBufInfo, indexForData);//parses and assigns info to PCB and returns length of instructions
+			int blen = assignDataBuffToPCB(tempcb, dataBufInfo, indexForData);//parses and assigns info to PCB and returns length of instructions
 			for (int j = 0; j < blen; j++)
 			{
 				std::getline(infile, data, '\n');//(source, destination, delimiter)
@@ -90,7 +91,7 @@ int HexNumToInt(std::string hexstr)
 //}
 
 //parses the first line information //JOB  12 14 C and assigns to new PCB, returns length to be used 
-int assignPCB(std::string info) 
+int OS::assignPCB(PCB *tpcb, std::string info)
 {
 	std::istringstream iss(info);
 	std::string token;
@@ -103,27 +104,29 @@ int assignPCB(std::string info)
 		if (spaceKeeper == 1)
 		{
 			Id = HexNumToInt(token);
-
+			tpcb->process_ID = Id;
 		}
 		if (spaceKeeper == 2)
 		{
 			length = HexNumToInt(token);
+			tpcb->ProgramSize = length;
 		}
 		else
 		{
 			prior = HexNumToInt(token);
+			tpcb->priority = prior;
 		}
 		spaceKeeper++;
 		//std::cout << token << std::endl;
 	}
-	PCB::PCB(Id, prior, 0, 0, length);//what is arr?
+	//what is arr?
 	return length;
 	/*std::cout << Id << std::endl;
 	std::cout << length << std::endl;
 	std::cout << prior << std::endl;*/
 }
 
-int assignDataBuffToPCB(std::string info, int startIndex) 
+int OS::assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex)
 {
 	std::istringstream iss(info);
 	std::string token;
@@ -137,17 +140,23 @@ int assignDataBuffToPCB(std::string info, int startIndex)
 		if (spaceKeeper == 1)
 		{
 			input = HexNumToInt(token);
+			tpcb->InputBufferSize = input;
+			tpcb->InputBufferStart = startIndex;
 			//PCB::setInputBuff(startIndex, input);
 
 		}
 		if (spaceKeeper == 2)
 		{
 			output = HexNumToInt(token);
+			tpcb->OutputBufferSize = input;
+			tpcb->OutputBufferStart = (startIndex+input);
 			//PCB::setOutputBuff((startIndex+input), output);
 		}
 		else
 		{
 			temp = HexNumToInt(token);
+			tpcb->TempBufferSize = input;
+			tpcb->TempBufferStart = (startIndex + input + output);
 			//PCB::setTempBuff((startIndex + input + output), temp);
 		}
 		spaceKeeper++;

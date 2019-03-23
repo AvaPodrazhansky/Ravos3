@@ -12,7 +12,7 @@ private:
 	int state;	//[0 = New, 1 = Ready, 2 = Running, 3 = Waiting, 4 = Terminated]
 
 	int arrived;	//Do we still need this since state has been expanded?
-	int length;
+	//int length; using progam size instead
 	int start;	//Same question as above
 	int wait;    	//Also same
 
@@ -39,7 +39,7 @@ public:
 		priority = 19;
 		state = 0;
 		arrived = 0;	//Need?
-		length = 0;		//Need?
+		ProgramSize = 0;		//Need?
 	}
 
 	/*Creates a PCB with the specified parameters.
@@ -53,7 +53,7 @@ public:
 		priority = priority_Val;
 		state = status;
 		arrived = arr;
-		length = len;
+		ProgramSize = len;
 	}
 
 	int getProcessID() const
