@@ -26,7 +26,7 @@ void CPU::DumpMemoryAsInstructions(MemoryWord w, std::string instruc)
 #define PreExecute(w,inst,assertpart)  \
 	if (printInstruction) { DumpMemoryAsInstructions(w, inst); } \
     w.assertpart(); \
-	if (printContents) { std::cout << w.Contents; } \
+	if (printContents) { std::cout << std::hex << w.Contents; } \
 	if (!isExecuting) break; 
 
 
@@ -210,8 +210,9 @@ void CPU::Execute()
 		{
 			PreExecute(w, "I_HLT", AssertInstructionTypeJ);
 			//clear registers
-			//set PCB to wait/terminated?
+			//set PCB to terminated
 			//m_PC = NULL //dispatcher will set CPU's m_PC to the next PCB's program counter
+			//signal scheduler
 			break;
 		}
 		//Does nothing and moves to next instruction
