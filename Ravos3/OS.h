@@ -3,9 +3,10 @@
 class OS
 {
 public:
+	Computer *m_Computer;
 	OS(Computer *theComputer);
 
-	Computer *m_Computer;
+
 	std::map<int, PCB*> m_PCB; //map is the C++ version of dictionary
 
 	Scheduler m_Scheduler;
@@ -16,15 +17,16 @@ public:
 	// Important: We are creating and filling the disk because our storage is does not survive reboots.
 	bool Boot(const char *Filename);
 
+	//int HexNumToInt(std::string hexstr);
+	//int assignPCB(PCB *tpcb, std::string info);
+	//int assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex);
+
 	// Loads the boot file onto the disk of the computer.
 	// It is located in the file OS_Loader (so a different people can work on it)	
-	bool Load(std::string filename);
+	bool Load(std::string filename, Computer *m_Comp);
 
-	//assigns values to PCB from //JOB structure
-	int assignPCB(PCB *tpcb, std::string info);
 
-	//assigns buffer values to PCB from //Data sturcture
-	int assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex);
+
 
 	// Test loader - until actual loader is done.  Does not work yet
 	// It is located in the 

@@ -81,21 +81,45 @@ public:
 		wait = waitTime;
 	}
 
-	//determines whether two process control blocks are the same.
-	friend bool operator==(const PCB& pcb1, const PCB& pcb2);
 
-	//determines whether two process control blocks are different
-	friend bool operator!=(const PCB& pcb1, const PCB& pcb2);
+	void setProcessID(int tp) 
+	{
+		process_ID = tp;
+	}
 
-	//determines whether the first PCB has a higher priority than the second.   
-	friend bool operator>(const PCB& pcb1, const PCB& pcb2);
+	void setPriority(int tpp)
+	{
+		priority = tpp;
+	}
 
-	//determines whether the first PCB has a lower priority than the second  
-	friend bool operator<(const PCB& pcb1, const PCB& pcb2);
+	void setProgramSize(int tps) 
+	{
+		ProgramSize = tps;
+	}
 
-	//determines whether the first PCB has the same or higher priority than the second    
-	friend bool operator>=(const PCB& pcb1, const PCB& pcb2);
-
-	// determines whether the first PCB has the same or lower priority than the second  
-	friend bool operator<=(const PCB& pcb1, const PCB& pcb2);
+	void setInputBufferSize(int tbuff) 
+	{
+		InputBufferSize = tbuff;
+	}
+	void setInputBufferStart(int tstart) 
+	{
+		InputBufferStart = tstart;
+	}
+	void setOutputBufferSize(int tbuff) 
+	{
+		OutputBufferSize = tbuff;
+	}
+	void setOutputBufferStart(int tstart) 
+	{
+		OutputBufferSize = tstart;
+	}
+	void setTempBufferSize(int tbuff) 
+	{
+		TempBufferSize = tbuff;
+	}
+	void setTempBufferStart(int tstart) 
+	{
+		TempBufferStart = tstart;
+	}
+	
 };
