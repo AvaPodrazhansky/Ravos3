@@ -1,5 +1,4 @@
 #pragma once
-
 // Actual hardware that everything runs on
 
 #define NUM_CPU      1

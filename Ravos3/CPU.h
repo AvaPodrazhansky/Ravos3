@@ -10,7 +10,6 @@ enum Instruction {
 	I_SLT = 0X10, I_SLTI = 0x11, I_HLT = 0x12, I_NOP = 0x13, I_JMP = 0x14,
 	I_BEQ = 0x15, I_BNE = 0x16, I_BEZ = 0x17, I_BNZ = 0x18, I_BGZ = 0x19, I_BLZ = 0x1A
 };
-//test commit 
 
 class CPU
 {

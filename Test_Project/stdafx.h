@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "../Ravos3/CPU.h"
 #include "targetver.h"
 
 // Headers for CppUnitTest

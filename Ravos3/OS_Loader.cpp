@@ -4,6 +4,11 @@
 #include <sstream>
 #include <fstream>
 #include <math.h>//for pow in the HexNumToInt
+
+int HexNumToInt(std::string hexstr);
+int assignPCB(std::string info);
+int assignDataBuffToPCB(std::string info, int startIndex);
+
 bool OS::Load(std::string filename)
 {
 	//PCB(int ID, int priority_Val, int status, int arr, int len)
@@ -29,7 +34,8 @@ bool OS::Load(std::string filename)
 				std::getline(infile, instruct, '\n');
 				//std::istringstream iss2(instruct);
 				MemoryWord k = MemoryWord(HexNumToInt(instruct));
-				Computer::m_RAM.write((i + indexForInstruc), k);//writes to ram
+				//MemoryWord k = MemoryWord(static_cast<int>(instruct));
+				m_Computer->m_RAM.write((i + indexForInstruc), k);//writes to ram
 			}
 			indexForInstruc = jlen;//should be index for last instuction put in
 
@@ -44,7 +50,7 @@ bool OS::Load(std::string filename)
 				std::getline(infile, data, '\n');//(source, destination, delimiter)
 				//std::istringstream iss2(instruct);
 				MemoryWord b = MemoryWord(HexNumToInt(data));
-				Computer::m_Disk.write((j + indexForData), b);//writes to disk
+				m_Computer->m_Disk.write((j + indexForData), b);//writes to disk
 			}
 
 
@@ -56,10 +62,15 @@ bool OS::Load(std::string filename)
 //new hexnum to int using char*
 int HexNumToInt(std::string hexstr) 
 {
-	char *s = <char*>(hexstr.c_str());//cast to char not working??
-	//converst string to long int
-	int decVal = (int)strtol(s, NULL, 0);
-	return decVal;
+	//char *s = <char*>(hexstr.c_str());//cast to char not working??
+	////converst string to long int
+	//int decVal = (int)strtol(s, NULL, 0);
+	//return decVal;
+	unsigned int x;
+	std::stringstream ss;
+	ss << std::hex << hexstr;
+	ss >> x;
+	return x;
 }
 //takes a string which is a hex number to decimal 
 //int HexNumToInt(std::string hexstr)
@@ -126,18 +137,18 @@ int assignDataBuffToPCB(std::string info, int startIndex)
 		if (spaceKeeper == 1)
 		{
 			input = HexNumToInt(token);
-			PCB::setInputBuff(startIndex, input);
+			//PCB::setInputBuff(startIndex, input);
 
 		}
 		if (spaceKeeper == 2)
 		{
 			output = HexNumToInt(token);
-			PCB::setOutputBuff((startIndex+input), output);
+			//PCB::setOutputBuff((startIndex+input), output);
 		}
 		else
 		{
 			temp = HexNumToInt(token);
-			PCB::setTempBuff((startIndex + input + output), temp);
+			//PCB::setTempBuff((startIndex + input + output), temp);
 		}
 		spaceKeeper++;
 		//std::cout << token << std::endl;

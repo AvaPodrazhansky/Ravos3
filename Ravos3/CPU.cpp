@@ -17,8 +17,8 @@ Instruction CPU::Decode(const MemoryWord &Word)
 //Prints instruction as formatted instruction
 void CPU::DumpMemoryAsInstructions(MemoryWord w, std::string instruc)
 {
-	printf("%2d %8d %3 %3d %8d \n", w.Instruction.InstType, 
-		instruc, w.Instruction.Reg1, w.Instruction.Reg2, 
+	printf("%2d %8s %3d %3d %8d \n", w.Instruction.InstType, 
+		 instruc.c_str(), w.Instruction.Reg1, w.Instruction.Reg2,
 		w.Instruction.GetAddress());
 }
 
