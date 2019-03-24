@@ -57,15 +57,15 @@ int OS::assignPCB(PCB *tpcb, std::string info)
 
 	while (std::getline(iss, token, ' '))//source, asigns to, delimiter
 	{
-		if (spaceKeeper == 1)
+		if (spaceKeeper == 2)
 		{
 			tpcb->setProcessID(HexNumToInt(token));
 		}
-		if (spaceKeeper == 2)
+		if (spaceKeeper == 3)
 		{
 			tpcb->setProgramSize(HexNumToInt(token));
 		}
-		if(spaceKeeper == 3)
+		if(spaceKeeper == 4)
 		{
 			tpcb->setPriority(HexNumToInt(token));
 		}
@@ -88,17 +88,17 @@ int OS::assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex)
 
 	while (std::getline(iss, token, ' '))//source, asigns to, delimiter
 	{
-		if (spaceKeeper == 1)
+		if (spaceKeeper == 2)
 		{
 			tpcb->setInputBufferSize(HexNumToInt(token));
 			tpcb->setInputBufferStart(startIndex);
 		}
-		if (spaceKeeper == 2)
+		if (spaceKeeper == 3)
 		{
 			tpcb->setOutputBufferSize(HexNumToInt(token));
 			tpcb->setOutputBufferStart(startIndex + tpcb->OutputBufferSize);
 		}
-		if (spaceKeeper == 3)
+		if (spaceKeeper == 4)
 		{
 			tpcb->setTempBufferSize(HexNumToInt(token));
 			tpcb->setTempBufferStart(startIndex + tpcb->InputBufferSize + tpcb->OutputBufferSize);
@@ -131,8 +131,8 @@ bool OS::Load(std::string filename)
 		//std::getline(in, str, '\n');//(source, assigns to, delimiting char)
 		if (str.find("JOB"))//if the string contains JOB
 		{
-			std::string jobInfo = str.substr(7);
-			int jlen = assignPCB(tempcb, jobInfo);//parses and assigns info to PCB and returns length of instructions
+			//std::string jobInfo = str.substr(7);
+			int jlen = assignPCB(tempcb, str);//parses and assigns info to PCB and returns length of instructions
 			for (int i = 0; i < jlen; i++)
 			{
 				std::getline(infile, instruct, '\n');
@@ -147,8 +147,8 @@ bool OS::Load(std::string filename)
 		}
 		if (str.find("DATA"))//if the string contains JOB
 		{
-			std::string dataBufInfo = str.substr(8);
-			int blen = assignDataBuffToPCB(tempcb, dataBufInfo, indexForData);//parses and assigns info to PCB and returns length of instructions
+			//std::string dataBufInfo = str.substr(8);
+			int blen = assignDataBuffToPCB(tempcb, str, indexForData);//parses and assigns info to PCB and returns length of instructions
 			for (int j = 0; j < blen; j++)
 			{
 				std::getline(infile, data, '\n');//(source, destination, delimiter)
