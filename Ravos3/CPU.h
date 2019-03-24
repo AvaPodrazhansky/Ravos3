@@ -14,7 +14,7 @@ enum Instruction {
 class CPU
 {
 public:
-	CPU(bool AllocateMemory = true); //constructor
+	CPU(bool AllocateMemory = false); //constructor
 
 	static Instruction Decode(const MemoryWord &Word);
 
