@@ -17,8 +17,8 @@ private:
 	int wait;    	//Also same
 
 	int ProgramSize;  // Length of the program
-	int ProgramStartOnDisk;
-	int ProgramStartInRAM;
+	int StartIndexDisk;
+	int StartIndexRAM;
 
 	int InputBufferSize;
 	int InputBufferStart;  // Location on disk where it starts

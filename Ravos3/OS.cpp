@@ -133,6 +133,7 @@ bool OS::Load(std::string filename)
 		{
 			//std::string jobInfo = str.substr(7);
 			int jlen = assignPCB(tempcb, str);//parses and assigns info to PCB and returns length of instructions
+			tempcb->StartIndexRAM = indexForInstruc;
 			for (int i = 0; i < jlen; i++)
 			{
 				std::getline(infile, instruct, '\n');
@@ -149,6 +150,7 @@ bool OS::Load(std::string filename)
 		{
 			//std::string dataBufInfo = str.substr(8);
 			int blen = assignDataBuffToPCB(tempcb, str, indexForData);//parses and assigns info to PCB and returns length of instructions
+			tempcb->StartIndexDisk = indexForData;
 			for (int j = 0; j < blen; j++)
 			{
 				std::getline(infile, data, '\n');//(source, destination, delimiter)
