@@ -59,9 +59,6 @@
     <ClCompile Include="OS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OS_Loader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PCB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -71,5 +68,8 @@
     <ClCompile Include="TestExecute.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="programfile.txt" />
   </ItemGroup>
 </Project>
