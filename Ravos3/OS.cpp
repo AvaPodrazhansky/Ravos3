@@ -73,6 +73,23 @@ int OS::assignPCB(PCB *tpcb, std::string info)
 		//std::cout << token << std::endl;
 	}
 	m_PCB.insert(std::pair<int, PCB*>(tpcb->process_ID, tpcb));
+	//print function of map 
+	std::map<int, PCB*>::iterator it = m_PCB.begin();
+
+	// Iterate over the map using Iterator till end.
+	while (it != m_PCB.end())
+	{
+		// Accessing KEY from element pointed by it.
+		int word = it->first;
+
+		// Accessing VALUE from element pointed by it.
+		PCB* count = it->second;
+
+		std::cout << word << " :: " << count << std::endl;
+
+		// Increment the Iterator to point to next entry
+		it++;
+	}
 	//what is arr?
 	return tpcb->ProgramSize;
 	/*std::cout << Id << std::endl;
