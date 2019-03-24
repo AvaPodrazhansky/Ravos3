@@ -158,6 +158,7 @@ bool OS::Load(std::string filename)
 				MemoryWord b = MemoryWord(HexNumToInt(data));
 				m_Computer->m_Disk.write((j + indexForData), b);//writes to disk
 			}
+			indexForData += blen;
 			
 			tempcb->state = Ready;
 
