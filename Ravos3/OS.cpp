@@ -160,7 +160,7 @@ bool OS::Load(std::string filename)
 
 		}
 	}
-	return false;
+	return true;
 }
 
 
