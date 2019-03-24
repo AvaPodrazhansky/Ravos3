@@ -3,8 +3,8 @@
 class OS
 {
 public:
-	Computer *m_Computer = new Computer();
-	//OS();
+	Computer *m_Computer;
+	OS(Computer *theComputer) { m_Computer = theComputer; };
 
 
 	std::map<int, PCB*> m_PCB; //map is the C++ version of dictionary

@@ -7,7 +7,7 @@
 #include <fstream>
 #include <math.h>
 
-//OS::OS()
+//OS::OS(Computer *theComputer)
 //{
 //	m_Computer = theComputer;
 //}
@@ -19,7 +19,7 @@ bool OS::Boot(std::string filename)
 }
 
 //new hexnum to int using char*
-int HexNumToInt(std::string hexstr)
+int OS::HexNumToInt(std::string hexstr)
 {
 	//char *s = <char*>(hexstr.c_str());//cast to char not working??
 	////converst string to long int
