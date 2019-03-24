@@ -11,7 +11,7 @@ int main()
 	OS theOS(theComputer);
 
 
-	if (!theOS.Boot("Filename"))
+	if (!theOS.Boot("programfile.txt"))
 	{
 		std::cout << "OS Could not boot\n";
 		return 0;
