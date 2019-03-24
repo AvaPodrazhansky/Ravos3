@@ -7,8 +7,7 @@ void Scheduler::Dispatch()
 {
 	// TODO: Extract parameter data (next instruction location and buffer locations)
 
-	//clear RAM
-	// copy new PCB data to RAM
+
 	// Point CPU's Program Counter to first instruction location
 
 }

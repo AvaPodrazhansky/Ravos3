@@ -19,6 +19,8 @@ int main()
 
 	theOS.m_Scheduler.Dispatch();
 
+	theOS.tempDispatcher();
+
 	std::cout << "Ready to run\n";
 
 }

@@ -1,15 +1,18 @@
 #pragma once
-
+enum State 
+{
+	New = 0, Ready = 1, Running = 2, Waiting = 3, Terminated = 4
+};
 
 class PCB
 {
 	friend class OS;
-
+	friend class CPU;
 private:
 
 	int process_ID;
 	int priority;	//-20 to 19
-	int state;	//[0 = New, 1 = Ready, 2 = Running, 3 = Waiting, 4 = Terminated]
+	State state = New;	//[0 = New, 1 = Ready, 2 = Running, 3 = Waiting, 4 = Terminated]
 
 	int arrived;	//Do we still need this since state has been expanded?
 	//int length; using progam size instead
@@ -37,7 +40,7 @@ public:
 	PCB()
 	{
 		priority = 19;
-		state = 0;
+		state = New;
 		arrived = 0;	//Need?
 		ProgramSize = 0;		//Need?
 	}
@@ -47,11 +50,10 @@ public:
 	 * @param len the quantum - number of cycles required to execute
 	 * the process
 	 */
-	PCB(int ID, int priority_Val, int status, int arr, int len)
+	PCB(int ID, int priority_Val, int arr, int len)
 	{
 		process_ID = ID;
 		priority = priority_Val;
-		state = status;
 		arrived = arr;
 		ProgramSize = len;
 	}
@@ -71,10 +73,6 @@ public:
 		return (state == 2);
 	}
 
-	void execute()
-	{
-		state = 2;
-	}
 
 	void setWait(int waitTime)
 	{

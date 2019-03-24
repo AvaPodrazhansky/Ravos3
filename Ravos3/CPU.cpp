@@ -32,12 +32,16 @@ void CPU::DumpMemoryAsInstructions(MemoryWord w, std::string instruc)
 
 void CPU::Execute()
 {
-	MemoryWord w = m_Memory->read(m_PC); //Fetch
-	Instruction i = Decode(w);
-	++m_PC;
-	switch (i)
+	m_PCB->state = Running;
+
+	do
 	{
-		//Reads content of I/P buffer in m_Disk or m_Register into a accumulator
+		MemoryWord w = m_Memory->read(m_PC); //Fetch
+		Instruction i = Decode(w);
+		++m_PC;
+		switch (i)
+		{
+			//Reads content of I/P buffer in m_Disk or m_Register into a accumulator
 		case I_RD:
 		{
 			PreExecute(w, "I_RD", AssertInstructionTypeIO);
@@ -60,7 +64,7 @@ void CPU::Execute()
 			if (w.Address16() != 0)
 			{
 				//Need to check if the conversion to memory word is correct
-				m_Disk->write(w.Address16(), (MemoryWord) m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
+				m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
 			}
 			else
 			{
@@ -73,7 +77,7 @@ void CPU::Execute()
 		case I_ST:
 		{
 			PreExecute(w, "I_ST", AssertInstructionTypeI);
-			
+
 			m_Memory->write(m_Memory->readContents(m_Register[w.RegD()]), MemoryWord(m_Register[w.RegB()]));
 
 			break;
@@ -82,7 +86,7 @@ void CPU::Execute()
 		case I_LW:
 		{
 			PreExecute(w, "I_LW", AssertInstructionTypeI);
-			
+
 			m_Register[w.RegD()] = (m_Memory->readContents(m_Register[w.RegB()] + w.Address16()));
 			break;
 		}
@@ -209,17 +213,20 @@ void CPU::Execute()
 		{
 			PreExecute(w, "I_HLT", AssertInstructionTypeJ);
 			//clear registers
+			for (int x : m_Register)
+				x = 0;
 			//set PCB to terminated
 			//m_PC = NULL //dispatcher will set CPU's m_PC to the next PCB's program counter
 			//signal scheduler
+			m_PCB->state = Terminated;
 			break;
 		}
 		//Does nothing and moves to next instruction
 		case I_NOP:
 		{
 			std::cout << " I_NOP"; // << I_NOP << std::endl;
-			if (printInstruction) { DumpMemoryAsInstructions(w, "I_NOP"); } 
-			if (printContents) { std::cout << std::hex << w.Contents; } 
+			if (printInstruction) { DumpMemoryAsInstructions(w, "I_NOP"); }
+			if (printContents) { std::cout << std::hex << w.Contents; }
 			if (!isExecuting) break;
 
 			//m_PC++;
@@ -294,5 +301,6 @@ void CPU::Execute()
 			assert(0); // instruction does not exist
 		}
 
-	}
+		}
+	}while (m_PCB->state != Terminated);
 }

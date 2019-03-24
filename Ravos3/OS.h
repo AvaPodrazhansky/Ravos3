@@ -2,12 +2,21 @@
 #include "pch.h"
 class OS
 {
+	//friend class Scheduler;
 public:
 	Computer *m_Computer;
 	OS(Computer *theComputer) { m_Computer = theComputer; };
 
 
 	std::map<int, PCB*> m_PCB; //map is the C++ version of dictionary
+
+	void tempDispatcher()
+	{
+		m_Computer->m_CPU[0].m_PCB = m_PCB.at(1);
+		m_Computer->m_CPU[0].m_PC = m_PCB.at(1)->StartIndexRAM;
+		m_Computer->m_CPU[0].Execute();
+	}
+
 
 	Scheduler m_Scheduler;
 
