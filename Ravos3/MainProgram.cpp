@@ -7,8 +7,8 @@
 //This is ther Driver for now
 int main()
 {
-	//Computer *theComputer = new Computer();
-	OS theOS();
+	Computer *theComputer = new Computer();
+	OS theOS(theComputer);
 
 
 	if (!theOS.Boot("Filename"))
