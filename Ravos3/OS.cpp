@@ -77,7 +77,7 @@ int OS::assignPCB(PCB *tpcb, std::string info)
 		spaceKeeper++;
 		//std::cout << token << std::endl;
 	}
-	//m_PCB.insert(pair<int><PCB*>(Id, tpcb));
+	m_PCB.insert(std::pair<int, PCB*>(Id, tpcb));
 	//what is arr?
 	return length;
 	/*std::cout << Id << std::endl;
