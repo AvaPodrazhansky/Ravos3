@@ -139,46 +139,57 @@ bool OS::Load(std::string filename)
 	//std::ifstream in(Filename, ios::in);//opens file to be read
 	std::ifstream infile(filename);
 	std::string str;
-	std::string instruct;
-	std::string data;
+	int isJobLine;
+	int isDataLine;
+	int isEndLine;
 	PCB *tempcb = new PCB();
 	//Memory::MemoryWord instruc;
 	while (std::getline(infile, str))
 	{
+		isJobLine = str.find("JOB");//returns index where JOB is found
+		isDataLine = str.find("Data");//returns index where Data is found
+		isEndLine = str.find("END");
 		//std::getline(in, str, '\n');//(source, assigns to, delimiting char)
-		if (str.find("JOB"))//if the string contains JOB
+		if (isJobLine >= 0 )//if the string contains JOB
 		{
 			//std::string jobInfo = str.substr(7);
 			int jlen = assignPCB(tempcb, str);//parses and assigns info to PCB and returns length of instructions
 			tempcb->StartIndexRAM = indexForInstruc;
 			for (int i = 0; i < jlen; i++)
 			{
-				std::getline(infile, instruct, '\n');
+				std::getline(infile, str, '\n');
 				//std::istringstream iss2(instruct);
-				MemoryWord k = MemoryWord(HexNumToInt(instruct));
+				MemoryWord k = MemoryWord(HexNumToInt(str));
 				//MemoryWord k = MemoryWord(static_cast<int>(instruct));
 				m_Computer->m_RAM.write((i + indexForInstruc), k);//writes to ram
 			}
+			//test part to read all instructions from RAM
+			/*for (int tram = 0; tram < jlen; tram++) 
+			{
+				int contOfRam = m_Computer->m_RAM.readContents(tram);
+			}*/
 			indexForInstruc = jlen;//should be index for last instuction put in
-
-
+			//std::getline(infile, str);
 		}
-		if (str.find("DATA"))//if the string contains JOB
+		if (isDataLine >= 0 )//if the string contains JOB
 		{
 			//std::string dataBufInfo = str.substr(8);
 			int blen = assignDataBuffToPCB(tempcb, str, indexForData);//parses and assigns info to PCB and returns length of instructions
 			tempcb->StartIndexDisk = indexForData;
 			for (int j = 0; j < blen; j++)
 			{
-				std::getline(infile, data, '\n');//(source, destination, delimiter)
+				std::getline(infile, str, '\n');//(source, destination, delimiter)
 				//std::istringstream iss2(instruct);
-				MemoryWord b = MemoryWord(HexNumToInt(data));
+				MemoryWord b = MemoryWord(HexNumToInt(str));
 				m_Computer->m_Disk.write((j + indexForData), b);//writes to disk
 			}
-			indexForData += blen;
-			
+			indexForData = blen;
 			tempcb->state = Ready;
 
+		}
+		if (isEndLine >= 0) 
+		{
+			PCB *tempcb = new PCB();//creates new PCB with same name so new memory address as well
 		}
 	}
 	return true;
