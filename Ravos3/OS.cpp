@@ -131,7 +131,7 @@ bool OS::Load(std::string filename)
 		//std::getline(in, str, '\n');//(source, assigns to, delimiting char)
 		if (str.find("JOB"))//if the string contains JOB
 		{
-			std::string jobInfo = str.substr(str.find("// JOB") + 6, str.length()-1);
+			std::string jobInfo = str.substr(7);
 			int jlen = assignPCB(tempcb, jobInfo);//parses and assigns info to PCB and returns length of instructions
 			for (int i = 0; i < jlen; i++)
 			{
@@ -147,7 +147,7 @@ bool OS::Load(std::string filename)
 		}
 		if (str.find("DATA"))//if the string contains JOB
 		{
-			std::string dataBufInfo = str.substr(str.find("// DATA") + 7, 16);
+			std::string dataBufInfo = str.substr(8);
 			int blen = assignDataBuffToPCB(tempcb, dataBufInfo, indexForData);//parses and assigns info to PCB and returns length of instructions
 			for (int j = 0; j < blen; j++)
 			{
