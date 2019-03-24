@@ -73,15 +73,17 @@ void CPU::Execute()
 		case I_ST:
 		{
 			PreExecute(w, "I_ST", AssertInstructionTypeI);
+			
+			m_Memory->write(m_Memory->readContents(m_Register[w.RegD()]), MemoryWord(m_Register[w.RegB()]));
 
-			/* NEED INSTRUCTIONS HERE */
 			break;
 		}
 		//Loads the content of an address into a reg
 		case I_LW:
 		{
 			PreExecute(w, "I_LW", AssertInstructionTypeI);
-			/* NEED INSTRUCTIONS HERE */
+			
+			m_Register[w.RegD()] = (m_Memory->readContents(m_Register[w.RegB()] + w.Address16()));
 			break;
 		}
 		//Transfers the content of one register into another
@@ -153,8 +155,7 @@ void CPU::Execute()
 		{
 			PreExecute(w, "I_ADDI", AssertInstructionTypeI);
 
-			//address16 is being used as the data "The Address may at times be treated as data, which is direct addressing"
-			m_Register[w.RegD()] = w.Address16() + m_Register[w.RegB()];
+			m_Register[w.RegD()] += w.Address16();
 			break;
 		}
 		//Multiplies a data value directly with the content of a register
@@ -162,8 +163,7 @@ void CPU::Execute()
 		{
 			PreExecute(w, "I_MULI", AssertInstructionTypeI);
 
-			//address16 is being used as the data "The Address may at times be treated as data, which is direct addressing"
-			m_Register[w.RegD()] = w.Address16() * m_Register[w.RegB()];
+			m_Register[w.RegD()] *= w.Address16();
 			break;
 		}
 		//Divides a data directly to the content of a register
@@ -179,11 +179,10 @@ void CPU::Execute()
 		{
 			PreExecute(w, "I_LDI", AssertInstructionTypeI);
 
-			//address16 is being used as the data "The Address may at times be treated as data, which is direct addressing"
 			m_Register[w.RegD()] = w.Address16();
 			break;
 		}
-		//Sets the D-reg to 1 if  first S-reg is less than the B-reg; 0 otherwise
+		//Sets the D-reg to 1 if first S-reg is less than the B-reg; 0 otherwise
 		case I_SLT:
 		{
 			PreExecute(w, "I_SLT", AssertInstructionTypeR);
@@ -199,7 +198,7 @@ void CPU::Execute()
 		{
 			PreExecute(w, "I_SLTI", AssertInstructionTypeI);
 
-			if (m_Register[w.RegS1()] < w.Address16())
+			if (m_Register[w.RegB()] < w.Address16())
 				m_Register[w.RegD()] = 1;
 			else
 				m_Register[w.RegD()] = 0;
@@ -223,7 +222,7 @@ void CPU::Execute()
 			if (printContents) { std::cout << std::hex << w.Contents; } 
 			if (!isExecuting) break;
 
-			m_PC++;
+			//m_PC++;
 			break;
 		}
 		//Jumps to a specified location
@@ -261,7 +260,7 @@ void CPU::Execute()
 				m_PC = m_Register[w.Address16()];
 			break;
 		}
-		//Branches to an address when content of B-reg <> 0
+		//Branches to an address when content of B-reg != 0
 		case I_BNZ:
 		{
 			PreExecute(w, "I_BNZ", AssertInstructionTypeI);

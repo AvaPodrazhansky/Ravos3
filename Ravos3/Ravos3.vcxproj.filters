@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{137dfaa3-5c2d-411e-8d2f-52c298fbb720}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -64,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="Scheduler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestExecute.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
