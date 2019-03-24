@@ -1,5 +1,4 @@
 #include "pch.h"
-//#include "OS_Loader.cpp"
 #include "OS.h"
 #include <iostream>
 #include <string>
@@ -21,32 +20,12 @@ bool OS::Boot(std::string filename)
 //new hexnum to int using char*
 int OS::HexNumToInt(std::string hexstr)
 {
-	//char *s = <char*>(hexstr.c_str());//cast to char not working??
-	////converst string to long int
-	//int decVal = (int)strtol(s, NULL, 0);
-	//return decVal;
 	unsigned int x;
 	std::stringstream ss;
 	ss << std::hex << hexstr;
 	ss >> x;
 	return x;
 }
-//takes a string which is a hex number to decimal 
-//int HexNumToInt(std::string hexstr)
-//{
-//	int digit;//wil be returned
-//	for (int j = 0; j < hexstr.length(); j++)
-//	{
-//		char temp1 = hexstr[j];
-//		if (isdigit(temp1))
-//		{
-//			int temp2 = atoi(temp1);
-//			digit += (temp2)*pow(16.0, (hexstr.length() - j));
-//		}
-//		else
-//	}
-//	return digit;
-//}
 
 //parses the first line information //JOB  12 14 C and assigns to new PCB, returns length to be used 
 int OS::assignPCB(PCB *tpcb, std::string info)
@@ -90,11 +69,7 @@ int OS::assignPCB(PCB *tpcb, std::string info)
 		// Increment the Iterator to point to next entry
 		it++;
 	}
-	//what is arr?
 	return tpcb->ProgramSize;
-	/*std::cout << Id << std::endl;
-	std::cout << length << std::endl;
-	std::cout << prior << std::endl;*/
 }
 
 int OS::assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex)
@@ -124,9 +99,6 @@ int OS::assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex)
 		//std::cout << token << std::endl;
 	}
 	return tpcb->InputBufferSize + tpcb->OutputBufferSize + tpcb->TempBufferSize;
-	/*std::cout << Id << std::endl;
-	std::cout << length << std::endl;
-	std::cout << prior << std::endl;*/
 }
 
 bool OS::Load(std::string filename)
@@ -169,7 +141,6 @@ bool OS::Load(std::string filename)
 				int contOfRam = m_Computer->m_RAM.readContents(tram);
 			}*/
 			indexForInstruc = jlen;//should be index for last instuction put in
-			//std::getline(infile, str);
 		}
 		if (isDataLine >= 0 )//if the string contains JOB
 		{
@@ -179,7 +150,6 @@ bool OS::Load(std::string filename)
 			for (int j = 0; j < blen; j++)
 			{
 				std::getline(infile, str, '\n');//(source, destination, delimiter)
-				//std::istringstream iss2(instruct);
 				MemoryWord b = MemoryWord(HexNumToInt(str));
 				m_Computer->m_Disk.write((j + indexForData), b);//writes to disk
 			}
