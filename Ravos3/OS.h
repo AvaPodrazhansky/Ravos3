@@ -8,13 +8,17 @@ public:
 	OS(Computer *theComputer) { m_Computer = theComputer; };
 
 
-	std::map<int, PCB*> m_PCB; //map is the C++ version of dictionary
+	std::map<int, PCB> m_PCB_Map; //map is the C++ version of dictionary
 
 	void tempDispatcher()
 	{
-		m_Computer->m_CPU[0].m_PCB = m_PCB.at(1);
-		m_Computer->m_CPU[0].m_PC = m_PCB.at(1)->StartIndexRAM;
-		m_Computer->m_CPU[0].Execute();
+		for (auto elem : m_PCB_Map)
+		{
+			std::cout << "PID: " << elem.first << " \n";// << elem.second. << "\n";
+		}
+		//m_Computer->m_CPU[0].m_PCB_Map = m_PCB_Map.at(1);
+		//m_Computer->m_CPU[0].m_PC = m_PCB_Map.at(1)->StartIndexRAM;
+		//m_Computer->m_CPU[0].Execute();
 	}
 
 
