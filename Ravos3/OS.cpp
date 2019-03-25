@@ -1,7 +1,4 @@
 #include "pch.h"
-#include "OS.h"
-#include <iostream>
-#include <string>
 #include <sstream>
 #include <fstream>
 #include <math.h>
@@ -51,7 +48,7 @@ int OS::assignPCB(PCB *tpcb, std::string info)
 		spaceKeeper++;
 		//std::cout << token << std::endl;
 	}
-	m_PCB_Map.insert(std::pair<int, PCB>(tpcb->process_ID, *tpcb));
+	m_PCB_Map.insert(std::pair<int, PCB*>(tpcb->process_ID, tpcb));
 	//print function of map 
 	//std::map<int, PCB*>::iterator it = m_PCB_Map.begin();
 	

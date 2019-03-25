@@ -30,8 +30,9 @@ void CPU::DumpMemoryAsInstructions(MemoryWord w, std::string instruc)
 	if (!isExecuting) break; 
 
 
-void CPU::Execute()
+bool CPU::Execute()
 {
+	if (printInstruction || printContents) std::cout << "Printing Job " << m_PCB->process_ID << std::endl;
 	m_PCB->state = Running;
 
 	do
@@ -49,6 +50,9 @@ void CPU::Execute()
 			if (w.Address16() != 0)
 			{
 				m_Register[w.RegR1()] = m_Disk->readContents(w.Address16()); //converts MemoryWord in buffer to int to be stored in m_Register
+				//if w.address16().hexchar = pcb->program size
+				//if w.address16().hexchar = pcb->programsize + inputBufferSize
+				//if w.address16().hexchar = pcb->programsize + input buffer size + output buffersize
 			}
 			else
 			{
@@ -212,13 +216,19 @@ void CPU::Execute()
 		case I_HLT:
 		{
 			PreExecute(w, "I_HLT", AssertInstructionTypeJ);
+			if (!isExecuting) return true;
 			//clear registers
 			for (int x : m_Register)
 				x = 0;
-			//set PCB to terminated
+
 			//m_PC = NULL //dispatcher will set CPU's m_PC to the next PCB's program counter
+			m_PC = NULL;
 			//signal scheduler
+
+			//Terminate PCB
 			m_PCB->state = Terminated;
+			
+			return true;
 			break;
 		}
 		//Does nothing and moves to next instruction
@@ -303,4 +313,6 @@ void CPU::Execute()
 
 		}
 	}while (m_PCB->state != Terminated);
+	
+	return false;
 }

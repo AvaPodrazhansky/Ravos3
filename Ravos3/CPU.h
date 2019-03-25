@@ -18,7 +18,7 @@ public:
 
 	static Instruction Decode(const MemoryWord &Word);
 
-	void Execute();
+	bool Execute();
 
 	int m_PC = 0;  // Program Counter
 	int m_Register[MAX_REGISTERS];
@@ -28,7 +28,7 @@ public:
 	PCB *m_PCB = NULL;
 	
 	//Variables for Testing
-	bool isExecuting = false;  //Executes instructions if true
+	bool isExecuting = true;  //Executes instructions if true
 	bool printInstruction = true; //Prints formatted instruction if true
 	bool printContents = false; //Prints hex value of instruction if true
 

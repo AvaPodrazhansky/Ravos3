@@ -8,7 +8,7 @@ public:
 	OS(Computer *theComputer) { m_Computer = theComputer; };
 
 
-	std::map<int, PCB> m_PCB_Map; //map is the C++ version of dictionary
+	std::map<int, PCB*> m_PCB_Map; //map is the C++ version of dictionary
 
 	void tempDispatcher()
 	{
@@ -16,9 +16,12 @@ public:
 		{
 			std::cout << "PID: " << elem.first << " \n";// << elem.second. << "\n";
 		}
-		//m_Computer->m_CPU[0].m_PCB_Map = m_PCB_Map.at(1);
-		//m_Computer->m_CPU[0].m_PC = m_PCB_Map.at(1)->StartIndexRAM;
-		//m_Computer->m_CPU[0].Execute();
+		std::cout << "Disk[92]: " << m_Computer->m_Disk.readContents(92) << " \n";// << elem.second. << "\n";
+		std::cout << "Disk[17]: " << m_Computer->m_Disk.readContents(17) << " \n";// << elem.second. << "\n";
+		std::cout << "Disk[0]: " << m_Computer->m_Disk.readContents(0) << " \n";// << elem.second. << "\n";
+		m_Computer->m_CPU[0].m_PCB = m_PCB_Map.at(1);
+		m_Computer->m_CPU[0].m_PC = m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
+		m_Computer->m_CPU[0].Execute();
 	}
 
 
