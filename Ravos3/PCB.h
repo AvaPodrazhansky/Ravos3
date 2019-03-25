@@ -109,7 +109,7 @@ public:
 	}
 	void setOutputBufferStart(int tstart) 
 	{
-		OutputBufferSize = tstart;
+		OutputBufferStart = tstart;
 	}
 	void setTempBufferSize(int tbuff) 
 	{
