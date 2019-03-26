@@ -137,7 +137,7 @@ bool OS::Load(std::string filename)
 			{
 				int contOfRam = m_Computer->m_RAM.readContents(tram);
 			}*/
-			indexForInstruc = jlen;//should be index for last instuction put in
+			indexForInstruc += jlen;//should be index for last instuction put in
 		}
 		if (isDataLine >= 0 )//if the string contains JOB
 		{
@@ -150,7 +150,7 @@ bool OS::Load(std::string filename)
 				MemoryWord b = MemoryWord(HexNumToInt(str));
 				m_Computer->m_Disk.write((j + indexForData), b);//writes to disk
 			}
-			indexForData = blen;
+			indexForData += blen;
 			tempcb->state = Ready;
 
 		}
