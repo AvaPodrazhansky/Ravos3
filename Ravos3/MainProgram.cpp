@@ -16,6 +16,8 @@ int main()
 		std::cout << "OS Could not boot\n";
 		return 0;
 	}
+	for(int i=0; i<23; i++)
+		std::cout << i << "   " << std::hex << theComputer->m_RAM.readContents(i) << "\n";
 
 	theOS.m_Scheduler.Dispatch();
 

@@ -24,9 +24,9 @@ void CPU::DumpMemoryAsInstructions(MemoryWord w, std::string instruc)
 
 
 #define PreExecute(w,inst,assertpart)  \
-	if (printInstruction) { DumpMemoryAsInstructions(w, inst); } \
+if (printContents) { std::cout << std::hex << w.Contents; } \
+if (printInstruction) { DumpMemoryAsInstructions(w, inst); } \
     w.assertpart(); \
-	if (printContents) { std::cout << std::hex << w.Contents; } \
 	if (!isExecuting) break; 
 
 
@@ -49,14 +49,24 @@ bool CPU::Execute()
 
 			if (w.Address16() != 0)
 			{
-				m_Register[w.RegR1()] = m_Disk->readContents(w.Address16()); //converts MemoryWord in buffer to int to be stored in m_Register
+				unsigned int offsetAddress = w.Address16() / 4;
+				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress - m_PCB->ProgramSize);
+				
+				/*if (w.Address16() == 92)
+					m_Register[w.RegR1()] = m_Disk->readContents(0);
+
+				else*/
+					//m_Register[w.RegR1()] = m_Disk->readContents(w.Address16()); //converts MemoryWord in buffer to int to be stored in m_Register
 				//if w.address16().hexchar = pcb->program size
 				//if w.address16().hexchar = pcb->programsize + inputBufferSize
 				//if w.address16().hexchar = pcb->programsize + input buffer size + output buffersize
+				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << "]\n";
 			}
 			else
 			{
-				m_Register[w.RegR1()] = m_Register[w.RegR2()];
+				//m_Register[w.RegR1()] = m_Register[w.RegR2()];
+				m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize);
+
 			}
 			break;
 		}
@@ -67,8 +77,10 @@ bool CPU::Execute()
 
 			if (w.Address16() != 0)
 			{
+				unsigned int offsetAddress = w.Address16() / 4;
+				m_Disk->write(offsetAddress - m_PCB->ProgramSize, (MemoryWord)m_Register[w.RegR2()]); //might possibly be reg1
 				//Need to check if the conversion to memory word is correct
-				m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
+				//m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
 			}
 			else
 			{
@@ -82,8 +94,8 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_ST", AssertInstructionTypeI);
 
-			m_Memory->write(m_Memory->readContents(m_Register[w.RegD()]), MemoryWord(m_Register[w.RegB()]));
-
+			//m_Memory->write(m_Register[w.RegB()], m_Disk->readContents(m_Register[w.RegD()]/4 - m_PCB->ProgramSize));
+			m_Memory->write(m_Register[w.RegD()], (MemoryWord) m_Register[w.RegB()]);
 			break;
 		}
 		//Loads the content of an address into a reg
@@ -91,7 +103,9 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_LW", AssertInstructionTypeI);
 
-			m_Register[w.RegD()] = (m_Memory->readContents(m_Register[w.RegB()] + w.Address16()));
+			//m_Register[w.RegD()] = (m_Memory->readContents((m_Register[w.RegB()] + w.Address16() /4)));
+			m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()]);
+
 			break;
 		}
 		//Transfers the content of one register into another
@@ -156,6 +170,7 @@ bool CPU::Execute()
 			PreExecute(w, "I_MOVI", AssertInstructionTypeI);
 
 			m_Register[w.RegD()] = w.Address16();
+			if(printLog) std::cout<< "MOVI val: "<< w.Address16() << "to R" << w.RegD() << "\n";
 			break;
 		}
 		//Adds a data value directly to the content of a register
@@ -163,7 +178,7 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_ADDI", AssertInstructionTypeI);
 
-			m_Register[w.RegD()] += w.Address16();
+			m_Register[w.RegD()] += w.Address16();// / 4; //could possibly not divide by 4
 			break;
 		}
 		//Multiplies a data value directly with the content of a register
@@ -186,8 +201,10 @@ bool CPU::Execute()
 		case I_LDI:
 		{
 			PreExecute(w, "I_LDI", AssertInstructionTypeI);
-
-			m_Register[w.RegD()] = w.Address16();
+			//May offset address here, may just do that in the read/write or st/lw funcitons so we know how much to offset. 
+			//unsigned int offsetAddress = w.Address16() / 4;// -m_PCB->ProgramSize + m_PCB->StartIndexRAM;
+			//if (offsetAddress < m_PCB->ProgramSize) offsetAddress -= m_PCB->ProgramSize;
+			m_Register[w.RegD()] = w.Address16(); //might need to add offset
 			break;
 		}
 		//Sets the D-reg to 1 if first S-reg is less than the B-reg; 0 otherwise
@@ -256,7 +273,11 @@ bool CPU::Execute()
 			PreExecute(w, "I_BEQ", AssertInstructionTypeI);
 
 			if (m_Register[w.RegB()] == m_Register[w.RegD()])
-				m_PC = m_Register[w.Address16()];
+			{
+				std::cout << "Loop\n";
+				m_PC = w.Address16() / 4;
+			}
+			else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg <> D-reg
@@ -265,7 +286,11 @@ bool CPU::Execute()
 			PreExecute(w, "I_BNE", AssertInstructionTypeI);
 
 			if (m_Register[w.RegB()] != m_Register[w.RegD()])
-				m_PC = m_Register[w.Address16()];
+			{
+				std::cout << "Loop\n";
+				m_PC = w.Address16() / 4;
+			}
+			else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg = 0
@@ -274,7 +299,11 @@ bool CPU::Execute()
 			PreExecute(w, "I_BEZ", AssertInstructionTypeI);
 
 			if (m_Register[w.RegB()] == 0)
-				m_PC = m_Register[w.Address16()];
+			{
+				std::cout << "Loop\n";
+				m_PC = w.Address16() / 4;
+			}
+			else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg != 0
@@ -283,7 +312,11 @@ bool CPU::Execute()
 			PreExecute(w, "I_BNZ", AssertInstructionTypeI);
 
 			if (m_Register[w.RegB()] != 0)
-				m_PC = m_Register[w.Address16()];
+			{
+				std::cout << "Loop\n";
+				m_PC = w.Address16() / 4;
+			}
+			else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg > 0
@@ -292,8 +325,11 @@ bool CPU::Execute()
 			PreExecute(w, "I_BGZ", AssertInstructionTypeI);
 
 			if (m_Register[w.RegB()] > 0)
-				m_PC = m_Register[w.Address16()];
-			break;
+			{
+				std::cout << "Loop\n";
+				m_PC = w.Address16() / 4;
+			}
+			else std::cout << "End Loop\n";
 		}
 		//Branches to an address when content of B-reg < 0
 		case I_BLZ:
@@ -301,7 +337,11 @@ bool CPU::Execute()
 			PreExecute(w, "I_BLZ", AssertInstructionTypeI);
 
 			if (m_Register[w.RegB()] < 0)
-				m_PC = m_Register[w.Address16()];
+			{
+				std::cout << "Loop\n";
+				m_PC = w.Address16() / 4;
+			}
+			else std::cout << "End Loop\n";
 			break;
 		}
 

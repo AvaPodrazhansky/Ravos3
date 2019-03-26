@@ -30,7 +30,8 @@ public:
 	//Variables for Testing
 	bool isExecuting = true;  //Executes instructions if true
 	bool printInstruction = true; //Prints formatted instruction if true
-	bool printContents = false; //Prints hex value of instruction if true
+	bool printContents = true; //Prints hex value of instruction if true
+	bool printLog = false;
 
 	void DumpMemoryAsInstructions(MemoryWord w, std::string i);
 

@@ -41,7 +41,7 @@ struct MemoryWord
 	// Returns contents of D-reg field for I type instructions (only)
 	int RegD_I() const { return Instruction.Reg2; }
 	// Returns contents of D-reg field for I and R instructions (based on first 2 bits only)
-	int RegD() const { return (Instruction.InstType & 0xc) ? RegD_I() : RegD_R(); }
+	int RegD() const { return (Instruction.InstType == 1) ? RegD_I() : RegD_R(); }
 	// Returns contents of Reg 1 field for IO instructions only
 	int RegR1() const { return Instruction.Reg1; }
 	// Returns contents of Reg 2 field for IO instructions only
