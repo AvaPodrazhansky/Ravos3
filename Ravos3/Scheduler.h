@@ -12,7 +12,7 @@ class Scheduler
 	   Scheduler(OS *_theOS, ScheduleType  = FIFO) { theOS = _theOS; }
 	   
 	   
-	   std::queue <int> m_ReadyQueue;
+	std::queue <int> m_ReadyQueue;
 
    //PCB* GetPCBBlockAsArray();
 

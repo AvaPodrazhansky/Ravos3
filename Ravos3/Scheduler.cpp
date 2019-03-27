@@ -63,6 +63,7 @@ int Scheduler::FIFOScheduler()
 		{
 			Dispatch(pcb);
 			//if(Dispatch(pcb)); //If Dispatch(pcb) = signal OS to execute
+			//if all CPUs are busy, wait
 		}
 	}
 

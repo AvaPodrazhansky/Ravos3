@@ -39,6 +39,9 @@
     <ClInclude Include="Scheduler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ShortTermScheduler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -67,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="TestExecute.cpp">
       <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="ShortTermScheduler.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
