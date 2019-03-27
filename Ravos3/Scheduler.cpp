@@ -16,6 +16,7 @@ bool Scheduler :: WriteNewProcessToRAM(PCB* pcb)
 	for (int i = 0; i < theOS->m_Computer->m_RAM.GetSize(); i++)
 	{
 		//We need to have check and make sure that the new process isn't overwriting an old process. 
+		theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), 0);
 
 	}
 	return false;
@@ -44,6 +45,7 @@ bool Scheduler::ClearOldProcessFromRAM(PCB* pcb)
 bool Scheduler::Dispatch(PCB *pcb)
 {
 	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true)
+	if(WriteNewProcessToRAM(pcb));
 	theOS->m_Computer->m_CPU[0].m_PCB = pcb;
 	theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
 	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
