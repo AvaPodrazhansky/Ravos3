@@ -131,7 +131,7 @@ bool OS::Load(std::string filename)
 		{
 			//std::string jobInfo = str.substr(7);
 			int jlen = assignPCB(tempcb, str);//parses and assigns info to PCB and returns length of instructions
-			tempcb->StartIndexRAM = indexForInstruc;
+			//tempcb->StartIndexRAM = indexForInstruc;
 			tempcb->StartIndexDisk = indexForData;
 			for (int i = 0; i < jlen; i++)
 			{
@@ -140,7 +140,7 @@ bool OS::Load(std::string filename)
 				MemoryWord k = MemoryWord(HexNumToInt(str));
 				//MemoryWord k = MemoryWord(static_cast<int>(instruct));
 //				m_Computer->m_RAM.write((i + indexForInstruc), k, 0);//writes to ram   ***** Offset already added into indexForInstruct
-				m_Computer->m_RAM.write(i, k, indexForInstruc);//writes to ram   ***** Offset already added into indexForInstruct
+				//m_Computer->m_RAM.write(i, k, indexForInstruc);//writes to ram   ***** Offset already added into indexForInstruct
 				m_Computer->m_Disk.write(i, k, indexForData);//writes to ram   ***** Offset already added into indexForInstruct
 			}
 
@@ -150,7 +150,7 @@ bool OS::Load(std::string filename)
 			{
 				int contOfRam = m_Computer->m_RAM.readContents(tram);
 			}*/
-			indexForInstruc += jlen;//should be index for last instuction put in
+			//indexForInstruc += jlen;//should be index for last instuction put in
 		}
 		if (isDataLine >= 0 )//if the string contains DATA
 		{
@@ -164,10 +164,10 @@ bool OS::Load(std::string filename)
 //				m_Computer->m_Disk.write((j + indexForData), b, 0);//writes to disk
 				m_Computer->m_Disk.write(j, b, indexForData);//writes to disk *****
 
-				if (j < tempcb->InputBufferSize || j >= tempcb->InputBufferSize + tempcb->OutputBufferSize)
-					m_Computer->m_RAM.write(0,b,indexForInstruc++);
+				/*if (j < tempcb->InputBufferSize || j >= tempcb->InputBufferSize + tempcb->OutputBufferSize)
+					m_Computer->m_RAM.write(0,b,indexForInstruc++);*/
 			}
-			indexForData += blen;
+			indexForData += blen ;
 			tempcb->state = Ready;
 
 		}
