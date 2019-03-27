@@ -9,6 +9,7 @@ class PCB
 	friend class OS;
 	friend class CPU;
 	friend class Scheduler;
+	friend class ShortTermScheduler;
 private:
 
 	int process_ID;

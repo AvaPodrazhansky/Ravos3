@@ -20,10 +20,6 @@ int main()
 	//theOS.m_Scheduler.FIFOScheduler();
 
 	//theOS.tempDispatcher();
-	for (int i = 0; i < 2048; i++) {
-		if (i == 23) std::cout << "data\n";
-		std::cout << std::hex << theComputer->m_Disk.readContents(i, 0) << "\n";
-	}
 
 	std::cout << "Ready to run\n";
 

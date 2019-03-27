@@ -3,30 +3,19 @@
 
 class OS 
 {
-	//friend class Scheduler;
+	//friend class ShortTermScheduler;
 public:
 	Computer *m_Computer;
-	OS(Computer *theComputer) :m_Scheduler(this) { m_Computer = theComputer; };
+	ShortTermScheduler m_ShortTerm;
+	Scheduler m_Scheduler;
+	OS(Computer *theComputer); // {m_Computer = theComputer; };
 
 
 	std::map<int, PCB*> m_PCB_Map; //map is the C++ version of dictionary
 
-	void tempDispatcher()
-	{
-		//for (auto elem : m_PCB_Map)
-		//{
-		//	std::cout << "PID: " << elem.first << " \n";// << elem.second. << "\n";
-		//	m_Computer->m_CPU[0].m_PCB = elem.second;
-		//	m_Computer->m_CPU[0].m_PC = m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
-		//	m_Computer->m_CPU[0].Execute();
-		//}
-		    m_Computer->m_CPU[0].m_PCB = m_PCB_Map.at(1);
-			m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
-			m_Computer->m_CPU[0].Execute();
-	}
+	std::queue <int> m_ReadyQueue; //Queue of Process ID's
 
 
-	Scheduler m_Scheduler;
 
 	// Initilizes the computer.  A Several things are happening:
 	//    (1) Uses Loader routines to read the boot file (containing the jobs) onto the disk

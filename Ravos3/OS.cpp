@@ -3,10 +3,10 @@
 #include <fstream>
 #include <math.h>
 
-//OS::OS(Computer *theComputer)
-//{
-//	m_Computer = theComputer;
-//}
+OS::OS(Computer *theComputer) :m_Scheduler(this), m_ShortTerm(this)
+{
+	m_Computer = theComputer;
+}
 
 bool OS::Boot(std::string filename)
 {

@@ -22,6 +22,7 @@
 #include "Memory.h"
 #include "PCB.h"
 #include "CPU.h"
+#include "ShortTermScheduler.h"
 #include "Scheduler.h"
 #include "Computer.h"
 #include "OS.h" 
