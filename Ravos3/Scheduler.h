@@ -1,6 +1,5 @@
 #pragma once
 
-
 // TODO: Design scheduler.  First we'll do the simplest long-term Dispatcher.  Afterwards we'll improve
 
 enum ScheduleType {FIFO = 1, SJF = 2, PRIORITY = 3};
@@ -9,9 +8,11 @@ class Scheduler
 {
    public:
 	   ScheduleType SchedType;
+	  
 	   Scheduler(OS *_theOS, ScheduleType type = FIFO) { theOS = _theOS; SchedType = type; }
 	   
-
+	   std::queue <int> RAM_queue;
+	   RAM_queue.push(0);
    //PCB* GetPCBBlockAsArray();
 
 	// Dispatches programs that are to be run on the various CPUs. 
@@ -28,6 +29,12 @@ class Scheduler
 	int SJFScheduler();
 
 	int PriorityScheduler();
+
+	bool WriteNewProcessToRAM(PCB* pcb);
+
+	bool ClearOldProcessFromRAM(PCB* pcb);
+
+	bool fillReadyQueue();
 
 private:
 	OS *theOS = NULL;

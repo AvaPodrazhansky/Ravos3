@@ -22,7 +22,6 @@
 //	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
 //}
 
-
 int Scheduler::FIFOScheduler()
 {
 //	std::priority_queue<PCB*> q;
@@ -32,7 +31,8 @@ int Scheduler::FIFOScheduler()
 		PCB* pcb = theOS->m_PCB_Map[i];
 		if (pcb->state == State::Ready)
 		{
-			theOS->m_ShortTerm.Dispatch(pcb);
+			RAM_queue.push(pcb->process_ID);
+			//theOS->m_ShortTerm.Dispatch(pcb);
 			//if(Dispatch(pcb)); //If Dispatch(pcb) = signal OS to execute
 			//if all CPUs are busy, wait
 		}
@@ -54,4 +54,38 @@ int Scheduler::PriorityScheduler()
 {
 	// TODO: Return the PID of process with highest prority. 
 	return 0;
+}
+
+bool Scheduler::WriteNewProcessToRAM(PCB* pcb)
+{
+	//We will change this when we get the MMU
+	for (int i = 0; i < theOS->m_Computer->m_CPU[0].m_PCB->ProgramSize; i++)
+	{
+		//We need to have check and make sure that the new process isn't overwriting an old process. 
+		theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), 0);
+
+	}
+	return true;
+}
+
+//This will need to be changed when we are running more processes
+bool Scheduler::ClearOldProcessFromRAM(PCB* pcb)
+{
+	if (!pcb->isExecuting())
+	{
+		for (int i = 0; i <= pcb->totalSpaceInRAM(); i++)
+		{
+			theOS->m_Computer->m_RAM.write(i, NULL, pcb->StartIndexRAM);
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Scheduler::fillReadyQueue() 
+{
+	if (WriteNewProcessToRAM(theOS->m_PCB_Map.at(RAM_queue.pop()))
+	{
+
+	}
 }

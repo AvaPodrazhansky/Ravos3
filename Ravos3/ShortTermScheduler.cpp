@@ -8,32 +8,6 @@ ShortTermScheduler::ShortTermScheduler(OS *_theOS)
 }
 
 
-bool ShortTermScheduler::WriteNewProcessToRAM(PCB* pcb)
-{
-	//We will change this when we get the MMU
-	for (int i = 0; i < theOS->m_Computer->m_RAM.GetSize(); i++)
-	{
-		//We need to have check and make sure that the new process isn't overwriting an old process. 
-		theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), 0);
-
-	}
-	return false;
-}
-
-
-//This will need to be changed when we are running more processes
-bool ShortTermScheduler::ClearOldProcessFromRAM(PCB* pcb)
-{
-	if (!pcb->isExecuting())
-	{
-		for (int i = 0; i <= pcb->totalSpaceInRAM(); i++)
-		{
-			theOS->m_Computer->m_RAM.write(i, NULL, pcb->StartIndexRAM);
-		}
-		return true;
-	}
-	return false;
-}
 
 bool ShortTermScheduler::Dispatch(PCB *pcb)
 {
