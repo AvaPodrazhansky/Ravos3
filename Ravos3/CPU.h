@@ -11,6 +11,8 @@ enum Instruction {
 	I_BEQ = 0x15, I_BNE = 0x16, I_BEZ = 0x17, I_BNZ = 0x18, I_BGZ = 0x19, I_BLZ = 0x1A
 };
 
+enum CPU_State {IDLE = 1, BUSY = 2};
+
 class CPU
 {
 public:
@@ -21,12 +23,14 @@ public:
 	bool Execute();
 
 	int m_PC = 0;  // Program Counter
-	int m_Register[MAX_REGISTERS];
+	unsigned int m_Register[MAX_REGISTERS];
 
 	Memory *m_Memory = NULL;
 	Memory *m_Disk = NULL;
 	PCB *m_PCB = NULL;
 	
+	CPU_State m_C_State = IDLE;
+
 	//Variables for Testing
 	bool isExecuting = true;  //Executes instructions if true
 	bool printInstruction = true; //Prints formatted instruction if true

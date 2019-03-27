@@ -14,14 +14,16 @@ void Memory::Clear()
 		memory[i].Clear();
 }
 
-void Memory::write(int index, MemoryWord t)
+void Memory::write(int index, MemoryWord t, int Offset)
 {
+	index += Offset;
 	assert(index >= 0 && index < Size);
 	memory[index] = t;
 }
 
-MemoryWord Memory::read(int index)
+MemoryWord Memory::read(int index, int Offset)
 {
+	index += Offset;
 	assert(index >= 0 && index < Size);
 	return memory[index];
 }

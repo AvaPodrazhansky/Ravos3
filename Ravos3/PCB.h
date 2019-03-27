@@ -8,6 +8,7 @@ class PCB
 {
 	friend class OS;
 	friend class CPU;
+	friend class Scheduler;
 private:
 
 	int process_ID;
@@ -70,7 +71,7 @@ public:
 
 	bool isExecuting() const
 	{
-		return (state == 2);
+		return (state == Running);
 	}
 
 
@@ -118,6 +119,11 @@ public:
 	void setTempBufferStart(int tstart) 
 	{
 		TempBufferStart = tstart;
+	}
+
+	int totalSpaceInRAM()
+	{
+		return ProgramSize + InputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
 	}
 	
 };

@@ -89,16 +89,16 @@ void TestTheExecute()
 	
 	for (int i = 0; i < 23; i++)
 	{
-		c->m_RAM.write(i, MemoryWord(HexNumToInt2(k[i])));
+		c->m_RAM.write(i, MemoryWord(HexNumToInt2(k[i])), 0);
 	}
 
 	for (int i = 0; i < 44; i++)
 	{
-		c->m_Disk.write(i, MemoryWord(HexNumToInt2(d[i])));
+		c->m_Disk.write(i, MemoryWord(HexNumToInt2(d[i])),0);
 	}
 
 	c->m_CPU[0].isExecuting = false;
-	c->m_CPU[0].m_PC = c->m_RAM.read(0).Contents;
+	c->m_CPU[0].m_PC = c->m_RAM.read(0,0).Contents;
 
 	for (int i = c->m_CPU[0].m_PC; i < 23; i++)
 	{

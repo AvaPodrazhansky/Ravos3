@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <map>
 #include <iostream>
+#include <queue>
+
 //#include  <cstddef> //includes byte
 
 #include "Memory.h"

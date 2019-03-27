@@ -16,12 +16,14 @@ int main()
 		std::cout << "OS Could not boot\n";
 		return 0;
 	}
-	for(int i=0; i<23; i++)
-		std::cout << i << "   " << std::hex << theComputer->m_RAM.readContents(i) << "\n";
 
-	theOS.m_Scheduler.Dispatch();
+	//theOS.m_Scheduler.FIFOScheduler();
 
-	theOS.tempDispatcher();
+	//theOS.tempDispatcher();
+	for (int i = 0; i < 2048; i++) {
+		if (i == 23) std::cout << "data\n";
+		std::cout << std::hex << theComputer->m_Disk.readContents(i, 0) << "\n";
+	}
 
 	std::cout << "Ready to run\n";
 

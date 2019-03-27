@@ -29,15 +29,17 @@ if (printInstruction) { DumpMemoryAsInstructions(w, inst); } \
     w.assertpart(); \
 	if (!isExecuting) break; 
 
+#define ChangePC(address) m_PC = w.address() / 4 + m_PCB->StartIndexRAM;
 
 bool CPU::Execute()
 {
-	if (printInstruction || printContents) std::cout << "Printing Job " << m_PCB->process_ID << std::endl;
+	if (printInstruction || printContents) std::cout << "************Printing Job " << m_PCB->process_ID << " **************"<<std::endl;
+	m_C_State = BUSY;
 	m_PCB->state = Running;
 
 	do
 	{
-		MemoryWord w = m_Memory->read(m_PC); //Fetch
+		MemoryWord w = m_Memory->read(m_PC, m_PCB->StartIndexRAM); //Fetch
 		Instruction i = Decode(w);
 		++m_PC;
 		switch (i)
@@ -50,22 +52,20 @@ bool CPU::Execute()
 			if (w.Address16() != 0)
 			{
 				unsigned int offsetAddress = w.Address16() / 4;
-				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress - m_PCB->ProgramSize);
-				
-				/*if (w.Address16() == 92)
-					m_Register[w.RegR1()] = m_Disk->readContents(0);
+//				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress - m_PCB->ProgramSize, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
+//				if (1) std::cout << "   -- Read at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
+				if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 
-				else*/
-					//m_Register[w.RegR1()] = m_Disk->readContents(w.Address16()); //converts MemoryWord in buffer to int to be stored in m_Register
-				//if w.address16().hexchar = pcb->program size
-				//if w.address16().hexchar = pcb->programsize + inputBufferSize
-				//if w.address16().hexchar = pcb->programsize + input buffer size + output buffersize
-				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << "]\n";
+//				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << " offset " << m_PCB->StartIndexDisk << "]\n";
 			}
 			else
 			{
 				//m_Register[w.RegR1()] = m_Register[w.RegR2()];
-				m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize);
+//				m_Register[w.RegR1()] = m_Disk->readContents( m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize, m_PCB->StartIndexDisk);
+//				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+				m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);
+				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 
 			}
 			break;
@@ -78,7 +78,10 @@ bool CPU::Execute()
 			if (w.Address16() != 0)
 			{
 				unsigned int offsetAddress = w.Address16() / 4;
-				m_Disk->write(offsetAddress - m_PCB->ProgramSize, (MemoryWord)m_Register[w.RegR2()]); //might possibly be reg1
+//				m_Disk->write(offsetAddress - m_PCB->ProgramSize, (MemoryWord)m_Register[w.RegR1()], m_PCB->OutputBufferStart); //might possibly be reg1
+//				if (1) std::cout << "   -- Write at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->OutputBufferStart << ") value " << m_Register[w.RegR1()] << "\n";
+				m_Disk->write(offsetAddress, (MemoryWord)m_Register[w.RegR1()], m_PCB->StartIndexDisk); //might possibly be reg1
+				if (1) std::cout << "   -- Write at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 				//Need to check if the conversion to memory word is correct
 				//m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
 			}
@@ -95,7 +98,8 @@ bool CPU::Execute()
 			PreExecute(w, "I_ST", AssertInstructionTypeI);
 
 			//m_Memory->write(m_Register[w.RegB()], m_Disk->readContents(m_Register[w.RegD()]/4 - m_PCB->ProgramSize));
-			m_Memory->write(m_Register[w.RegD()], (MemoryWord) m_Register[w.RegB()]);
+			m_Memory->write(m_Register[w.RegD()], (MemoryWord) m_Register[w.RegB()], m_PCB->StartIndexRAM);
+			//m_Memory->write(m_Register[w.RegD()] / 4 + m_PCB->StartIndexRAM, (MemoryWord)m_Register[w.RegB()]);
 			break;
 		}
 		//Loads the content of an address into a reg
@@ -104,7 +108,8 @@ bool CPU::Execute()
 			PreExecute(w, "I_LW", AssertInstructionTypeI);
 
 			//m_Register[w.RegD()] = (m_Memory->readContents((m_Register[w.RegB()] + w.Address16() /4)));
-			m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()]);
+			m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()] / 4, m_PCB->StartIndexRAM);
+			//m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()] / 4 + m_PCB->StartIndexRAM);
 
 			break;
 		}
@@ -113,7 +118,8 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_MOV", AssertInstructionTypeR);
 
-			m_Register[w.RegD()] = m_Register[w.RegS1()];
+			//m_Register[w.RegD()] = m_Register[w.RegS1()];
+			m_Register[w.RegS2()] = m_Register[w.RegS1()];
 			break;
 		}
 		//Adds content of two S-regs into D-reg
@@ -194,7 +200,7 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_DIVI", AssertInstructionTypeI);
 
-			m_Register[w.RegD()] /= w.Address16();//
+			m_Register[w.RegD()] /= w.Address16();
 			break;
 		}
 		//Loads a data/address directly to the content of a register
@@ -236,7 +242,7 @@ bool CPU::Execute()
 			if (!isExecuting) return true;
 			//clear registers
 			for (int x : m_Register)
-				x = 0;
+				m_Register[x] = 0;
 
 			//m_PC = NULL //dispatcher will set CPU's m_PC to the next PCB's program counter
 			m_PC = NULL;
@@ -245,6 +251,8 @@ bool CPU::Execute()
 			//Terminate PCB
 			m_PCB->state = Terminated;
 			
+			//Set CPU back to idle (for scheduling)
+			m_C_State = IDLE;
 			return true;
 			break;
 		}
@@ -264,7 +272,8 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_JMP", AssertInstructionTypeJ);
 
-			m_PC = w.Address24();
+			//m_PC = w.Address24(); //might need to divide by 4
+			ChangePC(Address24);
 			break;
 		}
 		//Branches to an address when content of B-reg = D-reg
@@ -275,7 +284,7 @@ bool CPU::Execute()
 			if (m_Register[w.RegB()] == m_Register[w.RegD()])
 			{
 				std::cout << "Loop\n";
-				m_PC = w.Address16() / 4;
+				ChangePC(Address16);
 			}
 			else std::cout << "End Loop\n";
 			break;
@@ -288,7 +297,7 @@ bool CPU::Execute()
 			if (m_Register[w.RegB()] != m_Register[w.RegD()])
 			{
 				std::cout << "Loop\n";
-				m_PC = w.Address16() / 4;
+				ChangePC(Address16);
 			}
 			else std::cout << "End Loop\n";
 			break;
@@ -301,7 +310,7 @@ bool CPU::Execute()
 			if (m_Register[w.RegB()] == 0)
 			{
 				std::cout << "Loop\n";
-				m_PC = w.Address16() / 4;
+				ChangePC(Address16);
 			}
 			else std::cout << "End Loop\n";
 			break;
@@ -314,7 +323,7 @@ bool CPU::Execute()
 			if (m_Register[w.RegB()] != 0)
 			{
 				std::cout << "Loop\n";
-				m_PC = w.Address16() / 4;
+				ChangePC(Address16);
 			}
 			else std::cout << "End Loop\n";
 			break;
@@ -327,7 +336,7 @@ bool CPU::Execute()
 			if (m_Register[w.RegB()] > 0)
 			{
 				std::cout << "Loop\n";
-				m_PC = w.Address16() / 4;
+				ChangePC(Address16);
 			}
 			else std::cout << "End Loop\n";
 		}
@@ -339,7 +348,7 @@ bool CPU::Execute()
 			if (m_Register[w.RegB()] < 0)
 			{
 				std::cout << "Loop\n";
-				m_PC = w.Address16() / 4;
+				ChangePC(Address16);
 			}
 			else std::cout << "End Loop\n";
 			break;
