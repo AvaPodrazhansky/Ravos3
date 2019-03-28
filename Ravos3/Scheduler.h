@@ -8,11 +8,11 @@ class Scheduler
 {
    public:
 	   ScheduleType SchedType;
+
+	   std::queue <int> m_JobQueue; //will be filled by FIFo and other scheduling algorithms 
 	  
 	   Scheduler(OS *_theOS, ScheduleType type = FIFO) { theOS = _theOS; SchedType = type; }
 	   
-	   std::queue <int> RAM_queue;
-	   RAM_queue.push(0);
    //PCB* GetPCBBlockAsArray();
 
 	// Dispatches programs that are to be run on the various CPUs. 
@@ -23,18 +23,23 @@ class Scheduler
 
 
 
-	//Returns the PID of next program to be executed.
+	
 	int FIFOScheduler();
 
 	int SJFScheduler();
 
 	int PriorityScheduler();
 
-	bool WriteNewProcessToRAM(PCB* pcb);
+	//bool WriteNewProcessToRAM(PCB* pcb);
+	int WriteNewProcessToRAM(PCB* pcb, int offset); 
 
-	bool ClearOldProcessFromRAM(PCB* pcb);
+	//moved to ShortTermScheduler
+	//void ClearOldProcessFromRAM(PCB* pcb);
 
-	bool fillReadyQueue();
+	//goes through m_JobQueue and writes processes into RAM until m_JobQueue is empty
+	bool ExecuteJobQueue();
+
+	/*bool fillReadyQueue();*/
 
 private:
 	OS *theOS = NULL;

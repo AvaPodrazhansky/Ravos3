@@ -13,7 +13,7 @@ public:
 
 	std::map<int, PCB*> m_PCB_Map; //map is the C++ version of dictionary
 
-	std::queue <int> m_ReadyQueue; //Queue of Process ID's
+	std::queue <PCB*> m_ReadyQueue; //Queue of Process ID's
 
 
 

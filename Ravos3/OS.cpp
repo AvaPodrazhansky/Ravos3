@@ -168,7 +168,7 @@ bool OS::Load(std::string filename)
 					m_Computer->m_RAM.write(0,b,indexForInstruc++);*/
 			}
 			indexForData += blen ;
-			tempcb->state = Ready;
+			tempcb->state = New;
 
 		}
 		if (isEndLine >= 0) 

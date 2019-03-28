@@ -2,23 +2,44 @@
 //#include "ShortTermScheduler.h"
 
 
-ShortTermScheduler::ShortTermScheduler(OS *_theOS)
+void ShortTermScheduler::ClearOldProcessFromRAM(PCB* pcb)
 {
-	theOS = _theOS;
+	for (int i = 0; i < pcb->totalSpaceInRAM(); i++)
+	{
+		theOS->m_Computer->m_RAM.write(i, NULL, pcb->StartIndexRAM);
+	}
 }
+//original dispatcher
+//bool ShortTermScheduler::Dispatch(PCB *pcb)
+//{
+//	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true)
+//	//if (WriteNewProcessToRAM(pcb));
+//	
+//	theOS->m_Computer->m_CPU[0].m_PCB = pcb;
+//	theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
+//	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
+//}
 
-
-
-bool ShortTermScheduler::Dispatch(PCB *pcb)
+//will need to be changed when using multiple CPU's, could possibly pass the CPU number as param in future
+bool ShortTermScheduler::Dispatch()
 {
-	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true)
+	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true) **Not sure what you meant here**
 	//if (WriteNewProcessToRAM(pcb));
-	
-	theOS->m_Computer->m_CPU[0].m_PCB = pcb;
-	theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
-	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
+	do
+	{
+		if(theOS->m_Computer->m_CPU[0].m_C_State == IDLE)	
+		{
+			theOS->m_Computer->m_CPU[0].m_PCB = theOS->m_ReadyQueue.pop();
+			theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
+			theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
+			if (theOS->m_Computer->m_CPU[0].m_PCB->state == Terminated) //if process successfully executed
+			{
+				ShortTermScheduler::ClearOldProcessFromRAM(theOS->m_Computer->m_CPU[0].m_PCB);//removes from RAM
+			}
+		}
+	} while (!theOS->m_ReadyQueue.empty());
+	return true;//returns true when ready queue is empty 
 }
-
 //
 //ShortTermScheduler::~ShortTermScheduler()
 //{
