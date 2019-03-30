@@ -25,21 +25,23 @@
 bool Scheduler::FIFOScheduler()
 {
 //	std::priority_queue<PCB*> q;
-
-	for (unsigned int i = 0; i < theOS->m_PCB_Map.size(); ++i) //changed i to unsigned becuase map.size() returns size_type
+	if (m_JobQueue.empty())
 	{
-		PCB* pcb = theOS->m_PCB_Map[i];
-		if (pcb->isExecuting())
+		for (unsigned int i = 0; i < theOS->m_PCB_Map.size(); ++i) //changed i to unsigned becuase map.size() returns size_type
 		{
+			PCB* pcb = theOS->m_PCB_Map[i];
+			//if (pcb->isExecuting())
+			//{
 			m_JobQueue.push(pcb->getProcessID());
 			//theOS->m_ShortTerm.Dispatch(pcb);
 			//if(Dispatch(pcb)); //If Dispatch(pcb) = signal OS to execute
 			//if all CPUs are busy, wait
+		//}
 		}
 	}
 
-	
-	return true;
+	return(FillReadyQueue());
+
 }
 
 int Scheduler::SJFScheduler()

@@ -17,19 +17,20 @@ int main()
 		return 0;
 	}
 
-	//Call Long Term Scheudler 
-	if (!theOS.m_Scheduler.FIFOScheduler()) 
-	{
-		std::cout << "Long Term Scheduler Error\n";
-	}
+	do {
+		//Call Long Term Scheudler 
+		if (!theOS.m_Scheduler.FIFOScheduler())
+		{
+			std::cout << "Long Term Scheduler Error\n";
+		}
 
-	//Calls Short Term Scheduler
-	if(!theOS.m_ShortTerm.Dispatch())
-	{
-		std::cout << "Unable to dispatch\n";
-	}
-	
+		//Calls Short Term Scheduler
+		if (!theOS.m_ShortTerm.Dispatch())
+		{
+			std::cout << "Unable to dispatch\n";
+		}
 
+	} while (!theOS.m_Scheduler.m_JobQueue.empty());
 
 	std::cout << "Ready to run\n";
 
