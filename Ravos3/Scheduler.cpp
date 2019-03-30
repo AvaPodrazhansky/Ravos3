@@ -27,7 +27,7 @@ bool Scheduler::FIFOScheduler()
 //	std::priority_queue<PCB*> q;
 	if (m_JobQueue.empty())
 	{
-		for (unsigned int i = 0; i < theOS->m_PCB_Map.size(); ++i) //changed i to unsigned becuase map.size() returns size_type
+		for (unsigned int i = 1; i < theOS->m_PCB_Map.size(); ++i) //changed i to unsigned becuase map.size() returns size_type
 		{
 			PCB* pcb = theOS->m_PCB_Map[i];
 			//if (pcb->isExecuting())

@@ -80,7 +80,8 @@ bool CPU::Execute()
 				unsigned int offsetAddress = w.Address16() / 4;
 //				m_Disk->write(offsetAddress - m_PCB->ProgramSize, (MemoryWord)m_Register[w.RegR1()], m_PCB->OutputBufferStart); //might possibly be reg1
 //				if (1) std::cout << "   -- Write at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->OutputBufferStart << ") value " << m_Register[w.RegR1()] << "\n";
-				m_Disk->write(offsetAddress, (MemoryWord)m_Register[w.RegR1()], m_PCB->StartIndexDisk); //might possibly be reg1
+				MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
+				m_Disk->write(offsetAddress, temp, m_PCB->StartIndexDisk); //might possibly be reg1
 				if (1) std::cout << "   -- Write at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 				//Need to check if the conversion to memory word is correct
 				//m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
@@ -119,7 +120,7 @@ bool CPU::Execute()
 			PreExecute(w, "I_MOV", AssertInstructionTypeR);
 
 			//m_Register[w.RegD()] = m_Register[w.RegS1()];
-			m_Register[w.RegS2()] = m_Register[w.RegS1()];
+			m_Register[w.RegS1()] = m_Register[w.RegS2()];
 			break;
 		}
 		//Adds content of two S-regs into D-reg
@@ -239,7 +240,7 @@ bool CPU::Execute()
 		case I_HLT:
 		{
 			PreExecute(w, "I_HLT", AssertInstructionTypeJ);
-			if (!isExecuting) return true;
+			//if (!isExecuting) return true;
 			//clear registers
 			for (int x : m_Register)
 				m_Register[x] = 0;

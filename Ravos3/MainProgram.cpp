@@ -17,6 +17,23 @@ int main()
 		return 0;
 	}
 
+	
+	std::map<int, PCB*>::iterator it = theOS.m_PCB_Map.begin();
+	//// Iterate over the map using Iterator till end.
+	while (it != theOS.m_PCB_Map.end())
+	{
+		// Accessing KEY from element pointed by it.
+		int PID = it->first;
+
+		// Accessing VALUE from element pointed by it.
+		PCB* count = it->second;
+
+		std::cout << PID << " :: " << count->getProcessID() << std::endl;
+
+		// Increment the Iterator to point to next entry
+		it++;
+	}
+	
 	std::cout << "Ready to run\n";
 
 	do {

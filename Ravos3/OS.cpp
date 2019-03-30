@@ -51,8 +51,8 @@ int OS::assignPCB(PCB *tpcb, std::string info)
 	m_PCB_Map.insert(std::pair<int, PCB*>(tpcb->process_ID, tpcb));
 	//print function of map 
 	//std::map<int, PCB*>::iterator it = m_PCB_Map.begin();
-	
-	// Iterate over the map using Iterator till end.
+	//
+	//// Iterate over the map using Iterator till end.
 	//while (it != m_PCB_Map.end())
 	//{
 	//	// Accessing KEY from element pointed by it.
@@ -61,7 +61,7 @@ int OS::assignPCB(PCB *tpcb, std::string info)
 	//	// Accessing VALUE from element pointed by it.
 	//	PCB* count = it->second;
 
-	//	std::cout << word << " :: " << count << std::endl;
+	//	std::cout << word << " :: " << count->getProcessID() << std::endl;
 
 	//	// Increment the Iterator to point to next entry
 	//	it++;
