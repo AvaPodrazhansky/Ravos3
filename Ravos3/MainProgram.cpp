@@ -11,13 +11,21 @@ int main()
 	OS theOS(theComputer);
 
 
-	if (!theOS.Boot("programfile.txt"))
+	if (!theOS.Boot("programfile.txt")) //Calls loader
 	{
 		std::cout << "OS Could not boot\n";
 		return 0;
 	}
 
-	//theOS.m_Scheduler.FIFOScheduler();
+	if (!theOS.m_Scheduler.FIFOScheduler()) //Call Long Term Scheudler 
+	{
+		std::cout << "Long Term Scheduler Error\n";
+	}
+
+	if(!theOS.m_ShortTerm.Dispatch())
+	{
+		std::cout << "Unable to dispatch\n";
+	}
 
 	//theOS.tempDispatcher();
 

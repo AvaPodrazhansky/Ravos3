@@ -22,7 +22,7 @@
 //	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
 //}
 
-int Scheduler::FIFOScheduler()
+bool Scheduler::FIFOScheduler()
 {
 //	std::priority_queue<PCB*> q;
 
@@ -39,7 +39,7 @@ int Scheduler::FIFOScheduler()
 	}
 
 	
-	return 0;
+	return true;
 }
 
 int Scheduler::SJFScheduler()

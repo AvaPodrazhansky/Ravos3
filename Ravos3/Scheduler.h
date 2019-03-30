@@ -24,7 +24,7 @@ class Scheduler
 
 
 	
-	int FIFOScheduler();
+	bool FIFOScheduler();
 
 	int SJFScheduler();
 
