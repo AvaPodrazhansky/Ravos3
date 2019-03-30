@@ -70,6 +70,10 @@ public:
 		return priority;
 	}
 
+	int getProgramSize() 
+	{
+		return ProgramSize;
+	}
 	bool isExecuting() const
 	{
 		return (state == Running);
@@ -132,9 +136,14 @@ public:
 		return StartIndexRAM;
 	}
 
+	int getStartIndexDisk() 
+	{
+		return StartIndexDisk;
+	}
+
 	int totalSpaceInRAM()
 	{
-		return ProgramSize + InputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
+		return ProgramSize + InputBufferSize + OutputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
 	}
 	
 };

@@ -6,7 +6,13 @@ void ShortTermScheduler::ClearOldProcessFromRAM(PCB* pcb)
 {
 	for (int i = 0; i < pcb->totalSpaceInRAM(); i++)
 	{
-		theOS->m_Computer->m_RAM.write(i, NULL, pcb->StartIndexRAM);
+		//if at start of input buffer, write to disk
+		if (i >= (pcb->getStartIndexRAM() + pcb->getProgramSize())) 
+		{
+			theOS->m_Computer->m_Disk.write(i, theOS->m_Computer->m_RAM.read(i, pcb->getStartIndexRAM()), pcb->getStartIndexDisk());
+		}
+		//deletes from RAM
+		theOS->m_Computer->m_RAM.write(i, NULL, pcb->getStartIndexRAM());
 	}
 }
 //original dispatcher
