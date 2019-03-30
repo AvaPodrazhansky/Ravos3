@@ -72,14 +72,14 @@ int Scheduler::PriorityScheduler()
 //}
 
 //takes care of writing multiple processes in RAM by offset
-int Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset) 
+bool Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset) 
 {
 	pcb->setStartIndexRAM(offset);
 		for (int i = 0; i < pcb->totalSpaceInRAM(); i++) 
 		{
 			theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), offset);
 		}
-	return 0;
+		return true;
 	
 }
 
@@ -115,12 +115,12 @@ bool Scheduler::FillReadyQueue()
 	while(!m_JobQueue.empty())
 	{
 		int tempProcessID = m_JobQueue.front();
-		m_JobQueue.pop();
 		PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
 
 		if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
 		{
-			WriteNewProcessToRAM(tempPCB, offset);
+			if(WriteNewProcessToRAM(tempPCB, offset))
+				m_JobQueue.pop();
 			offset = offset + tempPCB->totalSpaceInRAM();
 			tempPCB->state = Ready;
 			theOS->m_ReadyQueue.push(tempPCB);//add PCB of jobs that are in RAM into the ready queue

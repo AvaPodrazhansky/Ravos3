@@ -99,7 +99,7 @@ bool CPU::Execute()
 			PreExecute(w, "I_ST", AssertInstructionTypeI);
 
 			//m_Memory->write(m_Register[w.RegB()], m_Disk->readContents(m_Register[w.RegD()]/4 - m_PCB->ProgramSize));
-			m_Memory->write(m_Register[w.RegD()], (MemoryWord) m_Register[w.RegB()], m_PCB->StartIndexRAM);
+			m_Memory->write(m_Register[w.RegD()], (MemoryWord) m_Register[w.RegB()], m_PCB->getStartIndexRAM());
 			//m_Memory->write(m_Register[w.RegD()] / 4 + m_PCB->StartIndexRAM, (MemoryWord)m_Register[w.RegB()]);
 			break;
 		}
@@ -109,8 +109,9 @@ bool CPU::Execute()
 			PreExecute(w, "I_LW", AssertInstructionTypeI);
 
 			//m_Register[w.RegD()] = (m_Memory->readContents((m_Register[w.RegB()] + w.Address16() /4)));
-			m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()] / 4, m_PCB->StartIndexRAM);
+			//m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()] / 4, m_PCB->StartIndexRAM);
 			//m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()] / 4 + m_PCB->StartIndexRAM);
+			m_Register[w.RegD()] = m_Memory->readContents((m_Register[w.RegB()] + w.Address16())/ 4, m_PCB->getStartIndexRAM());
 
 			break;
 		}
@@ -119,8 +120,8 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_MOV", AssertInstructionTypeR);
 
-			//m_Register[w.RegD()] = m_Register[w.RegS1()];
-			m_Register[w.RegS1()] = m_Register[w.RegS2()];
+			m_Register[w.RegD()] = m_Register[w.RegS1()];
+			//m_Register[w.RegS1()] = m_Register[w.RegS2()];
 			break;
 		}
 		//Adds content of two S-regs into D-reg

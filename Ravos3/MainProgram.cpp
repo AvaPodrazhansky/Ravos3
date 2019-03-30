@@ -43,6 +43,13 @@ int main()
 			std::cout << "Long Term Scheduler Error\n";
 		}
 
+		for (int i = 0; i < 67; i++)
+		{
+			if (i == 23) std::cout << "Data\n";
+			std::cout << std::dec << i << " ";
+			std::cout << std::hex << theOS.m_Computer->m_RAM.readContents(i, 0) << "\n";
+		}
+
 		//Calls Short Term Scheduler
 		if (!theOS.m_ShortTerm.Dispatch())
 		{
