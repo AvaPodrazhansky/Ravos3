@@ -122,6 +122,16 @@ public:
 		TempBufferStart = tstart;
 	}
 
+	void setStartIndexRAM(int RAMsi) 
+	{
+		StartIndexRAM = RAMsi;
+	}
+
+	int getStartIndexRAM() 
+	{
+		return StartIndexRAM;
+	}
+
 	int totalSpaceInRAM()
 	{
 		return ProgramSize + InputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
