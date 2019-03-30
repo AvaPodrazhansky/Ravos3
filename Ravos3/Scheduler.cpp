@@ -74,6 +74,7 @@ int Scheduler::PriorityScheduler()
 //takes care of writing multiple processes in RAM by offset
 int Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset) 
 {
+	pcb->setStartIndexRAM(offset);
 		for (int i = 0; i < pcb->totalSpaceInRAM(); i++) 
 		{
 			theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), offset);
