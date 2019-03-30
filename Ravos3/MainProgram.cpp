@@ -16,23 +16,6 @@ int main()
 		std::cout << "OS Could not boot\n";
 		return 0;
 	}
-
-	
-	std::map<int, PCB*>::iterator it = theOS.m_PCB_Map.begin();
-	//// Iterate over the map using Iterator till end.
-	while (it != theOS.m_PCB_Map.end())
-	{
-		// Accessing KEY from element pointed by it.
-		int PID = it->first;
-
-		// Accessing VALUE from element pointed by it.
-		PCB* count = it->second;
-
-		std::cout << PID << " :: " << count->getProcessID() << std::endl;
-
-		// Increment the Iterator to point to next entry
-		it++;
-	}
 	
 	std::cout << "Ready to run\n";
 
@@ -43,13 +26,6 @@ int main()
 			std::cout << "Long Term Scheduler Error\n";
 		}
 
-		for (int i = 0; i < 67; i++)
-		{
-			if (i == 23) std::cout << "Data\n";
-			std::cout << std::dec << i << " ";
-			std::cout << std::hex << theOS.m_Computer->m_RAM.readContents(i, 0) << "\n";
-		}
-
 		//Calls Short Term Scheduler
 		if (!theOS.m_ShortTerm.Dispatch())
 		{
@@ -57,6 +33,8 @@ int main()
 		}
 
 	} while (!theOS.m_Scheduler.m_JobQueue.empty());
+
+	std::cout << "Done!\n";
 
 }
 
