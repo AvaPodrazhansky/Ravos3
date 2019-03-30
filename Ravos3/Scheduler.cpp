@@ -105,7 +105,7 @@ int Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset)
 //	}
 //}
 
-bool Scheduler::ExecuteJobQueue() 
+bool Scheduler::FillJobQueue() 
 {
 	int offset = 0;
 	do 

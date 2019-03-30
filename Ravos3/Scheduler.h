@@ -39,7 +39,7 @@ class Scheduler
 	//void ClearOldProcessFromRAM(PCB* pcb);
 
 	//goes through m_JobQueue and writes processes into RAM until m_JobQueue is empty
-	bool ExecuteJobQueue();
+	bool FillJobQueue();
 
 	/*bool fillReadyQueue();*/
 
