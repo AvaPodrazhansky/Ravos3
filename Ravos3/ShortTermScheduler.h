@@ -5,7 +5,7 @@ class ShortTermScheduler
 {
 public:
 	OS* theOS = NULL;
-	ShortTermScheduler(OS *_theOS) { theOS = _theOS; ShortTermScheduler::Dispatch();  }
+	ShortTermScheduler(OS *_theOS) { theOS = _theOS;  }
 
 
 	//This is for when a process is finished executing
