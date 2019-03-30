@@ -26,7 +26,7 @@ int Scheduler::FIFOScheduler()
 {
 //	std::priority_queue<PCB*> q;
 
-	for (int i = 0; i < theOS->m_PCB_Map.size(); ++i)
+	for (unsigned int i = 0; i < theOS->m_PCB_Map.size(); ++i) //changed i to unsigned becuase map.size() returns size_type
 	{
 		PCB* pcb = theOS->m_PCB_Map[i];
 		if (pcb->isExecuting())
@@ -110,11 +110,13 @@ bool Scheduler::ExecuteJobQueue()
 	int offset;
 	do 
 	{
-		int tempProcessID = m_JobQueue.pop();
+		int tempProcessID = m_JobQueue.front();
+		m_JobQueue.pop();
 		PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
-		//int RAMSize = theOS->m_Computer->m_RAM.GetSize; couldn't figure out how to get RAM size
-		int RAMSize = 1024;
-		if (tempPCB->totalSpaceInRAM() <= (RAMSize - offset)) //checks if there is enough space to put the whole process and io buffers in ram before writing
+
+		int RAMSize = theOS->m_Computer->m_RAM.GetSize(); //couldn't figure out how to get RAM size
+		//int RAMSize = 1024;
+		if (tempPCB->totalSpaceInRAM() + offset  <= RAMSize ) //checks if there is enough space to put the whole process and io buffers in ram before writing
 		{
 			WriteNewProcessToRAM(tempPCB, offset);
 			offset = offset + tempPCB->totalSpaceInRAM();

@@ -30,6 +30,8 @@ class Scheduler
 
 	int PriorityScheduler();
 
+//	bool CheckRAMSpace();
+
 	//bool WriteNewProcessToRAM(PCB* pcb);
 	int WriteNewProcessToRAM(PCB* pcb, int offset); 
 
