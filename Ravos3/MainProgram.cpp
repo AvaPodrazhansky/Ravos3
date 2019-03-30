@@ -10,24 +10,26 @@ int main()
 	Computer *theComputer = new Computer();
 	OS theOS(theComputer);
 
-
-	if (!theOS.Boot("programfile.txt")) //Calls loader
+	//Calls loader
+	if (!theOS.Boot("programfile.txt")) 
 	{
 		std::cout << "OS Could not boot\n";
 		return 0;
 	}
 
-	if (!theOS.m_Scheduler.FIFOScheduler()) //Call Long Term Scheudler 
+	//Call Long Term Scheudler 
+	if (!theOS.m_Scheduler.FIFOScheduler()) 
 	{
 		std::cout << "Long Term Scheduler Error\n";
 	}
 
+	//Calls Short Term Scheduler
 	if(!theOS.m_ShortTerm.Dispatch())
 	{
 		std::cout << "Unable to dispatch\n";
 	}
+	
 
-	//theOS.tempDispatcher();
 
 	std::cout << "Ready to run\n";
 
