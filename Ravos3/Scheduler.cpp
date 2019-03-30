@@ -107,7 +107,7 @@ int Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset)
 
 bool Scheduler::ExecuteJobQueue() 
 {
-	int offset;
+	int offset = 0;
 	do 
 	{
 		int tempProcessID = m_JobQueue.front();
