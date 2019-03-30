@@ -110,15 +110,14 @@ int Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset)
 bool Scheduler::FillReadyQueue() 
 {
 	int offset = 0;
-	do 
+	int RAMSize = theOS->m_Computer->m_RAM.GetSize(); //couldn't figure out how to get RAM size
+	while(!m_JobQueue.empty())
 	{
 		int tempProcessID = m_JobQueue.front();
 		m_JobQueue.pop();
 		PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
 
-		int RAMSize = theOS->m_Computer->m_RAM.GetSize(); //couldn't figure out how to get RAM size
-		//int RAMSize = 1024;
-		if (tempPCB->totalSpaceInRAM() + offset  <= RAMSize ) //checks if there is enough space to put the whole process and io buffers in ram before writing
+		if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
 		{
 			WriteNewProcessToRAM(tempPCB, offset);
 			offset = offset + tempPCB->totalSpaceInRAM();
@@ -127,9 +126,10 @@ bool Scheduler::FillReadyQueue()
 		}
 		if ((tempPCB->totalSpaceInRAM() + offset) > RAMSize) //once the first group of Jobs goes through RAM and is cleared via dispatcher, we will have to start adding RAM from the first index of RAM
 		{
-			offset = 0;//restarts the offset as 0 so the jobs can start to be written to the beginning index of RAM
+			return true;//if RAM is full 
+			//offset = 0;//restarts the offset as 0 so the jobs can start to be written to the beginning index of RAM
 		}
-	} while (!m_JobQueue.empty());
+	}
 	return true;
 }
 
