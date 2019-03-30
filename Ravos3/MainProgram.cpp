@@ -17,6 +17,8 @@ int main()
 		return 0;
 	}
 
+	std::cout << "Ready to run\n";
+
 	do {
 		//Call Long Term Scheudler 
 		if (!theOS.m_Scheduler.FIFOScheduler())
@@ -31,8 +33,6 @@ int main()
 		}
 
 	} while (!theOS.m_Scheduler.m_JobQueue.empty());
-
-	std::cout << "Ready to run\n";
 
 }
 
