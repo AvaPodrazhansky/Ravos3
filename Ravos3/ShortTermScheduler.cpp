@@ -31,7 +31,8 @@ bool ShortTermScheduler::Dispatch()
 		{
 			theOS->m_Computer->m_CPU[0].m_PCB = theOS->m_ReadyQueue.front(); //front returns the next value
 			theOS->m_ReadyQueue.pop(); //pop removes the next value (there is no return type)
-			theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
+			//theOS->m_Computer->m_CPU[0].m_PC = 0; 
+			theOS->m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
 			theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
 			if (theOS->m_Computer->m_CPU[0].m_PCB->state == Terminated) //if process successfully executed
 			{
