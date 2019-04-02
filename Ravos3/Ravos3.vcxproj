@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Computer.h" />
     <ClInclude Include="CPU.h" />
+    <ClInclude Include="CPUMetrics.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Metrics.h" />
     <ClInclude Include="OS.h" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="Computer.cpp" />
     <ClCompile Include="CPU.cpp" />
+    <ClCompile Include="CPUMetrics.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Metrics.cpp" />
     <ClCompile Include="OS.cpp" />
