@@ -11,16 +11,17 @@ bool CPUMetrics::updateJobsInThisCPU(int PID)
 {
 	JobsInThisCPU.push_back(PID);
 	updateJobCount();
+	return true;
 }
 //returns vector JobsInThisCPU
 std::vector<int> CPUMetrics::getWhichJobsInThisCPU()
 {
-	if (JobsInThisCPU.empty())
+	if (CPUMetrics::JobsInThisCPU.empty())
 	{
 		//std::cout << "CPU has not processed any Jobs";
-		return;
+		return CPUMetrics::JobsInThisCPU;
 	}
-	return JobsInThisCPU;
+	return CPUMetrics::JobsInThisCPU;
 
 }
 //returns percentage of jobs in this CPU compared to all jobs executed
