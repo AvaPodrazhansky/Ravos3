@@ -19,9 +19,65 @@ int main()
 	
 	std::cout << "Ready to run\n";
 
+	//do {
+	//	//Call Long Term Scheudler 
+	//	if (!theOS.m_Scheduler.FIFOScheduler())
+	//	{
+	//		std::cout << "Long Term Scheduler Error\n";
+	//	}
+
+	//	//Calls Short Term Scheduler
+	//	if (!theOS.m_ShortTerm.Dispatch())
+	//	{
+	//		std::cout << "Unable to dispatch\n";
+	//	}
+
+	//} while (!theOS.m_Scheduler.m_JobQueue.empty());
+
+
+	//std::cout << "FIFO Test\n";
+	//printf("%5s %9s %9s\n", "Job", "Priority", "Length");
+	//	do {
+	//	//Call Long Term Scheudler 
+	//	if (!theOS.m_Scheduler.FillJobQueue())
+	//	{
+	//		std::cout << "Long Term Scheduler Error\n";
+	//	}
+
+	//	//Calls Short Term Scheduler
+	//	if (!theOS.m_ShortTerm.Dispatch())
+	//	{
+	//		std::cout << "Unable to dispatch\n";
+	//	}
+
+	//} while (!theOS.m_Scheduler.m_JobQueue.empty());
+
+	//Test Priority
+	//std::cout << "Priority Test\n";
+	//printf("%5s %9s %9s\n", "Job", "Priority", "Length");
+	//theOS.m_Scheduler.SchedType = PRIORITY;
+	//do {
+	//	//Call Long Term Scheudler 
+	//	if (!theOS.m_Scheduler.FillJobQueue())
+	//	{
+	//		std::cout << "Long Term Scheduler Error\n";
+	//	}
+
+	//	//Calls Short Term Scheduler
+	//	if (!theOS.m_ShortTerm.Dispatch())
+	//	{
+	//		std::cout << "Unable to dispatch\n";
+	//	}
+
+	//} while (!theOS.m_Scheduler.m_JobQueue.empty());
+
+		//Test SJF
+	std::cout << "Priority Test\n";
+	printf("%5s %9s %9s\n", "Job", "Priority", "Length");
+	theOS.m_Scheduler.SchedType = SJF;
 	do {
 		//Call Long Term Scheudler 
-		if (!theOS.m_Scheduler.FIFOScheduler())
+		if (!theOS.m_Scheduler.FillJobQueue())
 		{
 			std::cout << "Long Term Scheduler Error\n";
 		}
@@ -33,7 +89,6 @@ int main()
 		}
 
 	} while (!theOS.m_Scheduler.m_JobQueue.empty());
-
 	std::cout << "Done!\n";
 
 }

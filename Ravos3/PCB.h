@@ -70,10 +70,11 @@ public:
 		return priority;
 	}
 
-	int getProgramSize() 
+	int getProgramSize() const
 	{
 		return ProgramSize;
 	}
+
 	bool isExecuting() const
 	{
 		return (state == Running);

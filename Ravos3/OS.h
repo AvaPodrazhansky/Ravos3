@@ -4,6 +4,8 @@
 class OS 
 {
 	//friend class ShortTermScheduler;
+//	friend FIFO_Compare;
+	friend Scheduler;
 public:
 	Computer *m_Computer;
 	ShortTermScheduler m_ShortTerm;
@@ -13,7 +15,7 @@ public:
 
 	std::map<int, PCB*> m_PCB_Map; //map is the C++ version of dictionary
 
-	std::queue <PCB*> m_ReadyQueue; //Queue of Process ID's
+	std::queue <PCB*> m_ReadyQueue; //Queue of PCB's
 
 
 

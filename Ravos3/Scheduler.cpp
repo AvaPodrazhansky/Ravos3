@@ -22,54 +22,111 @@
 //	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
 //}
 
-bool Scheduler::FIFOScheduler()
+ScheduleType PCB_Compare::sType = FIFO;
+
+//bool PCB_Compare::operator () (const PCB & x, const PCB & y) const
+//{
+//	switch (sType)
+//	{
+//		case PRIORITY:
+//		{
+//			if (x.getPriority() > y.getPriority()) return true;
+//			break;
+//		}
+//		case SJF:
+//		{
+//			if (x.getProgramSize() > y.getProgramSize()) return true;
+//			break;
+//		}
+//		default:
+//			break;
+//	}
+//	if (x.getProcessID() > y.getProcessID()) return true;
+//	return false;
+//}
+
+bool PCB_Compare::operator () (const PCB* x, const PCB* y) const
 {
-//	std::priority_queue<PCB*> q;
+	switch (sType)
+	{
+	case PRIORITY:
+	{
+		if (x->getPriority() > y->getPriority()) return true;
+		if (x->getPriority() < y->getPriority()) return false;
+		break;
+	}
+	case SJF:
+	{
+		if (x->getProgramSize() > y->getProgramSize()) return true;
+		if (x->getProgramSize() < y->getProgramSize()) return false;
+		break;
+	}
+	default:
+		break;
+	}
+	if (x->getProcessID() > y->getProcessID()) 
+		return true;
+	
+	return false;
+}
+
+bool Scheduler::FillJobQueue()
+{
 	if (m_JobQueue.empty())
 	{
-		for (unsigned int i = 1; i <= theOS->m_PCB_Map.size(); ++i) //changed i to unsigned becuase map.size() returns size_type
+		PCB_Compare temp;
+		temp.sType = SchedType;
+
+		for (unsigned int i = 1; i <= theOS->m_PCB_Map.size(); i++)
 		{
-			PCB* pcb = theOS->m_PCB_Map[i];
-			//if (pcb->isExecuting())
-			//{
-			m_JobQueue.push(pcb->getProcessID());
-			//theOS->m_ShortTerm.Dispatch(pcb);
-			//if(Dispatch(pcb)); //If Dispatch(pcb) = signal OS to execute
-			//if all CPUs are busy, wait
-		//}
+			PCB *b = theOS->m_PCB_Map.at(i);
+			m_JobQueue.push(b);//m_PCB_Map.at(i).second);
 		}
+
+		//We need to delete temp
 	}
 
-	return(FillReadyQueue());
-
+	return FillReadyQueue();
 }
 
-int Scheduler::SJFScheduler()
-{
 
-
-	// TODO: Return the PID of process with the least amount of instructions. 
-	return 0;
-}
-
-int Scheduler::PriorityScheduler()
-{
-	// TODO: Return the PID of process with highest prority. 
-	return 0;
-}
-
-////original write to RAM
-//bool Scheduler::WriteNewProcessToRAM(PCB* pcb)
+//bool Scheduler::FIFOScheduler()
 //{
-//	//We will change this when we get the MMU
-//	for (int i = 0; i < theOS->m_Computer->m_CPU[0].m_PCB->ProgramSize; i++)
+////	std::priority_queue<PCB*> q;
+//	if (m_JobQueue.empty())
 //	{
-//		//We need to have check and make sure that the new process isn't overwriting an old process. 
-//		theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), 0);
+//		for (unsigned int i = 1; i <= theOS->m_PCB_Map.size(); ++i) //changed i to unsigned becuase map.size() returns size_type
+//		{
+//			PCB* pcb = theOS->m_PCB_Map[i];
+//			//if (pcb->isExecuting())
+//			//{
+//			
+//			/*m_JobQueue.push(pcb->getProcessID());*/
+//			m_JobQueue.push(pcb);
+//			
+//			//theOS->m_ShortTerm.Dispatch(pcb);
+//			//if(Dispatch(pcb)); //If Dispatch(pcb) = signal OS to execute
+//			//if all CPUs are busy, wait
+//		//}
+//		}
 //
 //	}
+//
+//	return(FillReadyQueue());
+//
+//}
+//
+//bool Scheduler::SJFScheduler()
+//{
 //	return true;
 //}
+//
+//bool Scheduler::PriorityScheduler()
+//{
+//
+//	return true;
+//}
+
 
 //takes care of writing multiple processes in RAM by offset
 bool Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset) 
@@ -114,8 +171,12 @@ bool Scheduler::FillReadyQueue()
 	int RAMSize = theOS->m_Computer->m_RAM.GetSize(); //couldn't figure out how to get RAM size
 	while(!m_JobQueue.empty())
 	{
-		int tempProcessID = m_JobQueue.front();
+		//int tempProcessID = m_JobQueue.front();
+		//PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
+
+		int tempProcessID = m_JobQueue.top()->getProcessID();
 		PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
+
 
 		if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
 		{
