@@ -13,12 +13,20 @@ bool CPUMetrics::updateJobsInThisCPU(int PID)
 	updateJobCount();
 	return true;
 }
+
+void CPUMetrics::setWriteKey(bool keyVal)
+{
+	WriteKey = keyVal;
+	WRITE_KEY = keyVal;//makes sure other processes dont write at the same time  
+}
+
+
 //returns vector JobsInThisCPU
 std::vector<int> CPUMetrics::getWhichJobsInThisCPU()
 {
 	if (CPUMetrics::JobsInThisCPU.empty())
 	{
-		//std::cout << "CPU has not processed any Jobs";
+		std::cout << "CPU has not processed any Jobs";
 		return CPUMetrics::JobsInThisCPU;
 	}
 	return CPUMetrics::JobsInThisCPU;
@@ -27,6 +35,6 @@ std::vector<int> CPUMetrics::getWhichJobsInThisCPU()
 //returns percentage of jobs in this CPU compared to all jobs executed
 int CPUMetrics::getPercentOfJobsAssigned()
 {
-	percentOfJobs = (TOTAL_JOBS_EXECUTED - JobCount) / 100;
+	percentOfJobs = (JobCount / TOTAL_JOBS_EXECUTED);
 	return percentOfJobs;
 }

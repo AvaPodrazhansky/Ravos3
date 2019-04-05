@@ -28,6 +28,8 @@ public:
 	Memory *m_Memory = NULL;
 	Memory *m_Disk = NULL;
 	PCB *m_PCB = NULL;
+	CPUMetrics *m_CPUMetrics = NULL;
+
 	
 	CPU_State m_C_State = IDLE;
 

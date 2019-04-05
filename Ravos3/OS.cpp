@@ -169,7 +169,7 @@ bool OS::Load(std::string filename)
 			}
 			indexForData += blen ;
 			//tempcb->state = Waiting;
-
+			Metrics::Metrics(tempcb);//asign base metrics to PCB once it's job info is filled 
 		}
 		if (isEndLine >= 0) 
 		{

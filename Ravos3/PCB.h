@@ -16,10 +16,10 @@ private:
 	int priority;	//-20 to 19
 	State state = New;	//[0 = New, 1 = Ready, 2 = Running, 3 = Waiting, 4 = Terminated]
 
-	int arrived;	//Do we still need this since state has been expanded?
+	//int arrived;	//Do we still need this since state has been expanded?
 	//int length; using progam size instead
-	int start;	//Same question as above
-	int wait;    	//Also same
+	//int start;	//Same question as above
+	//int wait;    	//Also same
 
 	int ProgramSize;  // Length of the program
 	int StartIndexDisk;
@@ -37,13 +37,23 @@ private:
 	int TempBufferStart;
 	int TempBufferNext;
 
+	int WaitTime;//num of instructions before current 
+	int IOCount;//number of IO instructions per job
+	int interupts;//num of interupts, will be implemented later
+	int CompletionTime;//how long a process takes in go through all it's instructions in milliseconds
+	int PercentOfRAMUsed;//percent of RAM that will be used for this process
+	int PercentOfCacheUsed;//percent of Cache that will be used for this process
+	int AverageWaitTime;
+
+
+
 public:
 
 	PCB()
 	{
 		priority = 19;
 		state = New;
-		arrived = 0;	//Need?
+		//arrived = 0;	//Need?
 		ProgramSize = 0;		//Need?
 	}
 
@@ -56,7 +66,7 @@ public:
 	{
 		process_ID = ID;
 		priority = priority_Val;
-		arrived = arr;
+		//arrived = arr;
 		ProgramSize = len;
 	}
 
@@ -79,13 +89,6 @@ public:
 	{
 		return (state == Running);
 	}
-
-
-	void setWait(int waitTime)
-	{
-		wait = waitTime;
-	}
-
 
 	void setProcessID(int tp) 
 	{
@@ -146,5 +149,44 @@ public:
 	{
 		return ProgramSize + InputBufferSize + OutputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
 	}
+
+
+	//metrics value setters and getters
+	void setCompletionTime(int tempCompTime) 
+	{
+		CompletionTime = tempCompTime;
+		TOTAL_COMPLETION_TIME += CompletionTime;
+	}
+	int getCompletionTime() 
+	{
+		return CompletionTime;
+	}
+	void setWaitTime()
+	{
+		WaitTime = TOTAL_WAIT_TIME;
+		TOTAL_WAIT_TIME += ProgramSize;
+	}
+
+	int getIOCount() 
+	{
+		return IOCount;
+	}
+	void setIOCount(int i) 
+	{
+		IOCount = i;
+	}
+	void updateIOCount() 
+	{
+		IOCount += 1;
+	}
+
+	void setPercentOfRAMUsed(int rpercent) 
+	{
+		PercentOfRAMUsed = rpercent;
+	}
 	
+	void setPercentOfCacheUsed(int cpercent) 
+	{
+		PercentOfCacheUsed = cpercent;
+	}
 };

@@ -38,6 +38,7 @@ bool CPU::Execute()
 	m_C_State = BUSY;
 	m_PCB->state = Running;
 
+	auto start = std::chrono::high_resolution_clock::now();//start time of process
 	do
 	{
 		MemoryWord w = m_Memory->read(m_PC, m_PCB->StartIndexRAM); //Fetch
@@ -49,32 +50,41 @@ bool CPU::Execute()
 		case I_RD:
 		{
 			PreExecute(w, "I_RD", AssertInstructionTypeIO);
-
-			if (w.Address16() != 0)
+			do {} while (WRITE_KEY == true);//waits and does nothing while the write key is true
+			if (READ_KEY == true)
 			{
-				unsigned int offsetAddress = w.Address16() / 4;
-//				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress - m_PCB->ProgramSize, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
-//				if (1) std::cout << "   -- Read at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
-				//if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+				if (w.Address16() != 0)
+				{
+					unsigned int offsetAddress = w.Address16() / 4;
+					//				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress - m_PCB->ProgramSize, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
+					//				if (1) std::cout << "   -- Read at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+					m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
+					//if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 
-//				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << " offset " << m_PCB->StartIndexDisk << "]\n";
-			}
-			else
-			{
-				//m_Register[w.RegR1()] = m_Register[w.RegR2()];
-//				m_Register[w.RegR1()] = m_Disk->readContents( m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize, m_PCB->StartIndexDisk);
-//				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-				m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);
-				//if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+	//				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << " offset " << m_PCB->StartIndexDisk << "]\n";
+				}
+				else
+				{
+					//m_Register[w.RegR1()] = m_Register[w.RegR2()];
+	//				m_Register[w.RegR1()] = m_Disk->readContents( m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize, m_PCB->StartIndexDisk);
+	//				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+					m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);
+					//if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 
+				}
+				//Metrics::updateIOCount(m_PCB);
+				m_PCB->updateIOCount();
+				break;
 			}
-			break;
 		}
 		//Writes the content of accumulator into O/P buffer in m_Disk or m_Register
 		case I_WR:
 		{
 			PreExecute(w, "I_WR", AssertInstructionTypeIO);
+			//do {} while (WRITE_KEY == true);//if WRIT_KEY is true then another process is writing so do nothing
+			//m_CPUMetrics->setWriteKey(true);
+			READ_KEY = false;
+			WRITE_KEY = true;
 
 			if (w.Address16() != 0)
 			{
@@ -93,6 +103,13 @@ bool CPU::Execute()
 				MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
 				m_Disk->write(m_Register[w.RegR2()]/4, temp, m_PCB->StartIndexDisk); //might possibly be reg1
 			}
+			//Metrics::updateIOCount(m_PCB);
+			m_PCB->updateIOCount();
+
+			//m_CPUMetrics->setWriteKey(false);
+			WRITE_KEY = false;
+			READ_KEY = true;
+
 			break;
 
 		}
@@ -255,12 +272,16 @@ bool CPU::Execute()
 			//m_PC = NULL //dispatcher will set CPU's m_PC to the next PCB's program counter
 			m_PC = NULL;
 			//signal scheduler
-
 			//Terminate PCB
 			m_PCB->state = Terminated;
 			
 			//Set CPU back to idle (for scheduling)
 			m_C_State = IDLE;
+
+			auto stop = std::chrono::high_resolution_clock::now();//end time of process
+			auto completionTime = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+			m_PCB->setCompletionTime(completionTime.count());//set difference as completion time
+			//Metrics::setCompletionTime(m_PCB, completionTime.count());
 			return true;
 			break;
 		}

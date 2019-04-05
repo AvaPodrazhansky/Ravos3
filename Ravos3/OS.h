@@ -10,6 +10,7 @@ public:
 	Computer *m_Computer;
 	ShortTermScheduler m_ShortTerm;
 	Scheduler m_Scheduler;
+	//Metrics m_Metrics;
 	OS(Computer *theComputer); // {m_Computer = theComputer; };
 
 
