@@ -1,5 +1,5 @@
-//#pragma once
-//#include "pch.h"
+#pragma once
+#include "pch.h"
 //
 //class Metrics 
 //{
@@ -42,4 +42,4 @@
 	int getAverageCompletionTime();*/
 
 
-};
+//};

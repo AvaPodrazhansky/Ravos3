@@ -81,9 +81,9 @@ bool CPU::Execute()
 		case I_WR:
 		{
 			PreExecute(w, "I_WR", AssertInstructionTypeIO);
-			//do {} while (WRITE_KEY == true);//if WRIT_KEY is true then another process is writing so do nothing
-			//m_CPUMetrics->setWriteKey(true);
+			do {} while (WRITE_KEY == true);//if WRIT_KEY is true then another process is writing so do nothing
 			READ_KEY = false;
+			m_CPUMetrics->setWriteKey(true);
 			WRITE_KEY = true;
 
 			if (w.Address16() != 0)
@@ -106,8 +106,7 @@ bool CPU::Execute()
 			//Metrics::updateIOCount(m_PCB);
 			m_PCB->updateIOCount();
 
-			//m_CPUMetrics->setWriteKey(false);
-			WRITE_KEY = false;
+			m_CPUMetrics->setWriteKey(false);
 			READ_KEY = true;
 
 			break;

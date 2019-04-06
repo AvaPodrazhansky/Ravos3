@@ -45,8 +45,8 @@ private:
 	int IOCount;//number of IO instructions per job
 	int interupts;//num of interupts, will be implemented later
 	int CompletionTime;//how long a process takes in go through all it's instructions in milliseconds
-	int PercentOfRAMUsed;//percent of RAM that will be used for this process
-	int PercentOfCacheUsed;//percent of Cache that will be used for this process
+	double PercentOfRAMUsed;//percent of RAM that will be used for this process
+	double PercentOfCacheUsed;//percent of Cache that will be used for this process
 	int AverageWaitTime;
 
 
@@ -58,6 +58,7 @@ public:
 		state = New;
 		//arrived = 0;	//Need?
 		ProgramSize = 0;		//Need?
+		IOCount = 0;
 	}
 
 
@@ -72,6 +73,7 @@ public:
 		priority = priority_Val;
 		//arrived = arr;
 		ProgramSize = len;
+		IOCount = 0;
 	}
 
 	int getProcessID() const
@@ -160,13 +162,13 @@ public:
 	//called at end of loader
 	void setPercentofRAMPerProcess()
 	{
-		int RAMpercent = (ProgramSize / 1024);//will use MAX_RAM later
+		double RAMpercent = ((static_cast<double>(ProgramSize) / 1024) * 100);//will use MAX_RAM later
 		PercentOfRAMUsed = RAMpercent;
 	}
 
 	void setPercentOfCachePerProcess()
 	{
-		int CachePercent = (ProgramSize / 28);//will use MAX_CACHE later
+		double CachePercent = ((static_cast<double>(ProgramSize) / 28) * 100);//will use MAX_CACHE later
 		PercentOfCacheUsed = CachePercent;
 	}
 	//called in execute() in CPU
@@ -179,6 +181,7 @@ public:
 	{
 		return CompletionTime;
 	}
+	//called before dispatched to cpu 
 	void setWaitTime()
 	{
 		WaitTime = TOTAL_WAIT_TIME;

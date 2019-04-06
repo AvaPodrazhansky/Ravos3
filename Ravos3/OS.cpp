@@ -168,6 +168,9 @@ bool OS::Load(std::string filename)
 					m_Computer->m_RAM.write(0,b,indexForInstruc++);*/
 			}
 			indexForData += blen ;
+
+			tempcb->setPercentOfCachePerProcess();
+			tempcb->setPercentofRAMPerProcess();
 			//tempcb->state = Waiting;
 			//Metrics::Metrics(tempcb);//asign base metrics to PCB once it's job info is filled 
 			//Metrics::TOTAL_WAIT_TIME = 0;//used for overall averaging, not one CPU specific
