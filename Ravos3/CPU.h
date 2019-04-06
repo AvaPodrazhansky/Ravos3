@@ -29,6 +29,7 @@ public:
 	Memory *m_Disk = NULL;
 	PCB *m_PCB = NULL;
 	CPUMetrics *m_CPUMetrics = NULL;
+	Memory *Cache[28];//has not been implemented
 
 	
 	CPU_State m_C_State = IDLE;

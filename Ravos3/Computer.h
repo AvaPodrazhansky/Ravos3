@@ -22,7 +22,6 @@ public:
 	Memory m_Disk;
 
 	CPU    m_CPU[NUM_CPU];
-	Memory *Cache[28];//has not been implemented
 	CPUMetrics* m_CPUMetrics;
 
 	std::map<int, CPUMetrics*> m_CPUMetrics_Map; //map to link CPU with it's metrics
