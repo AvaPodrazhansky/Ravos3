@@ -38,7 +38,8 @@ bool ShortTermScheduler::Dispatch()
 		if(theOS->m_Computer->m_CPU[0].m_C_State == IDLE)	
 		{
 			theOS->m_Computer->m_CPU[0].m_PCB = theOS->m_ReadyQueue.front(); //front returns the next value
-			theOS->m_Computer->m_CPU[0].m_CPUMetrics = theOS->m_Computer->m_CPUMetrics_Map.at(0);
+			theOS->m_Computer->m_CPU[0].m_CPUMetrics = theOS->m_Computer->m_CPUMetrics_Map.at(0);//assigns which CPUMetrics is associated with this CPU
+			theOS->m_Computer->m_CPU[0].m_CPUMetrics->updateJobsInThisCPU(theOS->m_Computer->m_CPU[0].m_PCB->getProcessID());//adds the process ID of this job to the vector holding all the jobs that are assigned to this CPU
 			theOS->m_ReadyQueue.pop(); //pop removes the next value (there is no return type)
 			//theOS->m_Computer->m_CPU[0].m_PC = 0; 
 			theOS->m_Computer->m_CPU[0].m_PCB->getStartIndexRAM();

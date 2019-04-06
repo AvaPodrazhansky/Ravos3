@@ -38,6 +38,6 @@ std::vector<int> CPUMetrics::getWhichJobsInThisCPU()
 //returns percentage of jobs in this CPU compared to all jobs executed
 int CPUMetrics::getPercentOfJobsAssigned()
 {
-	percentOfJobs = ((JobCount / TOTAL_JOBS_EXECUTED) * 100);
+	percentOfJobs = ((static_cast<double>(JobCount) / TOTAL_JOBS_EXECUTED) * 100);
 	return percentOfJobs;
 }
