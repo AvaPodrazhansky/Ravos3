@@ -169,7 +169,10 @@ bool OS::Load(std::string filename)
 			}
 			indexForData += blen ;
 			//tempcb->state = Waiting;
-			Metrics::Metrics(tempcb);//asign base metrics to PCB once it's job info is filled 
+			//Metrics::Metrics(tempcb);//asign base metrics to PCB once it's job info is filled 
+			//Metrics::TOTAL_WAIT_TIME = 0;//used for overall averaging, not one CPU specific
+			//Metrics::TOTAL_JOBS_EXECUTED = 0;//used in metrics and CPUmetrics
+			//Metrics::TOTAL_COMPLETION_TIME = 0;//used for overall averaging, not one CPU specific
 		}
 		if (isEndLine >= 0) 
 		{

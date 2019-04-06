@@ -13,7 +13,6 @@ public:
 	//Metrics m_Metrics;
 	OS(Computer *theComputer); // {m_Computer = theComputer; };
 
-
 	std::map<int, PCB*> m_PCB_Map; //map is the C++ version of dictionary
 
 	std::queue <PCB*> m_ReadyQueue; //Queue of PCB's

@@ -4,6 +4,10 @@ enum State
 	New = 0, Ready = 1, Running = 2, Waiting = 3, Terminated = 4
 };
 
+extern int TOTAL_WAIT_TIME;//used for overall averaging, not one CPU specific
+extern int TOTAL_JOBS_EXECUTED;//used in metrics and CPUmetrics
+extern int TOTAL_COMPLETION_TIME;//used for overall averaging, not one CPU specific 
+
 class PCB
 {
 	friend class OS;
@@ -46,16 +50,16 @@ private:
 	int AverageWaitTime;
 
 
-
 public:
-
-	PCB()
+//	Metrics m_Metrics;
+	PCB() 
 	{
 		priority = 19;
 		state = New;
 		//arrived = 0;	//Need?
 		ProgramSize = 0;		//Need?
 	}
+
 
 	/*Creates a PCB with the specified parameters.
 	 * @param arr the cycle during which the process arrived
@@ -152,6 +156,20 @@ public:
 
 
 	//metrics value setters and getters
+
+	//called at end of loader
+	void setPercentofRAMPerProcess()
+	{
+		int RAMpercent = (ProgramSize / 1024);//will use MAX_RAM later
+		PercentOfRAMUsed = RAMpercent;
+	}
+
+	void setPercentOfCachePerProcess()
+	{
+		int CachePercent = (ProgramSize / 28);//will use MAX_CACHE later
+		PercentOfCacheUsed = CachePercent;
+	}
+	//called in execute() in CPU
 	void setCompletionTime(int tempCompTime) 
 	{
 		CompletionTime = tempCompTime;
@@ -171,22 +189,10 @@ public:
 	{
 		return IOCount;
 	}
-	void setIOCount(int i) 
-	{
-		IOCount = i;
-	}
+	//called after WR and RD in execute
 	void updateIOCount() 
 	{
 		IOCount += 1;
 	}
 
-	void setPercentOfRAMUsed(int rpercent) 
-	{
-		PercentOfRAMUsed = rpercent;
-	}
-	
-	void setPercentOfCacheUsed(int cpercent) 
-	{
-		PercentOfCacheUsed = cpercent;
-	}
 };

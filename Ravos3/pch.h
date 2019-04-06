@@ -21,8 +21,8 @@
 //#include  <cstddef> //includes byte
 
 #include "Memory.h"
-#include "PCB.h"
 #include "Metrics.h"
+#include "PCB.h"
 #include "CPUMetrics.h"
 #include "CPU.h"
 #include "ShortTermScheduler.h"

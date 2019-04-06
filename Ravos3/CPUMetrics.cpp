@@ -1,5 +1,8 @@
 #include "pch.h"
 
+extern int TOTAL_WAIT_TIME;//used for overall averaging, not one CPU specific
+extern int TOTAL_JOBS_EXECUTED;//used in metrics and CPUmetrics
+extern int TOTAL_COMPLETION_TIME;//used for overall averaging, not one CPU specific 
 //increments job count by one
 bool CPUMetrics::updateJobCount()
 {

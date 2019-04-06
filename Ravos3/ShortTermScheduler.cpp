@@ -2,19 +2,7 @@
 //#include "ShortTermScheduler.h"
 
 
-void ShortTermScheduler::ClearOldProcessFromRAM(PCB* pcb)
-{
-	for (int i = 0; i < pcb->totalSpaceInRAM(); i++)
-	{
-		//if at start of input buffer, write to disk
-		if (i >= (pcb->getStartIndexRAM() + pcb->getProgramSize())) 
-		{
-			theOS->m_Computer->m_Disk.write(i, theOS->m_Computer->m_RAM.read(i, pcb->getStartIndexRAM()), pcb->getStartIndexDisk());
-		}
-		//deletes from RAM
-		theOS->m_Computer->m_RAM.write(i, NULL, pcb->getStartIndexRAM());
-	}
-}
+
 //original dispatcher
 //bool ShortTermScheduler::Dispatch(PCB *pcb)
 //{
@@ -25,6 +13,20 @@ void ShortTermScheduler::ClearOldProcessFromRAM(PCB* pcb)
 //	theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
 //	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
 //}
+
+void ShortTermScheduler::ClearOldProcessFromRAM(PCB * pcb)
+{
+	for (int i = 0; i < pcb->totalSpaceInRAM(); i++)
+	{
+		//if at start of input buffer, write to disk
+		if (i >= (pcb->getStartIndexRAM() + pcb->getProgramSize()))
+		{
+			theOS->m_Computer->m_Disk.write(i, theOS->m_Computer->m_RAM.read(i, pcb->getStartIndexRAM()), pcb->getStartIndexDisk());
+		}
+		//deletes from RAM
+		theOS->m_Computer->m_RAM.write(i, NULL, pcb->getStartIndexRAM());
+	}
+}
 
 //will need to be changed when using multiple CPU's, could possibly pass the CPU number as param in future
 bool ShortTermScheduler::Dispatch()
@@ -47,10 +49,26 @@ bool ShortTermScheduler::Dispatch()
 			if (theOS->m_Computer->m_CPU[0].m_PCB->state == Terminated) //if process successfully executed
 			{
 				ShortTermScheduler::ClearOldProcessFromRAM(theOS->m_Computer->m_CPU[0].m_PCB);//removes from RAM
+			
+				//**Add TerminatedProcesses to Newly Terminated Processes
 			}
 		}
 	} while (!theOS->m_ReadyQueue.empty());
 	return true;//returns true when ready queue is empty 
+}
+
+
+
+int ShortTermScheduler::getAverageWaitTime()
+{
+	int AverageWaitTime = TOTAL_WAIT_TIME / TOTAL_JOBS_EXECUTED;
+	return AverageWaitTime;
+}
+
+int ShortTermScheduler::getAverageCompletionTime()
+{
+	int AverageCompletionTime = TOTAL_COMPLETION_TIME / TOTAL_JOBS_EXECUTED;
+	return AverageCompletionTime;
 }
 //
 //ShortTermScheduler::~ShortTermScheduler()
