@@ -17,6 +17,9 @@
 #include <iostream>
 #include <queue>
 #include <chrono>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
 //#include  <cstddef> //includes byte
 

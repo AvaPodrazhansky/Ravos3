@@ -18,6 +18,7 @@ private:
 
 	int process_ID;
 	int priority;	//-20 to 19
+	int programCounter = 0;
 	State state = New;	//[0 = New, 1 = Ready, 2 = Running, 3 = Waiting, 4 = Terminated]
 
 	//int arrived;	//Do we still need this since state has been expanded?

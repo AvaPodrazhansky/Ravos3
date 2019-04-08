@@ -6,6 +6,9 @@
 OS::OS(Computer *theComputer) :m_Scheduler(this), m_ShortTerm(this)
 {
 	m_Computer = theComputer;
+	
+	//for(int i = 0; i<m_Computer->GetNumCPUs(); i++)
+	//	m_CPU_ReadyQueue.push(i);
 }
 
 bool OS::Boot(std::string filename)
@@ -13,6 +16,21 @@ bool OS::Boot(std::string filename)
 	if (!Load(filename)) return false;
 	return true;
 }
+
+// Returns true if all jobs have been executed
+bool OS::allJobsExecuted()
+{
+	return m_PCB_Map.size() == m_Terminated_PCBs.size();
+}
+
+
+void OS::StartShortTermScheduler()
+{
+	//RUN CPU's
+
+	//Start Dispater
+}
+
 
 //new hexnum to int using char*
 int OS::HexNumToInt(std::string hexstr)
@@ -187,6 +205,32 @@ bool OS::Load(std::string filename)
 	return true;
 }
 
+
+void OS::Schedule_and_Run(ScheduleType default_type)
+{
+	//Set schedule type
+	m_Scheduler.SchedType = default_type;
+
+	//Fill the job queue
+	if(!m_Scheduler.FillJobQueue())std::cout << "Job Queue Fill Error\n";
+
+	if(!m_Scheduler.FillReadyQueue()) std::cout << "Ready Queue Fill Error\n";
+	//Run CPU's on different threads
+	//if (m_ShortTerm.Start_the_CPU())
+	//{
+	//	std::cout << "CPU's have been started\n";
+	//}
+	
+	//Tell the Short Term Scheudler to start checking the ready queue
+	new std::thread(&ShortTermScheduler::ShortTerm_Schedule, m_ShortTerm);
+
+	//Start thread that fills the ready queue
+	//new std::thread(&Scheduler::FillReadyQueue, m_Scheduler);
+	while(!allJobsExecuted())
+	if (allJobsExecuted()) 
+		return;
+
+}
 
 //const char* Prog1 =
 //"C050005C"

@@ -86,7 +86,9 @@ bool Scheduler::FillJobQueue()
 		//We need to delete temp
 	}
 
-	return FillReadyQueue();
+	//new std::thread(&FillReadyQueue, this);
+	//return FillReadyQueue();
+	return true;
 }
 
 
@@ -129,15 +131,15 @@ bool Scheduler::FillJobQueue()
 
 
 //takes care of writing multiple processes in RAM by offset
-bool Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset) 
+bool Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset)
 {
 	pcb->setStartIndexRAM(offset);
-		for (int i = 0; i < pcb->totalSpaceInRAM(); i++) 
-		{
-			theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), offset);
-		}
-		return true;
-	
+	for (int i = 0; i < pcb->totalSpaceInRAM(); i++)
+	{
+		theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), offset);
+	}
+	return true;
+
 }
 
 //will be used in dispatcher in ShortTermScheduler.cpp
@@ -165,33 +167,97 @@ bool Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset)
 //	}
 //}
 
-bool Scheduler::FillReadyQueue() 
+
+
+bool Scheduler::FillReadyQueue()
 {
+	using namespace std::literals::chrono_literals; //we should probably move this. Ask Rebekah how this will effect metrics if we move to header file
+	
 	int offset = 0;
-	int RAMSize = theOS->m_Computer->m_RAM.GetSize(); //couldn't figure out how to get RAM size
-	while(!m_JobQueue.empty())
+	int RAMSize = theOS->m_Computer->m_RAM.GetSize();
+
+	while (!theOS->allJobsExecuted())
 	{
-		//int tempProcessID = m_JobQueue.front();
-		//PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
+		////wait while there are no jobs in the job queue
+		//while (m_JobQueue.empty())
+		//{
+		//	std::this_thread::sleep_for(1s);
+		//}
 
 		int tempProcessID = m_JobQueue.top()->getProcessID();
 		PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
-
+		
+		//This will change once paging is implemented
+		if (tempPCB->totalSpaceInRAM() + offset > RAMSize)
+		{
+			//if(!theOS->m_Finished_PCBs.empty())
+			//	std::this_thread::sleep_for(2s);
+			//else
+			//{
+			//	theOS->m_ShortTerm.ClearOldProcessFromRAM(theOS->m_Finished_PCBs.front());
+			//}
+			return true;
+		}
+		////wait while thwere isn't enough space in RAM for job
+		//while (tempPCB->totalSpaceInRAM() + offset > RAMSize && !theOS->allJobsExecuted())
+		//{
+		//	std::this_thread::sleep_for(1s);
+		//}
 
 		if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
 		{
-			if(WriteNewProcessToRAM(tempPCB, offset))
+			if (WriteNewProcessToRAM(tempPCB, offset))
 				m_JobQueue.pop();
 			offset = offset + tempPCB->totalSpaceInRAM();
 			tempPCB->state = Ready;
 			theOS->m_ReadyQueue.push(tempPCB);//add PCB of jobs that are in RAM into the ready queue
+			//std::cout << "Job pushed to ready queue\n";
 		}
-		if ((tempPCB->totalSpaceInRAM() + offset) > RAMSize) //once the first group of Jobs goes through RAM and is cleared via dispatcher, we will have to start adding RAM from the first index of RAM
-		{
-			return true;//if RAM is full 
-			//offset = 0;//restarts the offset as 0 so the jobs can start to be written to the beginning index of RAM
-		}
+
+
+		//if ((tempPCB->totalSpaceInRAM() + offset) > RAMSize) //once the first group of Jobs goes through RAM and is cleared via dispatcher, we will have to start adding RAM from the first index of RAM
+		//{
+		//	return true;//if RAM is full 
+		//	//offset = 0;//restarts the offset as 0 so the jobs can start to be written to the beginning index of RAM
+		//}
+
 	}
+	
 	return true;
 }
 
+
+
+/*
+// See https://docs.microsoft.com/en-us/cpp/dotnet/lock-class?view=vs-2019#acquire
+
+PCB* Scheduler::short_term_get_next_queue()
+{
+*pcb p = NULL;
+
+   try
+   {   
+	   lock l(ready_queue);
+
+	   p = ready_queue.First();
+	   if (p!=NULL) ready_queue.pop();
+	}
+	catch
+	{
+	}
+   
+
+   return p;
+}
+
+
+void Scheduler::short_term_add_to_ready(PCB *b)
+{
+   {
+	   lock l(ready_queue);
+
+	   ready_queue.queue(b);
+	}
+}
+
+*/

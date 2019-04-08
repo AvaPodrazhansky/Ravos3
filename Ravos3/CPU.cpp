@@ -6,6 +6,54 @@ CPU::CPU(bool AllocateMemory)
 		m_Memory = new Memory(1024);
 }
 
+
+bool CPU::assignPCB(PCB* pcb)
+{
+	m_PCB = pcb;
+	m_PC = pcb->programCounter;
+	
+	for (int i = 0; i < m_PCB->getProgramSize(); i++)
+	{
+		m_Cache[i] = m_Memory->read(i, m_PCB->getStartIndexRAM());
+	}
+
+	m_PCB->setWaitTime();
+
+	//m_CPUMetrics->updateJobsInThisCPU(m_PCB->getProcessID());
+
+	return true;
+}
+
+void CPU::CPU_Run_thread()
+{
+	//We need to add a loop so it continues after executing one job
+	using namespace std::literals::chrono_literals;
+	//While m_assignedToJob == false, wait
+	//std::unique_lock<std::mutex> lk(lock);
+	//cv.wait(lk, [] {return m_assignedToJob; });
+
+	//std::cout << "CPU " << CPU_ID << " has started.\n";
+
+	//while (!all_jobs_done)
+	//{
+		while (!m_assignedToJob)
+		{
+			//std::cout << "CPU " << CPU_ID << " is waiting.\n";
+			std::this_thread::sleep_for(1s);
+		}
+
+		//if ready, execute
+		Execute();
+		m_assignedToJob = false;
+		m_C_State = IDLE;
+		//std::cout << "CPU " << CPU_ID << " has been set to IDLE\n";
+
+	//}
+	//once execute returns, m_assignedToJob = false
+
+}
+
+
 Instruction CPU::Decode(const MemoryWord &Word)
 {
 	// https://stackoverflow.com/questions/11452920/how-to-cast-int-to-enum-in-c
@@ -34,14 +82,15 @@ if (printInstruction) { DumpMemoryAsInstructions(w, inst); } \
 bool CPU::Execute()
 {
 	if (printInstruction || printContents) std::cout << "************Printing Job " << m_PCB->process_ID << " **************" << std::endl;
-	if (testSchededuler) printf("%5d %9d %9d\n", m_PCB->process_ID, m_PCB->getPriority(), m_PCB->getProgramSize());
-	m_C_State = BUSY;
+	if (testSchededuler) printf("%5d %5d %9d %9d\n", CPU_ID, m_PCB->process_ID, m_PCB->getPriority(), m_PCB->getProgramSize());
+	//m_C_State = BUSY;
 	m_PCB->state = Running;
 
 	auto start = std::chrono::high_resolution_clock::now();//start time of process
 	do
 	{
-		MemoryWord w = m_Memory->read(m_PC, m_PCB->StartIndexRAM); //Fetch
+		//MemoryWord w = m_Memory->read(m_PC, m_PCB->StartIndexRAM); //Fetch
+		MemoryWord w = m_Cache[m_PC]; //Fetch
 		Instruction i = Decode(w);
 		++m_PC;
 		switch (i)
@@ -50,23 +99,19 @@ bool CPU::Execute()
 		case I_RD:
 		{
 			PreExecute(w, "I_RD", AssertInstructionTypeIO);
-			do {} while (WRITE_KEY == true);//waits and does nothing while the write key is true
-			if (READ_KEY == true)
+			//do {} while (WRITE_KEY == true);//waits and does nothing while the write key is true
+			//if (READ_KEY == true)
 			{
 				if (w.Address16() != 0)
 				{
 					unsigned int offsetAddress = w.Address16() / 4;
-					//				m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress - m_PCB->ProgramSize, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
 					//				if (1) std::cout << "   -- Read at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 					m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
 					//if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-
 	//				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << " offset " << m_PCB->StartIndexDisk << "]\n";
 				}
 				else
 				{
-					//m_Register[w.RegR1()] = m_Register[w.RegR2()];
-	//				m_Register[w.RegR1()] = m_Disk->readContents( m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize, m_PCB->StartIndexDisk);
 	//				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 					m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);
 					//if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
@@ -81,33 +126,29 @@ bool CPU::Execute()
 		case I_WR:
 		{
 			PreExecute(w, "I_WR", AssertInstructionTypeIO);
-			do {} while (WRITE_KEY == true);//if WRIT_KEY is true then another process is writing so do nothing
-			READ_KEY = false;
-			m_CPUMetrics->setWriteKey(true);
-			WRITE_KEY = true;
+			//do {} while (WRITE_KEY == true);//if WRIT_KEY is true then another process is writing so do nothing
+			//READ_KEY = false;
+			//m_CPUMetrics->setWriteKey(true);
+			//WRITE_KEY = true;
 
 			if (w.Address16() != 0)
 			{
 				unsigned int offsetAddress = w.Address16() / 4;
-//				m_Disk->write(offsetAddress - m_PCB->ProgramSize, (MemoryWord)m_Register[w.RegR1()], m_PCB->OutputBufferStart); //might possibly be reg1
 //				if (1) std::cout << "   -- Write at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->OutputBufferStart << ") value " << m_Register[w.RegR1()] << "\n";
 				MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
 				m_Disk->write(offsetAddress, temp, m_PCB->StartIndexDisk); //might possibly be reg1
 				//if (1) std::cout << "   -- Write at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-				//Need to check if the conversion to memory word is correct
 				//m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
 			}
 			else
 			{
-				//m_Register[w.RegR2()] = m_Register[w.RegR1()];
 				MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
 				m_Disk->write(m_Register[w.RegR2()]/4, temp, m_PCB->StartIndexDisk); //might possibly be reg1
 			}
-			//Metrics::updateIOCount(m_PCB);
 			m_PCB->updateIOCount();
 
-			m_CPUMetrics->setWriteKey(false);
-			READ_KEY = true;
+			//m_CPUMetrics->setWriteKey(false);
+			//READ_KEY = true;
 
 			break;
 
@@ -117,10 +158,8 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_ST", AssertInstructionTypeI);
 
-			//m_Memory->write(m_Register[w.RegB()], m_Disk->readContents(m_Register[w.RegD()]/4 - m_PCB->ProgramSize));
 			MemoryWord temp = (MemoryWord)m_Register[w.RegB()];
 			m_Memory->write(m_Register[w.RegD()] / 4, temp, m_PCB->getStartIndexRAM());
-			//m_Memory->write(m_Register[w.RegD()] / 4 + m_PCB->StartIndexRAM, (MemoryWord)m_Register[w.RegB()]);
 			break;
 		}
 		//Loads the content of an address into a reg
@@ -128,9 +167,6 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_LW", AssertInstructionTypeI);
 
-			//m_Register[w.RegD()] = (m_Memory->readContents((m_Register[w.RegB()] + w.Address16() /4)));
-			//m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()] / 4, m_PCB->StartIndexRAM);
-			//m_Register[w.RegD()] = m_Memory->readContents(m_Register[w.RegB()] / 4 + m_PCB->StartIndexRAM);
 			m_Register[w.RegD()] = m_Memory->readContents((m_Register[w.RegB()] + w.Address16())/ 4, m_PCB->getStartIndexRAM());
 
 			break;
@@ -140,7 +176,6 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_MOV", AssertInstructionTypeR);
 
-			//m_Register[w.RegD()] = m_Register[w.RegS1()];
 			m_Register[w.RegS1()] = m_Register[w.RegS2()];
 			break;
 		}
@@ -229,9 +264,7 @@ bool CPU::Execute()
 		case I_LDI:
 		{
 			PreExecute(w, "I_LDI", AssertInstructionTypeI);
-			//May offset address here, may just do that in the read/write or st/lw funcitons so we know how much to offset. 
-			//unsigned int offsetAddress = w.Address16() / 4;// -m_PCB->ProgramSize + m_PCB->StartIndexRAM;
-			//if (offsetAddress < m_PCB->ProgramSize) offsetAddress -= m_PCB->ProgramSize;
+
 			m_Register[w.RegD()] = w.Address16(); //might need to add offset
 			break;
 		}
@@ -263,26 +296,32 @@ bool CPU::Execute()
 			PreExecute(w, "I_HLT", AssertInstructionTypeJ);
 			//if (!isExecuting) return true;
 			//clear registers
+			std::cout << "Program " << m_PCB->process_ID << " is finished\n";
+
 			for (unsigned int i = 0; i < MAX_REGISTERS; i++)
 			{
 				m_Register[i] = 0;
 			}
 
 			//m_PC = NULL //dispatcher will set CPU's m_PC to the next PCB's program counter
+			m_PCB->programCounter = m_PC; //I dont know if this line is necessary
 			m_PC = NULL;
 			//signal scheduler
 			//Terminate PCB
 			m_PCB->state = Terminated;
 			
 			//Set CPU back to idle (for scheduling)
-			m_C_State = IDLE;
+		//	m_C_State = IDLE;
 
 			auto stop = std::chrono::high_resolution_clock::now();//end time of process
 			auto completionTime = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
 			m_PCB->setCompletionTime(completionTime.count());//set difference as completion time
 			//Metrics::setCompletionTime(m_PCB, completionTime.count());
+
+			m_PCB = NULL;
+
 			return true;
-			break;
 		}
 		//Does nothing and moves to next instruction
 		case I_NOP:
@@ -292,7 +331,6 @@ bool CPU::Execute()
 			if (printContents) { std::cout << std::hex << w.Contents; }
 			if (!isExecuting) break;
 
-			//m_PC++;
 			break;
 		}
 		//Jumps to a specified location
@@ -300,7 +338,6 @@ bool CPU::Execute()
 		{
 			PreExecute(w, "I_JMP", AssertInstructionTypeJ);
 
-			//m_PC = w.Address24(); //might need to divide by 4
 			ChangePC(Address24);
 			break;
 		}
@@ -311,10 +348,8 @@ bool CPU::Execute()
 
 			if (m_Register[w.RegB()] == m_Register[w.RegD()])
 			{
-				//std::cout << "Loop\n";
 				ChangePC(Address16);
 			}
-			//else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg <> D-reg
@@ -324,10 +359,8 @@ bool CPU::Execute()
 
 			if (m_Register[w.RegB()] != m_Register[w.RegD()])
 			{
-				//std::cout << "Loop\n";
 				ChangePC(Address16);
 			}
-			//else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg = 0
@@ -337,10 +370,8 @@ bool CPU::Execute()
 
 			if (m_Register[w.RegB()] == 0)
 			{
-				//std::cout << "Loop\n";
 				ChangePC(Address16);
 			}
-			//else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg != 0
@@ -350,10 +381,8 @@ bool CPU::Execute()
 
 			if (m_Register[w.RegB()] != 0)
 			{
-				//std::cout << "Loop\n";
 				ChangePC(Address16);
 			}
-			//else std::cout << "End Loop\n";
 			break;
 		}
 		//Branches to an address when content of B-reg > 0
@@ -363,10 +392,8 @@ bool CPU::Execute()
 
 			if (m_Register[w.RegB()] > 0)
 			{
-				//std::cout << "Loop\n";
 				ChangePC(Address16);
 			}
-			//else std::cout << "End Loop\n";
 		}
 		//Branches to an address when content of B-reg < 0
 		case I_BLZ:
@@ -375,10 +402,8 @@ bool CPU::Execute()
 
 			if (m_Register[w.RegB()] < 0)
 			{
-				//std::cout << "Loop\n";
 				ChangePC(Address16);
 			}
-			//else std::cout << "End Loop\n";
 			break;
 		}
 

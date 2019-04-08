@@ -2,7 +2,7 @@
 #include "pch.h"
 
 #define MAX_REGISTERS 16
-
+#define MAX_INSTRUCTION_LENGTH 28
 enum Instruction {
 	I_RD = 0x00, I_WR = 0x01, I_ST = 0x02, I_LW = 0x03,
 	I_MOV = 0x04, I_ADD = 0x05, I_SUB = 0x06, I_MUL = 0x07, I_DIV = 0x08, I_AND = 0x09, I_OR = 0x0A,
@@ -18,6 +18,8 @@ class CPU
 public:
 	CPU(bool AllocateMemory = false); //constructor
 
+	int CPU_ID;
+	
 	static Instruction Decode(const MemoryWord &Word);
 
 	bool Execute();
@@ -29,10 +31,22 @@ public:
 	Memory *m_Disk = NULL;
 	PCB *m_PCB = NULL;
 	CPUMetrics *m_CPUMetrics = NULL;
-	Memory *Cache[28];//has not been implemented
-
+	//Memory *Cache[28];//has not been implemented
+	MemoryWord m_Cache[MAX_INSTRUCTION_LENGTH];
 	
-	CPU_State m_C_State = IDLE;
+	volatile CPU_State m_C_State = IDLE;
+
+	bool assignPCB(PCB* pcb);
+	
+	//std::mutex lock; //lock so CPU can wait to be assigned to job
+	///*volatile bool m_assignedToJob = false;*/
+	//std::condition_variable cv;
+	
+	volatile bool m_assignedToJob = false;
+
+	//static volatile bool all_jobs_done;
+
+	void CPU_Run_thread();
 
 	//Variables for Testing
 	bool isExecuting = true;  //Executes instructions if true
