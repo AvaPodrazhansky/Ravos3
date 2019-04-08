@@ -80,6 +80,7 @@ public:
 	MemoryWord read(int index, int Offset);
 	unsigned int readContents(int index, int Offset) { return read(index, Offset).Contents; }
 
+	void clearEverything();
 
 };
 

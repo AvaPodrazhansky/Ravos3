@@ -176,7 +176,7 @@ bool Scheduler::FillReadyQueue()
 	int offset = 0;
 	int RAMSize = theOS->m_Computer->m_RAM.GetSize();
 
-	while (!theOS->allJobsExecuted())
+	while (!m_JobQueue.empty())
 	{
 		////wait while there are no jobs in the job queue
 		//while (m_JobQueue.empty())

@@ -21,6 +21,14 @@ void Memory::write(int index, MemoryWord t, int Offset)
 	memory[index] = t;
 }
 
+void Memory::clearEverything()
+{
+	for (int i = 0; i < 1024; i++)
+	{
+		memory[i] = NULL;
+	}
+}
+
 MemoryWord Memory::read(int index, int Offset)
 {
 	index += Offset;

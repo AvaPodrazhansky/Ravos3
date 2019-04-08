@@ -9,7 +9,7 @@ int main()
 {
 	Computer *theComputer = new Computer();
 	OS theOS(theComputer);
-	
+
 	//Calls loader
 	if (!theOS.Boot("programfile.txt"))
 	{
@@ -19,31 +19,15 @@ int main()
 
 	std::cout << "Ready to run\n";
 
- 	printf("%5s %5s %9s %9s\n", "CPU","Job", "Priority", "Length");
+	//printf("%5s %5s %9s %9s\n", "CPU", "Job", "Priority", "Length");
 
 	theOS.m_Scheduler.FillJobQueue();
 
 	theOS.m_Scheduler.FillReadyQueue();
-	
+
 	//theOS.Schedule_and_Run();
 
-	//std::cout << "Done!\n";
-	//while (!theOS.m_ReadyQueue.empty())
-	//{
-	//	using namespace std::literals::chrono_literals;
 
-	//	while (theOS.m_Computer->m_CPU[0].m_C_State == BUSY)
-	//	{
-	//		std::this_thread::sleep_for(1s);
-	//	}
-
-	//	theOS.m_ShortTerm.Dispatch(0);
-	//	theOS.m_ShortTerm.Start_the_CPU(0);
-	//	//theComputer->m_CPU[0].CPU_Run_thread();
-	//}
-
-
-	
 	while (!theOS.m_ReadyQueue.empty() || !theOS.m_Scheduler.m_JobQueue.empty())
 	{
 		while (!theOS.m_ReadyQueue.empty())
@@ -67,105 +51,25 @@ int main()
 			if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
 				theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
 
-		break;  // We do this to ensure that we complete loop, until the following part is coded.
+		//break;  // We do this to ensure that we complete loop, until the following part is coded.
 
 		if (!theOS.m_Scheduler.m_JobQueue.empty())
 		{
 			// At this point, RAM can be wiped.
+			theOS.m_Computer->m_RAM.clearEverything();
+			
 			// Move programs in job queue to ram (you may have to re-base (i.e. start at location 0 again)
-
 			// then fill ready queue again: theOS.m_Scheduler.FillReadyQueue();
+			theOS.m_Scheduler.FillReadyQueue();
+		
 		}
 	}
 
+	std::cout << "Done!" << std::endl;
+}
 //	this.thread.Sleep(10);
 
 	
-
-//	while (!theOS.allJobsExecuted()) {}
-
-	//theOS.m_ShortTerm.Start_the_CPU();
-
-	//theOS.m_Scheduler.FillJobQueue();
-
-
-//	while (true) {}// { std::cout << "Main thread is running\n"; }
-}
-	//do {
-	//	//Call Long Term Scheudler 
-	//	if (!theOS.m_Scheduler.FIFOScheduler())
-	//	{
-	//		std::cout << "Long Term Scheduler Error\n";
-	//	}
-
-	//	//Calls Short Term Scheduler
-	//	if (!theOS.m_ShortTerm.Dispatch())
-	//	{
-	//		std::cout << "Unable to dispatch\n";
-	//	}
-
-	//} while (!theOS.m_Scheduler.m_JobQueue.empty());
-
-
-	//std::cout << "FIFO Test\n";
-	//printf("%5s %9s %9s\n", "Job", "Priority", "Length");
-	//	do {
-	//	//Call Long Term Scheudler 
-	//	if (!theOS.m_Scheduler.FillJobQueue())
-	//	{
-	//		std::cout << "Long Term Scheduler Error\n";
-	//	}
-
-	//	//Calls Short Term Scheduler
-	//	if (!theOS.m_ShortTerm.Dispatch())
-	//	{
-	//		std::cout << "Unable to dispatch\n";
-	//	}
-
-	//} while (!theOS.m_Scheduler.m_JobQueue.empty());
-
-	//Test Priority
-	//std::cout << "Priority Test\n";
-	//printf("%5s %9s %9s\n", "Job", "Priority", "Length");
-	//theOS.m_Scheduler.SchedType = PRIORITY;
-	//do {
-	//	//Call Long Term Scheudler 
-	//	if (!theOS.m_Scheduler.FillJobQueue())
-	//	{
-	//		std::cout << "Long Term Scheduler Error\n";
-	//	}
-
-	//	//Calls Short Term Scheduler
-	//	if (!theOS.m_ShortTerm.Dispatch())
-	//	{
-	//		std::cout << "Unable to dispatch\n";
-	//	}
-
-	//} while (!theOS.m_Scheduler.m_JobQueue.empty());
-
-//		//Test SJF
-//	std::cout << "SJF Test\n";
-//	printf("%5s %9s %9s\n", "Job", "Priority", "Length");
-//	theOS.m_Scheduler.SchedType = SJF;
-//	do {
-//		//Call Long Term Scheudler 
-//		if (!theOS.m_Scheduler.FillJobQueue())
-//		{
-//			std::cout << "Long Term Scheduler Error\n";
-//		}
-//
-//		//Calls Short Term Scheduler
-//		if (!theOS.m_ShortTerm.Dispatch(0))
-//		{
-//			std::cout << "Unable to dispatch\n";
-//		}
-//
-//	} while (!theOS.m_Scheduler.m_JobQueue.empty());
-
-//
-//}
-
-
 
 
 //test the metrics
