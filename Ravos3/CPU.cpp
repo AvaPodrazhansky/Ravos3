@@ -36,16 +36,21 @@ void CPU::CPU_Run_thread()
 
 	//while (!all_jobs_done)
 	//{
-		while (!m_assignedToJob)
-		{
-			//std::cout << "CPU " << CPU_ID << " is waiting.\n";
-			std::this_thread::sleep_for(1s);
-		}
 
-		//if ready, execute
+		//while (!m_assignedToJob)
+		//{
+		//	//std::cout << "CPU " << CPU_ID << " is waiting.\n";
+		//	std::this_thread::sleep_for(1s);
+		//}
+
+	    m_C_State = BUSY;
+
+	    //if ready, execute
 		Execute();
 		m_assignedToJob = false;
 		m_C_State = IDLE;
+
+		return;
 		//std::cout << "CPU " << CPU_ID << " has been set to IDLE\n";
 
 	//}
@@ -82,7 +87,7 @@ if (printInstruction) { DumpMemoryAsInstructions(w, inst); } \
 bool CPU::Execute()
 {
 	if (printInstruction || printContents) std::cout << "************Printing Job " << m_PCB->process_ID << " **************" << std::endl;
-	if (testSchededuler) printf("%5d %5d %9d %9d\n", CPU_ID, m_PCB->process_ID, m_PCB->getPriority(), m_PCB->getProgramSize());
+	//if (testSchededuler) printf("%5d %5d %9d %9d\n", CPU_ID, m_PCB->process_ID, m_PCB->getPriority(), m_PCB->getProgramSize());
 	//m_C_State = BUSY;
 	m_PCB->state = Running;
 
@@ -296,8 +301,8 @@ bool CPU::Execute()
 			PreExecute(w, "I_HLT", AssertInstructionTypeJ);
 			//if (!isExecuting) return true;
 			//clear registers
-			std::cout << "Program " << m_PCB->process_ID << " is finished\n";
-
+			//std::cout << "Program " << m_PCB->process_ID << " is finished\n";
+			std::cout <<  m_PCB->process_ID << " \n";
 			for (unsigned int i = 0; i < MAX_REGISTERS; i++)
 			{
 				m_Register[i] = 0;

@@ -206,29 +206,54 @@ bool OS::Load(std::string filename)
 }
 
 
-void OS::Schedule_and_Run(ScheduleType default_type)
+void OS::Schedule_and_Run(ScheduleType schedule_algorithm)
 {
-	//Set schedule type
-	m_Scheduler.SchedType = default_type;
-
-	//Fill the job queue
-	if(!m_Scheduler.FillJobQueue())std::cout << "Job Queue Fill Error\n";
-
-	if(!m_Scheduler.FillReadyQueue()) std::cout << "Ready Queue Fill Error\n";
-	//Run CPU's on different threads
-	//if (m_ShortTerm.Start_the_CPU())
-	//{
-	//	std::cout << "CPU's have been started\n";
-	//}
+	////Set schedule type
+	//m_Scheduler.SchedType = schedule_algorithm;
+	//
+	////Fill the job queue
+	//if(!m_Scheduler.FillJobQueue())std::cout << "Job Queue Fill Error\n";
+	//
+	//if(!m_Scheduler.FillReadyQueue()) std::cout << "Ready Queue Fill Error\n";
+	////Run CPU's on different threads
+	////if (m_ShortTerm.Start_the_CPU())
+	////{
+	////	std::cout << "CPU's have been started\n";
+	////}
+	//
+	////Tell the Short Term Scheudler to start checking the ready queue
+	//new std::thread(&ShortTermScheduler::ShortTerm_Schedule, m_ShortTerm);
+	//
+	////Start thread that fills the ready queue
+	////new std::thread(&Scheduler::FillReadyQueue, m_Scheduler);
+	//while(!allJobsExecuted())
+	//if (allJobsExecuted()) 
+	//	return;
+	using namespace std::literals::chrono_literals;
 	
-	//Tell the Short Term Scheudler to start checking the ready queue
-	new std::thread(&ShortTermScheduler::ShortTerm_Schedule, m_ShortTerm);
+	m_Scheduler.SchedType = schedule_algorithm;
+	
+	m_Scheduler.FillJobQueue();
 
-	//Start thread that fills the ready queue
-	//new std::thread(&Scheduler::FillReadyQueue, m_Scheduler);
-	while(!allJobsExecuted())
-	if (allJobsExecuted()) 
-		return;
+	m_Scheduler.FillReadyQueue();
+	
+	while (!m_ReadyQueue.empty())
+	{
+
+		for (int i = 0; i < m_Computer->GetNumCPUs(); i++)
+		{
+			if (m_Computer->m_CPU[i].m_C_State == IDLE)
+			{
+				m_ShortTerm.Dispatch(i);
+				m_Computer->m_CPU[i].m_C_State = BUSY;
+				//theOS.busyCPUs++;
+				//m_Computer->m_CPU[i].CPU_Run_thread();
+				m_ShortTerm.Start_the_CPU(i);
+			}
+		}
+	}
+
+
 
 }
 

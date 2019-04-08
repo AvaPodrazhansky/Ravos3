@@ -18,13 +18,16 @@ int main()
 	}
 
 	std::cout << "Ready to run\n";
-	//theOS.Schedule_and_Run();
+
  	printf("%5s %5s %9s %9s\n", "CPU","Job", "Priority", "Length");
 
 	theOS.m_Scheduler.FillJobQueue();
 
 	theOS.m_Scheduler.FillReadyQueue();
+	
+	//theOS.Schedule_and_Run();
 
+	//std::cout << "Done!\n";
 	//while (!theOS.m_ReadyQueue.empty())
 	//{
 	//	using namespace std::literals::chrono_literals;
@@ -35,24 +38,47 @@ int main()
 	//	}
 
 	//	theOS.m_ShortTerm.Dispatch(0);
-	//	theComputer->m_CPU[0].CPU_Run_thread();
+	//	theOS.m_ShortTerm.Start_the_CPU(0);
+	//	//theComputer->m_CPU[0].CPU_Run_thread();
 	//}
 
-	while (!theOS.m_ReadyQueue.empty())
+
+	
+	while (!theOS.m_ReadyQueue.empty() || !theOS.m_Scheduler.m_JobQueue.empty())
 	{
-		using namespace std::literals::chrono_literals;
-		
-		for (int i = 0; i < theComputer->GetNumCPUs(); i++)
+		while (!theOS.m_ReadyQueue.empty())
 		{
-			if (theComputer->m_CPU[i].m_C_State == IDLE)
+			using namespace std::literals::chrono_literals;
+
+			for (int i = 0; i < theComputer->GetNumCPUs(); i++)
 			{
-				theOS.m_ShortTerm.Dispatch(i);
-				theOS.m_Computer->m_CPU[i].m_C_State = BUSY;
-				//theOS.busyCPUs++;
-				theComputer->m_CPU[i].CPU_Run_thread();
+				if (!theOS.m_ReadyQueue.empty())
+				{
+					if (theComputer->m_CPU[i].GetState() == IDLE)
+					{
+						theOS.m_ShortTerm.Dispatch(i);
+						theOS.m_Computer->m_CPU[i].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[i]);
+					}
+				}
 			}
 		}
+
+		for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
+			if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
+				theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
+
+		break;  // We do this to ensure that we complete loop, until the following part is coded.
+
+		if (!theOS.m_Scheduler.m_JobQueue.empty())
+		{
+			// At this point, RAM can be wiped.
+			// Move programs in job queue to ram (you may have to re-base (i.e. start at location 0 again)
+
+			// then fill ready queue again: theOS.m_Scheduler.FillReadyQueue();
+		}
 	}
+
+//	this.thread.Sleep(10);
 
 	
 
@@ -135,7 +161,7 @@ int main()
 //		}
 //
 //	} while (!theOS.m_Scheduler.m_JobQueue.empty());
-//	std::cout << "Done!\n";
+
 //
 //}
 

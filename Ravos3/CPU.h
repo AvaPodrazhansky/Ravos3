@@ -19,7 +19,8 @@ public:
 	CPU(bool AllocateMemory = false); //constructor
 
 	int CPU_ID;
-	
+	std::thread *m_thread_ptr = NULL;
+
 	static Instruction Decode(const MemoryWord &Word);
 
 	bool Execute();
@@ -35,6 +36,8 @@ public:
 	MemoryWord m_Cache[MAX_INSTRUCTION_LENGTH];
 	
 	volatile CPU_State m_C_State = IDLE;
+
+	CPU_State GetState() { return m_C_State; }
 
 	bool assignPCB(PCB* pcb);
 	

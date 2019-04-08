@@ -83,7 +83,7 @@ bool ShortTermScheduler::Dispatch(int CPU_Num)
 	//{
 	//	std::this_thread::sleep_for(1s);
 	//}
-	if (theOS->m_ReadyQueue.empty()) { return true; }
+//	if (theOS->m_ReadyQueue.empty()) { return true; }
 
 		if (theOS->m_Computer->m_CPU[CPU_Num].m_C_State == IDLE)
 		{
@@ -122,7 +122,6 @@ bool ShortTermScheduler::Dispatch(int CPU_Num)
 
 
 
-
 int ShortTermScheduler::getAverageWaitTime()
 {
 	int AverageWaitTime = TOTAL_WAIT_TIME / TOTAL_JOBS_EXECUTED;
@@ -144,10 +143,10 @@ void ShortTermScheduler::ShortTerm_Schedule()
 	//loop through all CPU's until one is IDLE
 	while (!theOS->allJobsExecuted())
 	{
-		while (theOS->m_ReadyQueue.empty())
-		{
-			std::this_thread::sleep_for(1s);
-		}
+		//while (theOS->m_ReadyQueue.empty())
+		//{
+		//	std::this_thread::sleep_for(1s);
+		//}
 
 		for (int i = 0; i < theOS->m_Computer->GetNumCPUs(); i++)
 		{
