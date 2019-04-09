@@ -45,6 +45,8 @@ public:
 	///*volatile bool m_assignedToJob = false;*/
 	//std::condition_variable cv;
 	
+	bool MapPageIntoMemory(int ProcessID, int Page);
+
 	volatile bool m_assignedToJob = false;
 
 	//static volatile bool all_jobs_done;

@@ -92,10 +92,10 @@ public:
 		return ProgramSize;
 	}
 
-	bool isExecuting() const
-	{
-		return (state == Running);
-	}
+	//bool isExecuting() const
+	//{
+	//	return (state == Running);
+	//}
 
 	void setProcessID(int tp) 
 	{
@@ -152,7 +152,7 @@ public:
 		return StartIndexDisk;
 	}
 
-	int totalSpaceInRAM()
+	int totalSpaceInRAM()//this is incorrect*********************************************************************************************************
 	{
 		return ProgramSize + InputBufferSize + OutputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
 	}
@@ -197,6 +197,19 @@ public:
 	void updateIOCount() 
 	{
 		IOCount += 1;
+	}
+
+	//This currently is not used, but I think we will eventually use it
+	void blockProcess() 
+	{
+		state = Waiting;
+	}
+
+	//This currently is not used, but I think we will eventually use it
+	void unblockProcess()
+	{
+		state = Ready;
+		//Push to ready queue
 	}
 
 };

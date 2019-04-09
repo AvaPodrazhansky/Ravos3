@@ -1,6 +1,8 @@
 #pragma once
 #include "pch.h"
 
+#define PAGE_SIZE   4
+
 
 struct MemoryWord
 {
@@ -67,20 +69,71 @@ struct MemoryWord
 
 
 
+class PageStruct
+{
+public:
+	int ProcessID;
+	int FrameNum;
+};
+
+
 class Memory {
 	int Size;
 	MemoryWord *memory;
 
+	PageStruct *PageMap = NULL;
+	int VirtualMemory = -1;
+	int *FrameMap;
+
+	std::mutex LockMutex;
+
 public:
-	Memory(int SIZE); //constructor
+	Memory(int SIZE, int _VirtualMemory =-1); //constructor
 	void Clear();
 	int GetSize() { return Size; }
 
-	void write(int index, MemoryWord t, int Offset);
-	MemoryWord read(int index, int Offset);
-	unsigned int readContents(int index, int Offset) { return read(index, Offset).Contents; }
+	// Assures a page is in memory (i.e. has a frame) 
+	int MapToFrame(int PageNum, int ProcessID=-1, int PC=-1);
+
+	void write(int index, MemoryWord t, int Offset, int PID = -1, int PC = -1);
+	MemoryWord read(int index, int Offset, int PID = -1, int PC = -1);
+	unsigned int readContents(int index, int Offset, int PID=-1, int PC=-1) { return read(index, Offset, PID, PC).Contents; }
 
 	void clearEverything();
 
+};
+
+
+// See last example on http://peterforgacs.github.io/2017/06/25/Custom-C-Exceptions-For-Beginners/
+
+class RavosMemoryProtectionException : public std::exception
+{
+public:
+	RavosMemoryProtectionException(int _ProcessID, int _Page, int _PC) { ProcessID = _ProcessID; Page = _Page; PC = _PC-1; }
+
+	   int ProcessID;
+	   int Page;
+	   int PC;
+};
+
+class RavosPagingFaultException : public std::exception
+{
+public:
+	RavosPagingFaultException(int _ProcessID, int _Page, int _PC) { ProcessID = _ProcessID; Page = _Page; PC = _PC-1; }
+
+	int ProcessID;
+	int Page;
+	int PC;
+};
+
+
+class RavosInvalidMemoryAddressException : public std::exception
+{
+public:
+	RavosInvalidMemoryAddressException(int _ProcessID, int _Page, int _PC) { ProcessID = _ProcessID; Page = _Page; PC = _PC - 1; }
+
+	int ProcessID;
+	int Page;
+	int PC;
 };
 
