@@ -21,26 +21,21 @@ private:
 	int programCounter = 0;
 	State state = New;	//[0 = New, 1 = Ready, 2 = Running, 3 = Waiting, 4 = Terminated]
 
-	//int arrived;	//Do we still need this since state has been expanded?
-	//int length; using progam size instead
-	//int start;	//Same question as above
-	//int wait;    	//Also same
-
 	int ProgramSize;  // Length of the program
 	int StartIndexDisk;
 	int StartIndexRAM;
 
 	int InputBufferSize;
 	int InputBufferStart;  // Location on disk where it starts
-	int InputBufferNext;   // Location on disk for next read, keeps track of where you are in buffer
+	//int InputBufferNext;   // Location on disk for next read, keeps track of where you are in buffer
 
 	int	OutputBufferSize;
 	int OutputBufferStart;
-	int OutputBufferNext;
+	//int OutputBufferNext;
 
 	int TempBufferSize;
 	int TempBufferStart;
-	int TempBufferNext;
+	//int TempBufferNext;
 
 	int WaitTime;//num of instructions before current 
 	int IOCount;//number of IO instructions per job
@@ -53,26 +48,20 @@ private:
 
 public:
 //	Metrics m_Metrics;
+	// Default Constructor
 	PCB() 
 	{
 		priority = 19;
 		state = New;
-		//arrived = 0;	//Need?
-		ProgramSize = 0;		//Need?
+		ProgramSize = 0;
 		IOCount = 0;
 	}
 
 
-	/*Creates a PCB with the specified parameters.
-	 * @param arr the cycle during which the process arrived
-	 * @param len the quantum - number of cycles required to execute
-	 * the process
-	 */
 	PCB(int ID, int priority_Val, int arr, int len)
 	{
 		process_ID = ID;
 		priority = priority_Val;
-		//arrived = arr;
 		ProgramSize = len;
 		IOCount = 0;
 	}
@@ -152,7 +141,7 @@ public:
 		return StartIndexDisk;
 	}
 
-	int totalSpaceInRAM()//this is incorrect*********************************************************************************************************
+	int totalSpaceInRAM()// This will be incorrect when paging is implemented. *********************************************************************************************************
 	{
 		return ProgramSize + InputBufferSize + OutputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
 	}
@@ -203,6 +192,8 @@ public:
 	void blockProcess() 
 	{
 		state = Waiting;
+		//put in request to read next page
+		//wait until page is written to RAM
 	}
 
 	//This currently is not used, but I think we will eventually use it

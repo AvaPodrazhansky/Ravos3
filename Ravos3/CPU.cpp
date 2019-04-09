@@ -33,7 +33,7 @@ void CPU::CPU_Run_thread()
 {
 	//We need to add a loop so it continues after executing one job
 	using namespace std::literals::chrono_literals;
-	//While m_assignedToJob == false, wait
+
 	//std::unique_lock<std::mutex> lk(lock);
 	//cv.wait(lk, [] {return m_assignedToJob; });
 
@@ -52,14 +52,14 @@ void CPU::CPU_Run_thread()
 
 	    //if ready, execute
 		Execute();
-		m_assignedToJob = false;
+
 		m_C_State = IDLE;
 
 		return;
 		//std::cout << "CPU " << CPU_ID << " has been set to IDLE\n";
 
 	//}
-	//once execute returns, m_assignedToJob = false
+
 
 }
 

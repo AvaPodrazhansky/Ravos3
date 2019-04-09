@@ -32,7 +32,7 @@ public:
 	Memory *m_Disk = NULL;
 	PCB *m_PCB = NULL;
 	CPUMetrics *m_CPUMetrics = NULL;
-	//Memory *Cache[28];//has not been implemented
+
 	MemoryWord m_Cache[MAX_INSTRUCTION_LENGTH];
 	
 	volatile CPU_State m_C_State = IDLE;
@@ -46,8 +46,6 @@ public:
 	//std::condition_variable cv;
 	
 	bool MapPageIntoMemory(int ProcessID, int Page);
-
-	volatile bool m_assignedToJob = false;
 
 	//static volatile bool all_jobs_done;
 

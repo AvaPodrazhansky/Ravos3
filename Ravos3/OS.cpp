@@ -202,6 +202,8 @@ bool OS::Load(std::string filename)
 			//return true;  //*****
 		}
 	}
+	delete tempcb;
+
 	return true;
 }
 

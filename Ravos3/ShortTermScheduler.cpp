@@ -103,7 +103,7 @@ bool ShortTermScheduler::Dispatch(int CPU_Num)
 
 			//theOS->m_Computer->m_CPU[CPU_Num].Execute(); //this will be added to the thread method
 
-			theOS->m_Computer->m_CPU[CPU_Num].m_assignedToJob = true;
+			
 			//new std::thread(&ShortTermScheduler::ClearOldProcessFromRAM, theOS->m_Computer->m_CPU[CPU_Num].m_PCB);
 			//theOS->m_ShortTerm.ClearOldProcessFromRAM(theOS->m_Computer->m_CPU[CPU_Num].m_PCB);
 
