@@ -75,8 +75,9 @@ int main()
 	{
 		std::cout << std::dec << "Job " << i << "\n";
 		PCB* pcb = theOS.m_PCB_Map.at(i);
-		for(int j=0; j<pcb->getProgramSize() + 44; j++)
-		std::cout << std::hex << theOS.m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk(), -2, -2) << "\n";
+		for (int j = 0; j < pcb->getProgramSize() + 44; j++) {
+			printf("%08x \n", theOS.m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk(), -2, -2));
+		}
 	}
 	std::cout << "Done!" << std::endl;
 }
