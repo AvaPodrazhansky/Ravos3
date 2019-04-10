@@ -26,7 +26,7 @@ int main()
 	theOS.m_Scheduler.FillReadyQueue();
 
 	//theOS.Schedule_and_Run();
-
+	//std::queue <PCB*> writeQueue;
 
 	while (!theOS.m_ReadyQueue.empty() || !theOS.m_Scheduler.m_JobQueue.empty())
 	{
@@ -40,6 +40,7 @@ int main()
 				{
 					if (theComputer->m_CPU[i].GetState() == IDLE)
 					{
+						//writeQueue.push(theOS.m_ReadyQueue.front());
 						theOS.m_ShortTerm.Dispatch(i);
 						theOS.m_Computer->m_CPU[i].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[i]);
 					}
@@ -47,14 +48,19 @@ int main()
 			}
 		}
 
-		for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
-			if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
-				theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
+		//for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
+		//	if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
+		//		theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
 
 		//break;  // We do this to ensure that we complete loop, until the following part is coded.
 
 		if (!theOS.m_Scheduler.m_JobQueue.empty())
 		{
+
+			for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
+				if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
+					theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
+			
 			// At this point, RAM can be wiped.
 			theOS.m_Computer->m_RAM.clearEverything();
 			
@@ -65,6 +71,13 @@ int main()
 		}
 	}
 
+	for (int i = 1; i <= theOS.m_PCB_Map.size(); i++)
+	{
+		std::cout << std::dec << "Job " << i << "\n";
+		PCB* pcb = theOS.m_PCB_Map.at(i);
+		for(int j=0; j<pcb->getProgramSize() + 44; j++)
+		std::cout << std::hex << theOS.m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk(), -2, -2) << "\n";
+	}
 	std::cout << "Done!" << std::endl;
 }
 //	this.thread.Sleep(10);

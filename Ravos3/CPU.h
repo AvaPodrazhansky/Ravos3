@@ -51,6 +51,8 @@ public:
 
 	void CPU_Run_thread();
 
+	void FlushBuffers();
+
 	//Variables for Testing
 	bool isExecuting = true;  //Executes instructions if true
 	bool printInstruction = false; //Prints formatted instruction if true

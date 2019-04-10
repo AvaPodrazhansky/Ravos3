@@ -52,7 +52,7 @@ void Memory::write(int index, MemoryWord t, int Offset, int PID, int PC)
 	if (!PageMap) 
 	{
 		if (index < 0 || index >= Size)
-			throw RavosInvalidMemoryAddressException(PID, index/4, PC);
+			throw RavosInvalidMemoryAddressException(PID, index, PC);
 		std::lock_guard<std::mutex> lock(LockMutex);
 		memory[index] = t;
 	}
@@ -76,7 +76,7 @@ MemoryWord Memory::read(int index, int Offset, int PID, int PC)
 	if (!PageMap)
 	{
 		if (index < 0 || index >= Size)
-			throw RavosInvalidMemoryAddressException(PID, index / 4, PC);
+			throw RavosInvalidMemoryAddressException(PID, index, PC);
 		std::lock_guard<std::mutex> lock(LockMutex);
 
 		return memory[index];

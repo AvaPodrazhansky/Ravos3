@@ -64,6 +64,17 @@ void CPU::CPU_Run_thread()
 }
 
 
+void CPU::FlushBuffers()
+{
+	for (int i = m_PCB->getProgramSize() + m_PCB->InputBufferSize; i < m_PCB->getProgramSize() + m_PCB->InputBufferSize + m_PCB->TempBufferSize + m_PCB->OutputBufferSize; i++)
+	{
+		MemoryWord w = m_Memory->readContents(i, m_PCB->getStartIndexRAM(), -2, -2);
+		m_Disk->write(i, w, m_PCB->getStartIndexDisk(), -2, -2);
+	}
+
+}
+
+
 Instruction CPU::Decode(const MemoryWord &Word)
 {
 	// https://stackoverflow.com/questions/11452920/how-to-cast-int-to-enum-in-c
@@ -320,6 +331,9 @@ bool CPU::Execute()
 					m_PC = NULL;
 					//signal scheduler
 					//Terminate PCB
+
+					FlushBuffers();
+
 					m_PCB->state = Terminated;
 
 					//Set CPU back to idle (for scheduling)
