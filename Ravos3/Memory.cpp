@@ -9,7 +9,7 @@ Memory::Memory(int SIZE, int _VirtualMemory)
 
 	VirtualMemory = _VirtualMemory;
 
-	if (VirtualMemory >0)
+	if (VirtualMemory > 0)
 	{
 		//PageMap = (PageStruct*) calloc(VirtaulMemory / PAGE_SIZE, sizeof(PageStruct));
 		PageMap = new PageStruct[VirtualMemory / PAGE_SIZE];
@@ -24,6 +24,8 @@ void Memory::Clear()
 		memory[i].Clear();
 }
 
+
+// Returns physical address of frame
 int Memory::MapToFrame(int PageNum, int ProcessID, int PC)
 {
 	if (!PageMap) return PageNum;

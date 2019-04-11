@@ -1,5 +1,5 @@
 #pragma once
-// Actual hardware that everything runs on
+// Virtual hardware that everything runs on
 
 #define NUM_CPU         1
 #define MAX_RAM         1024

@@ -26,7 +26,6 @@ int main()
 	theOS.m_Scheduler.FillReadyQueue();
 
 	//theOS.Schedule_and_Run();
-	//std::queue <PCB*> writeQueue;
 
 	while (!theOS.m_ReadyQueue.empty() || !theOS.m_Scheduler.m_JobQueue.empty())
 	{
@@ -40,7 +39,6 @@ int main()
 				{
 					if (theComputer->m_CPU[i].GetState() == IDLE)
 					{
-						//writeQueue.push(theOS.m_ReadyQueue.front());
 						theOS.m_ShortTerm.Dispatch(i);
 						theOS.m_Computer->m_CPU[i].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[i]);
 					}
@@ -62,7 +60,7 @@ int main()
 					theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
 			
 			// At this point, RAM can be wiped.
-			theOS.m_Computer->m_RAM.clearEverything();
+			theOS.m_Computer->m_RAM.Clear();
 			
 			// Move programs in job queue to ram (you may have to re-base (i.e. start at location 0 again)
 			// then fill ready queue again: theOS.m_Scheduler.FillReadyQueue();
@@ -71,18 +69,32 @@ int main()
 		}
 	}
 
-	for (int i = 1; i <= theOS.m_PCB_Map.size(); i++)
+	for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
+		if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
+			theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
+	
+	// Core dump
+	/*for (int i = 1; i <= theOS.m_PCB_Map.size(); i++)
 	{
-		std::cout << std::dec << "Job " << i << "\n";
+		std::cout << std::dec << "Job " << i << " ***********************************************\n";
 		PCB* pcb = theOS.m_PCB_Map.at(i);
-		for (int j = 0; j < pcb->getProgramSize() + 44; j++) {
-			printf("%08x \n", theOS.m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk(), -2, -2));
+		for (int j = 0; j < pcb->getProgramSize() + 44; j++)
+		{
+			if (j == pcb->getProgramSize())
+				std::cout << "Data " << pcb->getProcessID() << "\n";
+			if(j== pcb->getProgramSize()+20)
+				std::cout << "Output " << pcb->getProcessID() << "\n";
+			if (j == pcb->getProgramSize() + 20 + 12)
+				std::cout << "Temp " << pcb->getProcessID() << "\n";
+			printf("%08X \n", theOS.m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk(), -2, -2));
 		}
-	}
+	}*/
 	std::cout << "Done!" << std::endl;
 }
 //	this.thread.Sleep(10);
 
+
+// Tk software
 	
 
 

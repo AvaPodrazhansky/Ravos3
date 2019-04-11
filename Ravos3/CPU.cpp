@@ -63,10 +63,10 @@ void CPU::CPU_Run_thread()
 
 }
 
-
+// This will need to change if we only store the temp buffers in RAM
 void CPU::FlushBuffers()
 {
-	for (int i = m_PCB->getProgramSize() + m_PCB->InputBufferSize; i < m_PCB->getProgramSize() + m_PCB->InputBufferSize + m_PCB->TempBufferSize + m_PCB->OutputBufferSize; i++)
+	for (int i = m_PCB->getProgramSize() + m_PCB->InputBufferSize + m_PCB->OutputBufferSize; i < m_PCB->getProgramSize() + m_PCB->InputBufferSize + m_PCB->TempBufferSize + m_PCB->OutputBufferSize; i++)
 	{
 		MemoryWord w = m_Memory->readContents(i, m_PCB->getStartIndexRAM(), -2, -2);
 		m_Disk->write(i, w, m_PCB->getStartIndexDisk(), -2, -2);

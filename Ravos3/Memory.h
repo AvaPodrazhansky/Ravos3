@@ -74,6 +74,9 @@ class PageStruct
 public:
 	int ProcessID;
 	int FrameNum;
+	// We need to add clock variable to keep track of the least recently used frame. 
+
+	//bool function that returns if frame num is valid
 };
 
 
