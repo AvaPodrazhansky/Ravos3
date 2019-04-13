@@ -17,6 +17,8 @@ public:
 
 	MemoryWord ReadOrPageFault(int index, PCB* pcb);
 
+	void HandlePageFault(int index, PCB* pcb);
+
 	void WriteOrPageFault(int index, PCB* pcb);
 
 
