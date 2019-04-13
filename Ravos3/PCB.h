@@ -14,6 +14,7 @@ class PCB
 	friend class CPU;
 	friend class Scheduler;
 	friend class ShortTermScheduler;
+	friend class MMU;
 private:
 
 	int process_ID;
