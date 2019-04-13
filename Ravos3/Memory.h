@@ -67,8 +67,6 @@ struct MemoryWord
 };
 
 
-
-
 class PageStruct
 {
 public:
