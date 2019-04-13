@@ -10,8 +10,8 @@ public:
 	Computer *m_Computer;
 	ShortTermScheduler m_ShortTerm;
 	Scheduler m_Scheduler;
-
-	OS(Computer *theComputer);
+	MMU m_MMU;
+	OS(Computer *theComputer, bool UseMMU=false);
 
 	std::map<int, PCB*> m_PCB_Map; //map is the C++ version of dictionary
 

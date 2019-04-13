@@ -7,15 +7,15 @@ Memory::Memory(int SIZE, int _VirtualMemory)
 	memory = new MemoryWord[Size];
 	Clear();
 
-	VirtualMemory = _VirtualMemory;
+	//VirtualMemory = _VirtualMemory;
 
-	if (VirtualMemory >0)
-	{
-		//PageMap = (PageStruct*) calloc(VirtaulMemory / PAGE_SIZE, sizeof(PageStruct));
-		PageMap = new PageStruct[VirtualMemory / PAGE_SIZE];
-		FrameMap = new int[Size];
-		memset(FrameMap, 0, sizeof(int)*Size);
-	}
+	//if (VirtualMemory >0)
+	//{
+	//	//PageMap = (PageStruct*) calloc(VirtaulMemory / PAGE_SIZE, sizeof(PageStruct));
+	//	//PageMap = new PageStruct[VirtualMemory / PAGE_SIZE];
+	//	//FrameMap = new int[Size];
+	//	memset(FrameMap, 0, sizeof(int)*Size);
+	//}
 }
 
 void Memory::Clear()
@@ -24,23 +24,23 @@ void Memory::Clear()
 		memory[i].Clear();
 }
 
-int Memory::MapToFrame(int PageNum, int ProcessID, int PC)
-{
-	if (!PageMap) return PageNum;
-	if (PageNum < 0 || PageNum >= VirtualMemory / PAGE_SIZE)
-		throw RavosInvalidMemoryAddressException(ProcessID, PageNum, PC);
-
-	PageStruct *Page = &PageMap[PageNum];
-
-	if (ProcessID >= 0)
-		if (Page->ProcessID != ProcessID) throw RavosMemoryProtectionException(ProcessID, PageNum, PC);
-
-	if (Page->FrameNum >= 0) return Page->FrameNum;
-
-	// We have a page fault
-	throw RavosPagingFaultException(ProcessID, PageNum, PC);
-	return 0;
-}
+//int Memory::MapToFrame(int PageNum, int ProcessID, int PC)
+//{
+//	if (!PageMap) return PageNum;
+//	if (PageNum < 0 || PageNum >= VirtualMemory / PAGE_SIZE)
+//		throw RavosInvalidMemoryAddressException(ProcessID, PageNum, PC);
+//
+//	PageStruct *Page = &PageMap[PageNum];
+//
+//	if (ProcessID >= 0)
+//		if (Page->ProcessID != ProcessID) throw RavosMemoryProtectionException(ProcessID, PageNum, PC);
+//
+//	if (Page->FrameNum >= 0) return Page->FrameNum;
+//
+//	// We have a page fault
+//	throw RavosPagingFaultException(ProcessID, PageNum, PC);
+//	return 0;
+//}
 
 //void Memory::write(int index, MemoryWord t, int Offset, int PID, int PC)
 //{

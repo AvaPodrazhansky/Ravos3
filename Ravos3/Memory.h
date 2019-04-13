@@ -91,7 +91,7 @@ public:
 	int GetSize() { return Size; }
 
 	// Assures a page is in memory (i.e. has a frame) 
-	int MapToFrame(int PageNum, int ProcessID=-1, int PC=-1);
+	//int MapToFrame(int PageNum, int ProcessID=-1, int PC=-1);
 
 	void write(int index, MemoryWord t, int Offset);
 	MemoryWord read(int index, int Offset);

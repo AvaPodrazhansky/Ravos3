@@ -18,7 +18,7 @@ int main()
 	}
 
 	std::cout << "Ready to run\n";
-
+/*
 	//printf("%5s %5s %9s %9s\n", "CPU", "Job", "Priority", "Length");
 
 	theOS.m_Scheduler.FillJobQueue();
@@ -79,8 +79,23 @@ int main()
 		std::cout << std::hex << theOS.m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk(), -2, -2) << "\n";
 	}
 	std::cout << "Done!" << std::endl;
+	*/
+
+	PCB* pcb1 = theOS.m_PCB_Map.at(1);
+	PCB* pcb2 = theOS.m_PCB_Map.at(2);
+
+	for (int i = 0; i < 8; i++)
+	{
+		theOS.m_MMU.ReadOrPageFault(i, pcb1);
+	}
+	
+	for (int i = 0; i < 8; i++)
+	{
+		theOS.m_MMU.ReadOrPageFault(i, pcb2);
+	}
+
 }
-//	this.thread.Sleep(10);
+
 
 	
 

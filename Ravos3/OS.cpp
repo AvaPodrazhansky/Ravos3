@@ -3,7 +3,7 @@
 #include <fstream>
 #include <math.h>
 
-OS::OS(Computer *theComputer) :m_Scheduler(this), m_ShortTerm(this)
+OS::OS(Computer *theComputer, bool UseMMU) :m_Scheduler(this), m_ShortTerm(this), m_MMU(this, true)
 {
 	m_Computer = theComputer;
 	
