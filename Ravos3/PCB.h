@@ -24,6 +24,7 @@ private:
 	int ProgramSize;  // Length of the program
 	int StartIndexDisk;
 	int StartIndexRAM;
+	PageStruct PageTable[18];
 
 	int InputBufferSize;
 	int InputBufferStart;  // Location on disk where it starts
