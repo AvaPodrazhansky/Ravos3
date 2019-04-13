@@ -174,7 +174,7 @@ bool OS::Load(std::string filename)
 		{
 			//std::string dataBufInfo = str.substr(8);
 			int blen = assignDataBuffToPCB(tempcb, str, indexForData);//parses and assigns info to PCB and returns length of instructions
-//			tempcb->StartIndexDisk = indexForData;
+			//tempcb->StartIndexDisk = indexForData;
 			for (int j = 0; j < blen; j++)
 			{
 				std::getline(infile, str, '\n');//(source, destination, delimiter)
@@ -186,7 +186,16 @@ bool OS::Load(std::string filename)
 					m_Computer->m_RAM.write(0,b,indexForInstruc++);*/
 			}
 			indexForData += blen ;
-
+			int newBlenDivisbleByFour;
+			if (indexForData % 4 != 0) //takes 
+			{
+				newBlenDivisbleByFour = (4 - (indexForData % 4)) + indexForData;
+				for (indexForData; indexForData < newBlenDivisbleByFour; indexForData++)
+				{
+					MemoryWord k = MemoryWord(0);
+					m_Computer->m_Disk.write(indexForData, k, 0);
+				}
+			}
 			tempcb->setPercentOfCachePerProcess();
 			tempcb->setPercentofRAMPerProcess();
 			//tempcb->state = Waiting;
