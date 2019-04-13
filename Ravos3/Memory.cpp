@@ -42,53 +42,67 @@ int Memory::MapToFrame(int PageNum, int ProcessID, int PC)
 	return 0;
 }
 
-void Memory::write(int index, MemoryWord t, int Offset, int PID, int PC)
+//void Memory::write(int index, MemoryWord t, int Offset, int PID, int PC)
+//{
+//	assert(PID >= 0 || PID == -2);
+//	assert(PC >= 0 || PC == -2);
+//
+//	index += Offset;
+//
+//	if (!PageMap) 
+//	{
+//		if (index < 0 || index >= Size)
+//			throw RavosInvalidMemoryAddressException(PID, index, PC);
+//		std::lock_guard<std::mutex> lock(LockMutex);
+//		memory[index] = t;
+//	}
+//	else
+//	{
+//		int PageOffset = index % PAGE_SIZE;
+//		int Loc = MapToFrame(index / PAGE_SIZE) + PageOffset;
+//
+//		std::lock_guard<std::mutex> lock(LockMutex);
+//		memory[Loc] = t;
+//	}
+//}
+
+//MemoryWord Memory::read(int index, int Offset, int PID, int PC)
+//{
+//	assert(PID>=0 || PID==-2);
+//	assert(PC >= 0 || PC == -2);
+//
+//	index += Offset;
+//
+//	if (!PageMap)
+//	{
+//		if (index < 0 || index >= Size)
+//			throw RavosInvalidMemoryAddressException(PID, index, PC);
+//		std::lock_guard<std::mutex> lock(LockMutex);
+//
+//		return memory[index];
+//	}
+//	else
+//	{
+//		int PageOffset = index % PAGE_SIZE;
+//		int Loc = MapToFrame(index / PAGE_SIZE) + PageOffset;
+//
+//		std::lock_guard<std::mutex> lock(LockMutex);
+//		return memory[Loc];
+//	}
+//}
+
+void Memory::write(int index, MemoryWord t, int Offset)
 {
-	assert(PID >= 0 || PID == -2);
-	assert(PC >= 0 || PC == -2);
-
 	index += Offset;
-
-	if (!PageMap) 
-	{
-		if (index < 0 || index >= Size)
-			throw RavosInvalidMemoryAddressException(PID, index, PC);
-		std::lock_guard<std::mutex> lock(LockMutex);
-		memory[index] = t;
-	}
-	else
-	{
-		int PageOffset = index % PAGE_SIZE;
-		int Loc = MapToFrame(index / PAGE_SIZE) + PageOffset;
-
-		std::lock_guard<std::mutex> lock(LockMutex);
-		memory[Loc] = t;
-	}
+	std::lock_guard<std::mutex> lock(LockMutex);
+	memory[index] = t;
 }
 
-MemoryWord Memory::read(int index, int Offset, int PID, int PC)
+MemoryWord Memory::read(int index, int Offset)
 {
-	assert(PID>=0 || PID==-2);
-	assert(PC >= 0 || PC == -2);
-
 	index += Offset;
-
-	if (!PageMap)
-	{
-		if (index < 0 || index >= Size)
-			throw RavosInvalidMemoryAddressException(PID, index, PC);
-		std::lock_guard<std::mutex> lock(LockMutex);
-
-		return memory[index];
-	}
-	else
-	{
-		int PageOffset = index % PAGE_SIZE;
-		int Loc = MapToFrame(index / PAGE_SIZE) + PageOffset;
-
-		std::lock_guard<std::mutex> lock(LockMutex);
-		return memory[Loc];
-	}
+	std::lock_guard<std::mutex> lock(LockMutex);
+	return memory[index];
 }
 
 void Memory::clearEverything()

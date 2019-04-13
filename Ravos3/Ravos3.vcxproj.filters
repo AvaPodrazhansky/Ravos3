@@ -48,6 +48,9 @@
     <ClInclude Include="CPUMetrics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MMU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CPUMetrics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MMU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

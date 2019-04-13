@@ -81,9 +81,9 @@ class Memory {
 	int Size;
 	MemoryWord *memory;
 
-	PageStruct *PageMap = NULL;
-	int VirtualMemory = -1;
-	int *FrameMap;
+	//PageStruct *PageMap = NULL;
+	//int VirtualMemory = -1;
+	//int *FrameMap;
 
 	std::mutex LockMutex;
 
@@ -95,9 +95,9 @@ public:
 	// Assures a page is in memory (i.e. has a frame) 
 	int MapToFrame(int PageNum, int ProcessID=-1, int PC=-1);
 
-	void write(int index, MemoryWord t, int Offset, int PID = -1, int PC = -1);
-	MemoryWord read(int index, int Offset, int PID = -1, int PC = -1);
-	unsigned int readContents(int index, int Offset, int PID=-1, int PC=-1) { return read(index, Offset, PID, PC).Contents; }
+	void write(int index, MemoryWord t, int Offset);
+	MemoryWord read(int index, int Offset);
+	unsigned int readContents(int index, int Offset) { return read(index, Offset).Contents; }
 
 	void clearEverything();
 

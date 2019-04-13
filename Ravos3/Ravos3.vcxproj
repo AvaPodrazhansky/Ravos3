@@ -156,6 +156,7 @@
     <ClInclude Include="CPUMetrics.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Metrics.h" />
+    <ClInclude Include="MMU.h" />
     <ClInclude Include="OS.h" />
     <ClInclude Include="PCB.h" />
     <ClInclude Include="pch.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="CPUMetrics.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Metrics.cpp" />
+    <ClCompile Include="MMU.cpp" />
     <ClCompile Include="OS.cpp" />
     <ClCompile Include="PCB.cpp" />
     <ClCompile Include="pch.cpp">
