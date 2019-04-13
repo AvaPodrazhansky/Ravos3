@@ -57,6 +57,10 @@ public:
 		state = New;
 		ProgramSize = 0;
 		IOCount = 0;
+		for (int i = 0; i < 18; i++) 
+		{
+			PageTable[i].FrameNum = -1;
+		}
 	}
 
 
