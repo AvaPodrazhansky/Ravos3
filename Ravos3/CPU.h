@@ -54,7 +54,7 @@ public:
 	void FlushBuffers();
 
 	//Variables for Testing
-	bool isExecuting = true;  //Executes instructions if true
+	bool isExecuting = false;  //Executes instructions if true
 	bool printInstruction = false; //Prints formatted instruction if true
 	bool printContents = false; //Prints hex value of instruction if true
 	bool printLog = false;

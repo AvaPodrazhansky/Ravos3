@@ -10,6 +10,8 @@ private:
 	int FrameTracker[1024 / PAGE_SIZE];
 
 	bool ManageMemory;
+
+	int OccuranceTracker[31];
 	//Memory m_RAM;
 	//Memory m_Disk;
 
@@ -24,4 +26,13 @@ public:
 
 	void RemovePagesFromRAM(PCB* pcb);
 
+	void printValidPages(PCB *pcb);
+	
+	void printValidFrames();
+
+	void printPage(int FrameNumber);
+	
+	void DeleteSinglePage(PCB* pcb, int PageNumber);
+
+	int DeleteLeastRecentlyUsedPage();
 };

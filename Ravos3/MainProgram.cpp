@@ -81,17 +81,40 @@ int main()
 	std::cout << "Done!" << std::endl;
 	*/
 
-	PCB* pcb1 = theOS.m_PCB_Map.at(1);
-	PCB* pcb2 = theOS.m_PCB_Map.at(2);
+	//PCB* pcb1 = theOS.m_PCB_Map.at(1);
+	//PCB* pcb2 = theOS.m_PCB_Map.at(2);
 
-	for (int i = 0; i < 8; i++)
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	theOS.m_MMU.ReadOrPageFault(i, pcb1);
+	//}
+	//
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	theOS.m_MMU.ReadOrPageFault(i, pcb2);
+	//}
+
+	//theOS.m_MMU.WriteOrPageFault(4, MemoryWord(0xFFFFFFFF), pcb1);
+	//theOS.m_MMU.WriteOrPageFault(9, MemoryWord(0xAAAAAAAA), pcb1);
+	//theOS.m_MMU.WriteOrPageFault(2, MemoryWord(0xBBBBBBBB), pcb2);
+	//theOS.m_MMU.WriteOrPageFault(31, MemoryWord(0xCCCCCCCC), pcb2);
+	//theOS.m_MMU.printValidFrames();
+	//theOS.m_MMU.RemovePagesFromRAM(pcb1);
+	//for (int i = 0; i < 63; i++)
+	//{
+	//	std::cout << std::dec << i << " " << std::hex << theOS.m_Computer->m_Disk.read(i, 0).Contents << "\n";
+	//}
+	//
+	//theOS.m_MMU.printValidFrames();
+
+	for (int i = 1; i <= 16; i++)
 	{
-		theOS.m_MMU.ReadOrPageFault(i, pcb1);
-	}
-	
-	for (int i = 0; i < 8; i++)
-	{
-		theOS.m_MMU.ReadOrPageFault(i, pcb2);
+		PCB* pcb1 = theOS.m_PCB_Map.at(i);
+		for (int i = 0; i < pcb1->totalSpaceInRAM(); i++)
+			{
+				theOS.m_MMU.ReadOrPageFault(i, pcb1);
+			}
+		theOS.m_MMU.printValidFrames();
 	}
 
 }

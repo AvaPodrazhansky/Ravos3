@@ -25,8 +25,8 @@
 
 #include "Memory.h"
 #include "Metrics.h"
-#include "MMU.h"
 #include "PCB.h"
+#include "MMU.h"
 #include "CPUMetrics.h"
 #include "CPU.h"
 #include "ShortTermScheduler.h"

@@ -71,7 +71,9 @@ class PageStruct
 {
 public:
 	int ProcessID;
-	int FrameNum;
+	int FrameNum = -1;
+	//auto start = std::chrono::high_resolution_clock::now();//start time of process
+	std::chrono::high_resolution_clock::time_point timeSinceUsed = std::chrono::high_resolution_clock::now();
 };
 
 

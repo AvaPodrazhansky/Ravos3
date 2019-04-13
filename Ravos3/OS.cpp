@@ -159,7 +159,7 @@ bool OS::Load(std::string filename)
 				//MemoryWord k = MemoryWord(static_cast<int>(instruct));
 //				m_Computer->m_RAM.write((i + indexForInstruc), k, 0);//writes to ram   ***** Offset already added into indexForInstruct
 				//m_Computer->m_RAM.write(i, k, indexForInstruc);//writes to ram   ***** Offset already added into indexForInstruct
-				m_Computer->m_Disk.write(i, k, indexForData, -2, -2);//writes to ram   ***** Offset already added into indexForInstruct
+				m_Computer->m_Disk.write(i, k, indexForData);//writes to ram   ***** Offset already added into indexForInstruct
 			}
 
 			indexForData += jlen;
@@ -180,7 +180,7 @@ bool OS::Load(std::string filename)
 				std::getline(infile, str, '\n');//(source, destination, delimiter)
 				MemoryWord b = MemoryWord(HexNumToInt(str));
 //				m_Computer->m_Disk.write((j + indexForData), b, 0);//writes to disk
-				m_Computer->m_Disk.write(j, b, indexForData, -2, -2);//writes to disk *****
+				m_Computer->m_Disk.write(j, b, indexForData);//writes to disk *****
 
 				/*if (j < tempcb->InputBufferSize || j >= tempcb->InputBufferSize + tempcb->OutputBufferSize)
 					m_Computer->m_RAM.write(0,b,indexForInstruc++);*/
