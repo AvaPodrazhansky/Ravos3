@@ -51,7 +51,7 @@ void MMU::printPage(int FrameNumber)
 
 void MMU::printValidFrames()
 {
-	printf("%4s %10s %5s %5s\n", "Job", "Instruction", "Page", "Frame", "Index");
+	printf("%4s %10s %5s %5s %5s\n", "Job", "Instruction", "Page", "Frame", "Index");
 
 	for (int i = 0; i < 1024 / 4; i++)
 	{
@@ -194,7 +194,7 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 MemoryWord MMU::ReadOrPageFault(int index, PCB* pcb)
 {
 	if(!ManageMemory)
-		return theOS->m_Computer->m_RAM.read(index, pcb->getStartIndexRAM);
+		return theOS->m_Computer->m_RAM.read(index, pcb->getStartIndexRAM());
 
 	PageStruct *page = &pcb->PageTable[index / 4];
 	
@@ -220,7 +220,7 @@ void MMU::WriteOrPageFault(int index, MemoryWord w, PCB* pcb)
 {
 	if (!ManageMemory)
 	{
-		theOS->m_Computer->m_RAM.write(index, w, pcb->getStartIndexRAM);
+		theOS->m_Computer->m_RAM.write(index, w, pcb->getStartIndexRAM());
 		return;
 	}
 
