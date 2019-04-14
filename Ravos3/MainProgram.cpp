@@ -109,6 +109,7 @@ int main()
 
 	for (int i = 1; i <= 16; i++)
 	{
+		printf("%4s %10s %5s %5s %5s\n", "Job", "Instruction", "Page", "Frame", "Index");
 		PCB* pcb1 = theOS.m_PCB_Map.at(i);
 		for (int i = 0; i < pcb1->totalSpaceInRAM(); i++)
 			{
