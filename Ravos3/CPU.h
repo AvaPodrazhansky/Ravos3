@@ -31,6 +31,7 @@ public:
 	Memory *m_Memory = NULL;
 	Memory *m_Disk = NULL;
 	PCB *m_PCB = NULL;
+	MMU * m_MMU = NULL;
 	CPUMetrics *m_CPUMetrics = NULL;
 
 	MemoryWord m_Cache[MAX_INSTRUCTION_LENGTH];
@@ -54,7 +55,7 @@ public:
 	void FlushBuffers();
 
 	//Variables for Testing
-	bool isExecuting = false;  //Executes instructions if true
+	bool isExecuting = true;  //Executes instructions if true
 	bool printInstruction = false; //Prints formatted instruction if true
 	bool printContents = false; //Prints hex value of instruction if true
 	bool printLog = false;

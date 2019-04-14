@@ -110,7 +110,8 @@ bool CPU::Execute()
 	auto start = std::chrono::high_resolution_clock::now();//start time of process
 	do
 	{
-		MemoryWord w = m_Memory->read(m_PC, m_PCB->StartIndexRAM); //Fetch
+		MemoryWord w = m_MMU->ReadOrPageFault(m_PC, m_PCB);
+	
 		//MemoryWord w = m_Cache[m_PC]; //Fetch
 		Instruction i = Decode(w);
 		try
@@ -130,7 +131,7 @@ bool CPU::Execute()
 							unsigned int offsetAddress = w.Address16() / 4;
 							//				if (1) std::cout << "   -- Read at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 							
-							m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk, m_PCB->getProcessID(), m_PC); //will probably have to offset based on start location in disk
+							m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
 							
 							//if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 			//				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << " offset " << m_PCB->StartIndexDisk << "]\n";
@@ -139,7 +140,7 @@ bool CPU::Execute()
 						{
 							//				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 							
-							m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk, m_PCB->getProcessID(), m_PC);
+							m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);
 							
 							//if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 
@@ -164,7 +165,7 @@ bool CPU::Execute()
 						//				if (1) std::cout << "   -- Write at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->OutputBufferStart << ") value " << m_Register[w.RegR1()] << "\n";
 						
 						MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
-						m_Disk->write(offsetAddress, temp, m_PCB->StartIndexDisk, m_PCB->getProcessID(), m_PC); //might possibly be reg1
+						m_Disk->write(offsetAddress, temp, m_PCB->StartIndexDisk); //might possibly be reg1
 						////
 																												//if (1) std::cout << "   -- Write at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 						//m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
@@ -172,7 +173,7 @@ bool CPU::Execute()
 					else
 					{
 						MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
-						m_Disk->write(m_Register[w.RegR2()] / 4, temp, m_PCB->StartIndexDisk, m_PCB->getProcessID(), m_PC);
+						m_Disk->write(m_Register[w.RegR2()] / 4, temp, m_PCB->StartIndexDisk);
 					}
 					m_PCB->updateIOCount();
 
@@ -188,16 +189,14 @@ bool CPU::Execute()
 					PreExecute(w, "I_ST", AssertInstructionTypeI);
 
 					MemoryWord temp = (MemoryWord)m_Register[w.RegB()];
-					m_Memory->write(m_Register[w.RegD()] / 4, temp, m_PCB->getStartIndexRAM(), m_PCB->getProcessID(), m_PC);
+					m_MMU->WriteOrPageFault(m_Register[w.RegD()] / 4, temp, m_PCB);
 					break;
 				}
 				//Loads the content of an address into a reg
 				case I_LW:
 				{
 					PreExecute(w, "I_LW", AssertInstructionTypeI);
-
-					m_Register[w.RegD()] = m_Memory->readContents((m_Register[w.RegB()] + w.Address16()) / 4, m_PCB->getStartIndexRAM(), m_PCB->getProcessID(), m_PC);
-
+					m_Register[w.RegD()] = (m_MMU->ReadOrPageFault((m_Register[w.RegB()] + w.Address16()) / 4, m_PCB)).Contents;
 					break;
 				}
 				//Transfers the content of one register into another
