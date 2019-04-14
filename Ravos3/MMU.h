@@ -2,11 +2,13 @@
 
 class MMU
 {
+	friend class Scheduler;
+	friend class ShortTermScheduler;
 private:
 	OS *theOS = NULL;
 
 	// PageStruct m_PageTable;
-	std::mutex LockFrameTracker;
+	std::mutex m_Lock;
 	int FrameTracker[1024 / PAGE_SIZE];
 
 	bool ManageMemory;

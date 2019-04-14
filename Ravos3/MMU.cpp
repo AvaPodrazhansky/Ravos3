@@ -69,7 +69,7 @@ void MMU::RemovePagesFromRAM(PCB* pcb)
 	//	if (FrameTracker[i] == pcb->getProcessID())
 	//	{
 
-	//		std::lock_guard<std::mutex> lock(LockFrameTracker);
+	//		std::lock_guard<std::mutex> lock(m_Lock);
 	//		FrameTracker[i] = -1;
 	//	}
 	//}
@@ -77,8 +77,10 @@ void MMU::RemovePagesFromRAM(PCB* pcb)
 	{
 		if (pcb->PageTable[i].FrameNum >= 0)
 		{
+			std::lock_guard<std::mutex> lock(m_Lock);
 			for (int j = 0; j < 4; j++)
 			{
+				
 				//write to disk
 				MemoryWord w = theOS->m_Computer->m_RAM.read(j, pcb->PageTable[i].FrameNum * 4);
 				theOS->m_Computer->m_Disk.write(i * 4 + j, w, pcb->getStartIndexDisk());
@@ -86,7 +88,7 @@ void MMU::RemovePagesFromRAM(PCB* pcb)
 				theOS->m_Computer->m_RAM.write(j, MemoryWord(0), pcb->PageTable[i].FrameNum * 4);
 			}
 			//Allow other processes to use frame
-			std::lock_guard<std::mutex> lock(LockFrameTracker);
+			//std::lock_guard<std::mutex> lock(m_Lock);
 			OccuranceTracker[pcb->getProcessID()]--;
 			FrameTracker[pcb->PageTable[i].FrameNum] = -1;
 		}
@@ -96,19 +98,25 @@ void MMU::RemovePagesFromRAM(PCB* pcb)
 
 void MMU::DeleteSinglePage(PCB* pcb, int PageNumber)
 {
+	int FrameNumber = pcb->PageTable[PageNumber].FrameNum;
+
+	//Allow other processes to use frame
+	std::lock_guard<std::mutex> lock(m_Lock);
+	OccuranceTracker[pcb->getProcessID()]--;
+	FrameTracker[FrameNumber] = -1;
+	pcb->PageTable[PageNumber].FrameNum = -1;
+
+
 	for (int j = 0; j < 4; j++)
 	{
 		//write to disk
-		MemoryWord w = theOS->m_Computer->m_RAM.read(j, pcb->PageTable[PageNumber].FrameNum * 4);
+		MemoryWord w = theOS->m_Computer->m_RAM.read(j, FrameNumber * 4);
 		theOS->m_Computer->m_Disk.write(PageNumber * 4 + j, w, pcb->getStartIndexDisk());
 		//delete from ram
-		theOS->m_Computer->m_RAM.write(j, MemoryWord(0), pcb->PageTable[PageNumber].FrameNum * 4);
+		theOS->m_Computer->m_RAM.write(j, MemoryWord(0), FrameNumber * 4);
 	}
-	pcb->PageTable[PageNumber].FrameNum = -1;
-	//Allow other processes to use frame
-	std::lock_guard<std::mutex> lock(LockFrameTracker);
-	OccuranceTracker[pcb->getProcessID()]--;
-	FrameTracker[pcb->PageTable[PageNumber].FrameNum] = -1;
+
+
 }
 
 int MMU::DeleteLeastRecentlyUsedPage()
@@ -156,7 +164,7 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 	{
 		if (FrameTracker[i] <= 0)
 		{
-			std::lock_guard<std::mutex> lock(LockFrameTracker);
+			std::lock_guard<std::mutex> lock(m_Lock);
 			std::cout << "Frame: " << i << std::endl;
 			FrameTracker[i] = pcb->getProcessID();
 			//write page to RAM
@@ -185,6 +193,8 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 
 MemoryWord MMU::ReadOrPageFault(int index, PCB* pcb)
 {
+	//if(!ManageMemory)theOS->m_Computer->m_RAM.read(page->FrameNum * 4, index / 4);
+
 	PageStruct *page = &pcb->PageTable[index / 4];
 	
 	// If no Page Fault
