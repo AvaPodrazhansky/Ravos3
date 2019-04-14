@@ -156,6 +156,25 @@ int MMU::DeleteLeastRecentlyUsedPage()
 
 }
 
+void MMU::AssignPageToFrame(int FrameNumber, int index, PCB* pcb)
+{
+	PageStruct *page = &pcb->PageTable[index / 4];
+
+	std::lock_guard<std::mutex> lock(m_Lock);
+	std::cout << "Frame: " << FrameNumber << std::endl;
+	FrameTracker[FrameNumber] = pcb->getProcessID();
+	//write page to RAM
+	for (int j = 0; j < 4; j++)
+	{
+		MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
+		theOS->m_Computer->m_RAM.write(FrameNumber * 4, m, j);
+	}
+	page->FrameNum = FrameNumber;
+	OccuranceTracker[pcb->getProcessID()]++;
+	printPage(FrameNumber);
+	return;
+}
+
 void MMU::HandlePageFault(int index, PCB* pcb)
 {
 	PageStruct *page = &pcb->PageTable[index / 4];
@@ -164,29 +183,31 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 	{
 		if (FrameTracker[i] <= 0)
 		{
-			std::lock_guard<std::mutex> lock(m_Lock);
-			std::cout << "Frame: " << i << std::endl;
-			FrameTracker[i] = pcb->getProcessID();
-			//write page to RAM
-			for (int j = 0; j < 4; j++)
-			{
-				MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
-				theOS->m_Computer->m_RAM.write(i * 4, m, j);
-			}
-			page->FrameNum = i;
-			OccuranceTracker[pcb->getProcessID()]++;
-			printPage(i);
-			return;
+			//std::lock_guard<std::mutex> lock(m_Lock);
+			//std::cout << "Frame: " << i << std::endl;
+			//FrameTracker[i] = pcb->getProcessID();
+			////write page to RAM
+			//for (int j = 0; j < 4; j++)
+			//{
+			//	MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
+			//	theOS->m_Computer->m_RAM.write(i * 4, m, j);
+			//}
+			//page->FrameNum = i;
+			//OccuranceTracker[pcb->getProcessID()]++;
+			//printPage(i);
+			//return;
+			AssignPageToFrame(i, index, pcb);
 		}
 	}
 
 	//Handle Full RAM
 	int newFrame = DeleteLeastRecentlyUsedPage();
-	for (int j = 0; j < 4; j++)
-	{
-		MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
-		theOS->m_Computer->m_RAM.write(newFrame * 4, m, j);
-	}
+	AssignPageToFrame(newFrame, index, pcb);
+	//for (int j = 0; j < 4; j++)
+	//{
+	//	MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
+	//	theOS->m_Computer->m_RAM.write(newFrame * 4, m, j);
+	//}
 	return;
 
 }

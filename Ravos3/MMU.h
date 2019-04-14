@@ -37,4 +37,6 @@ public:
 	void DeleteSinglePage(PCB* pcb, int PageNumber);
 
 	int DeleteLeastRecentlyUsedPage();
+
+	void AssignPageToFrame(int FrameNumber, int index, PCB* pcb);
 };
