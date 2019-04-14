@@ -186,7 +186,7 @@ bool Scheduler::FillReadyQueue()
 		int tempProcessID = m_JobQueue.top()->getProcessID();
 		PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
 
-		if (theOS->m_MMU->ManageMemory == true)
+		if (theOS->m_MMU.ManageMemory == true)
 		{
 			for (int i = 0; i < 16; i++)//write the first 4 pages into RAM to start 
 			{

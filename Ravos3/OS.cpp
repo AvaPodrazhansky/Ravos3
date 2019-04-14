@@ -7,6 +7,10 @@ OS::OS(Computer *theComputer, bool UseMMU) :m_Scheduler(this), m_ShortTerm(this)
 {
 	m_Computer = theComputer;
 	
+	for (int i = 0; i < 4; i++) 
+	{
+		m_Computer->m_CPU[i].m_MMU = &m_MMU;
+	}
 	//for(int i = 0; i<m_Computer->GetNumCPUs(); i++)
 	//	m_CPU_ReadyQueue.push(i);
 }
