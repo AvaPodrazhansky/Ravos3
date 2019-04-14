@@ -219,7 +219,10 @@ MemoryWord MMU::ReadOrPageFault(int index, PCB* pcb)
 void MMU::WriteOrPageFault(int index, MemoryWord w, PCB* pcb)
 {
 	if (!ManageMemory)
-		return theOS->m_Computer->m_RAM.read(index, pcb->getStartIndexRAM);
+	{
+		theOS->m_Computer->m_RAM.write(index, w, pcb->getStartIndexRAM);
+		return;
+	}
 
 	PageStruct *page = &pcb->PageTable[index / 4];
 
