@@ -234,11 +234,9 @@ MemoryWord MMU::ReadOrPageFault(int index, PCB* pcb)
 	}
 
 	else
-	{	//handle page fault
-		//std::cout << "Page Fault\n";
-		pcb->blockProcess();
+	{	
 		HandlePageFault(index, pcb);
-		pcb->unblockProcess();
+
 		//read from new frame num
 		page->timeSinceUsed = std::chrono::high_resolution_clock::now();
 		return theOS->m_Computer->m_RAM.read(page->FrameNum * 4, index % 4);
@@ -265,10 +263,8 @@ void MMU::WriteOrPageFault(int index, MemoryWord w, PCB* pcb)
 	}
 	else
 	{	
-		//handle page fault
-		pcb->blockProcess();
 		HandlePageFault(index, pcb);
-		pcb->unblockProcess();
+	
 		//read from new frame num
 		page->timeSinceUsed = std::chrono::high_resolution_clock::now();
 		theOS->m_Computer->m_RAM.write(index % 4, w, page->FrameNum * 4);
