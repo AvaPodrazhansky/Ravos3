@@ -5,8 +5,6 @@
 //#include <iostream>
 
 
-
-
 //This is ther Driver for now
 int main()
 {
@@ -124,6 +122,7 @@ int main()
 		//}
 		*/
 		
+			theOS.m_Scheduler.SchedType = FIFO;
 			theOS.m_Scheduler.FillJobQueue();
 			theOS.m_Scheduler.FillReadyQueue();
 
