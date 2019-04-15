@@ -96,24 +96,25 @@ void MMU::RemovePagesFromRAM(PCB* pcb)
 
 }
 
-void MMU::DeleteSinglePage(PCB* pcb, int PageNumber)
+void MMU::DeleteSinglePage(PCB* pcb, int PageNumber, int FrameNum)
 {
-	int FrameNumber = pcb->PageTable[PageNumber].FrameNum;
+	std::lock_guard<std::mutex> lock(m_Lock);
+	pcb->PageTable[PageNumber].FrameNum = FrameNum;
 
 	//Allow other processes to use frame
-	std::lock_guard<std::mutex> lock(m_Lock);
+
 	OccuranceTracker[pcb->getProcessID()]--;
-	FrameTracker[FrameNumber] = -1;
+	FrameTracker[FrameNum] = -1;
 	pcb->PageTable[PageNumber].FrameNum = -1;
 
 
 	for (int j = 0; j < 4; j++)
 	{
 		//write to disk
-		MemoryWord w = theOS->m_Computer->m_RAM.read(j, FrameNumber * 4);
+		MemoryWord w = theOS->m_Computer->m_RAM.read(j, FrameNum * 4);
 		theOS->m_Computer->m_Disk.write(PageNumber * 4 + j, w, pcb->getStartIndexDisk());
 		//delete from ram
-		theOS->m_Computer->m_RAM.write(j, MemoryWord(0), FrameNumber * 4);
+		theOS->m_Computer->m_RAM.write(j, MemoryWord(0), FrameNum * 4);
 	}
 
 
@@ -140,17 +141,20 @@ int MMU::DeleteLeastRecentlyUsedPage()
 
 	for (int i = 1; i < 18; i++)
 	{
-		auto timeSince = std::chrono::duration_cast<std::chrono::milliseconds>(stop - pcb->PageTable[i].timeSinceUsed);
-		if (maxSince > timeSince) 
+		if (pcb->PageTable[i].FrameNum >= 0)
 		{
-			maxSince = timeSince;
-			MaxPageSince = i;
+			auto timeSince = std::chrono::duration_cast<std::chrono::milliseconds>(stop - pcb->PageTable[i].timeSinceUsed);
+			if (maxSince > timeSince)
+			{
+				maxSince = timeSince;
+				MaxPageSince = i;
+			}
 		}
 	}
 	
 	int Frame = pcb->PageTable[MaxPageSince].FrameNum;
 	
-	DeleteSinglePage(pcb, MaxPageSince);
+	DeleteSinglePage(pcb, MaxPageSince, Frame);
 
 	return Frame;
 
@@ -160,23 +164,25 @@ void MMU::AssignPageToFrame(int FrameNumber, int index, PCB* pcb)
 {
 	PageStruct *page = &pcb->PageTable[index / 4];
 
-	std::lock_guard<std::mutex> lock(m_Lock);
-	std::cout << "Frame: " << FrameNumber << std::endl;
+	//std::lock_guard<std::mutex> lock(m_Lock);
+//	std::cout << "Frame: " << FrameNumber << std::endl;
 	FrameTracker[FrameNumber] = pcb->getProcessID();
+	int index2 = index / 4;
 	//write page to RAM
 	for (int j = 0; j < 4; j++)
 	{
-		MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
+		MemoryWord m = theOS->m_Computer->m_Disk.read(index2 * 4 + j, pcb->getStartIndexDisk());
 		theOS->m_Computer->m_RAM.write(FrameNumber * 4, m, j);
 	}
 	page->FrameNum = FrameNumber;
 	OccuranceTracker[pcb->getProcessID()]++;
-	printPage(FrameNumber);
+	//printPage(FrameNumber);
 	return;
 }
 
 void MMU::HandlePageFault(int index, PCB* pcb)
 {
+	std::lock_guard<std::mutex> lock(m_Lock);
 	PageStruct *page = &pcb->PageTable[index / 4];
 	
 	for (int i = 0; i < 256; i++)
@@ -197,6 +203,7 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 			//printPage(i);
 			//return;
 			AssignPageToFrame(i, index, pcb);
+			return;
 		}
 	}
 
@@ -223,16 +230,16 @@ MemoryWord MMU::ReadOrPageFault(int index, PCB* pcb)
 	if (page->FrameNum >= 0)
 	{
 		page->timeSinceUsed = std::chrono::high_resolution_clock::now();
-		return theOS->m_Computer->m_RAM.read(page->FrameNum * 4, index / 4);
+		return theOS->m_Computer->m_RAM.read(page->FrameNum * 4, index % 4);
 	}
 
 	else
 	{	//handle page fault
-		std::cout << "Page Fault\n";
+		//std::cout << "Page Fault\n";
 		HandlePageFault(index, pcb);
 		//read from new frame num
 		page->timeSinceUsed = std::chrono::high_resolution_clock::now();
-		return theOS->m_Computer->m_RAM.read(page->FrameNum * 4, index / 4);
+		return theOS->m_Computer->m_RAM.read(page->FrameNum * 4, index % 4);
 	}
 }
 

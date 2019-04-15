@@ -66,11 +66,16 @@ void CPU::CPU_Run_thread()
 
 void CPU::FlushBuffers()
 {
+	if (!m_MMU->ManageMemory)
 	for (int i = m_PCB->getProgramSize() + m_PCB->InputBufferSize; i < m_PCB->getProgramSize() + m_PCB->InputBufferSize + m_PCB->TempBufferSize + m_PCB->OutputBufferSize; i++)
 	{
-		//MemoryWord w = m_Memory->readContents(i, m_PCB->getStartIndexRAM(), -2, -2);
-		//m_Disk->write(i, w, m_PCB->getStartIndexDisk(), -2, -2);
+		MemoryWord w = m_Memory->readContents(i, m_PCB->getStartIndexRAM());
+		m_Disk->write(i, w, m_PCB->getStartIndexDisk());
+		return;
 	}
+		
+	//m_MMU->printValidFrames();
+	m_MMU->RemovePagesFromRAM(m_PCB);
 
 }
 
@@ -131,16 +136,19 @@ bool CPU::Execute()
 							unsigned int offsetAddress = w.Address16() / 4;
 							//				if (1) std::cout << "   -- Read at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 							
-							m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
+							//m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
 							
-							//if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+							m_Register[w.RegR1()] = m_MMU->ReadOrPageFault(offsetAddress, m_PCB).Contents; //will probably have to offset based on start location in disk
+							
+																										   //if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 			//				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << " offset " << m_PCB->StartIndexDisk << "]\n";
 						}
 						else
 						{
 							//				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 							
-							m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);
+							/*m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);*/
+							m_Register[w.RegR1()] = m_MMU->ReadOrPageFault(m_Register[w.RegR2()] / 4, m_PCB).Contents;
 							
 							//if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 
@@ -165,15 +173,18 @@ bool CPU::Execute()
 						//				if (1) std::cout << "   -- Write at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->OutputBufferStart << ") value " << m_Register[w.RegR1()] << "\n";
 						
 						MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
-						m_Disk->write(offsetAddress, temp, m_PCB->StartIndexDisk); //might possibly be reg1
-						////
+						//m_Disk->write(offsetAddress, temp, m_PCB->StartIndexDisk); //might possibly be reg1
+						
+						m_MMU->WriteOrPageFault(offsetAddress, temp, m_PCB);
+																				   ////
 																												//if (1) std::cout << "   -- Write at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
 						//m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
 					}
 					else
 					{
 						MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
-						m_Disk->write(m_Register[w.RegR2()] / 4, temp, m_PCB->StartIndexDisk);
+						//m_Disk->write(m_Register[w.RegR2()] / 4, temp, m_PCB->StartIndexDisk);
+						m_MMU->WriteOrPageFault(m_Register[w.RegR2()] / 4, temp, m_PCB);
 					}
 					m_PCB->updateIOCount();
 
@@ -341,8 +352,6 @@ bool CPU::Execute()
 
 					m_PCB->state = Terminated;
 
-					//Set CPU back to idle (for scheduling)
-				//	m_C_State = IDLE;
 
 					auto stop = std::chrono::high_resolution_clock::now();//end time of process
 					auto completionTime = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);

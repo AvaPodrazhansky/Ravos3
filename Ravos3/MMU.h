@@ -4,6 +4,8 @@ class MMU
 {
 	friend class Scheduler;
 	friend class ShortTermScheduler;
+	friend class CPU;
+
 private:
 	OS *theOS = NULL;
 
@@ -34,7 +36,7 @@ public:
 
 	void printPage(int FrameNumber);
 	
-	void DeleteSinglePage(PCB* pcb, int PageNumber);
+	void DeleteSinglePage(PCB* pcb, int PageNumber, int FrameNum);
 
 	int DeleteLeastRecentlyUsedPage();
 

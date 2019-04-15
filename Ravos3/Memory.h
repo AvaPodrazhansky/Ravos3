@@ -62,7 +62,7 @@ struct MemoryWord
 	// Asserts that an instruction type is J
 	void AssertInstructionTypeJ() { assert(Instruction.InstType == 2); }
 	// Asserts that an instruction type is I/O
-	void AssertInstructionTypeIO() { assert(Instruction.InstType == 3); }
+	void AssertInstructionTypeIO() { assert(Instruction.InstType == 3);}
 
 };
 

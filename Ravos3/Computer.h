@@ -1,7 +1,7 @@
 #pragma once
 // Actual hardware that everything runs on
 
-#define NUM_CPU         1
+#define NUM_CPU         4
 #define MAX_RAM         1024
 #define MAX_RAM_VIRTUAL 2048
 #define MAX_DISK	    2048
