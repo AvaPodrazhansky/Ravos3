@@ -4,6 +4,24 @@
 #include "pch.h"
 //#include <iostream>
 
+void printDisk(OS *theOS)
+{
+	for (int i = 1; i <= theOS->m_PCB_Map.size(); i++)
+	{
+		std::cout << std::dec << "\n* Job " << i << " *\n";
+		PCB* pcb = theOS->m_PCB_Map.at(i);
+		for (int j = 0; j < pcb->getProgramSize() + 44; j++)
+		{
+			if (j == pcb->getProgramSize() + 20 + 12)
+				std::cout << "* Temp *\n";
+			else if (j == pcb->getProgramSize() + 20)
+				std::cout << "* Out  *\n";
+			else if (j == pcb->getProgramSize())
+				std::cout << "* Inpt *\n";
+			printf("%08X \n", theOS->m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk()));
+		}
+	}
+}
 
 //This is ther Driver for now
 int main()
@@ -123,6 +141,7 @@ int main()
 		*/
 		
 			theOS.m_Scheduler.SchedType = FIFO;
+			//theOS.m_MMU.ManageMemory = true;
 			theOS.m_Scheduler.FillJobQueue();
 			theOS.m_Scheduler.FillReadyQueue();
 
@@ -161,14 +180,8 @@ int main()
 		if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
 			theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
 
-
-	for (int i = 1; i <= theOS.m_PCB_Map.size(); i++)
-	{
-		std::cout << std::dec << "Job " << i << " *********************************\n";
-		PCB* pcb = theOS.m_PCB_Map.at(i);
-		for (int j = 0; j < pcb->getProgramSize() + 44; j++)
-			std::cout << std::hex << theOS.m_Computer->m_Disk.readContents(j, pcb->getStartIndexDisk()) << "\n";
-	}
+	OS *OS_Pointer = &theOS;
+	printDisk(OS_Pointer);
 
 }
 	

@@ -260,9 +260,9 @@ void OS::Schedule_and_Run(ScheduleType schedule_algorithm)
 			if (m_Computer->m_CPU[i].m_C_State == IDLE)
 			{
 				m_ShortTerm.Dispatch(i);
-				m_Computer->m_CPU[i].m_C_State = BUSY;
+				//m_Computer->m_CPU[i].m_C_State = BUSY;
 				//theOS.busyCPUs++;
-				//m_Computer->m_CPU[i].CPU_Run_thread();
+				m_Computer->m_CPU[i].CPU_Run_thread();
 				m_ShortTerm.Start_the_CPU(i);
 			}
 		}
