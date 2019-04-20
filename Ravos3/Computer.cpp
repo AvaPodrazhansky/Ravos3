@@ -1,9 +1,11 @@
 #include "pch.h"
 
-Computer::Computer() : m_RAM(MAX_RAM), m_Disk(MAX_DISK)
+Computer::Computer(int _NumOfCPU) : m_RAM(MAX_RAM), m_Disk(MAX_DISK)
 {
+	m_CPU = new CPU[_NumOfCPU];
+	NumOfCPU = _NumOfCPU;
 	//Initialize all CPU's to point to the same RAM and Disk
-	for (int i = 0; i < GetNumCPUs(); ++i)
+	for (int i = 0; i < NumOfCPU; ++i)
 	{
 		m_CPUMetrics = new CPUMetrics();
 		m_CPU[i].m_Disk = &m_Disk;

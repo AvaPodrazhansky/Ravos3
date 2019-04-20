@@ -42,6 +42,7 @@ private:
 	int WaitTime;//num of instructions before current 
 	int IOCount;//number of IO instructions per job
 	int interupts;//num of interupts, will be implemented later
+	int PageFaults;
 	int CompletionTime;//how long a process takes in go through all it's instructions in milliseconds
 	double PercentOfRAMUsed;//percent of RAM that will be used for this process
 	double PercentOfCacheUsed;//percent of Cache that will be used for this process
@@ -57,6 +58,7 @@ public:
 		state = New;
 		ProgramSize = 0;
 		IOCount = 0;
+		PageFaults = 0;
 		for (int i = 0; i < 18; i++) 
 		{
 			PageTable[i].FrameNum = -1;
@@ -161,12 +163,21 @@ public:
 		double RAMpercent = ((static_cast<double>(ProgramSize) / 1024) * 100);//will use MAX_RAM later
 		PercentOfRAMUsed = RAMpercent;
 	}
+	int getPercentOfRAMUsed() 
+	{
+		return PercentOfRAMUsed;
+	}
 
 	void setPercentOfCachePerProcess()
 	{
 		double CachePercent = ((static_cast<double>(ProgramSize) / 28) * 100);//will use MAX_CACHE later
 		PercentOfCacheUsed = CachePercent;
 	}
+	int getPercentOfCacheUsed()
+	{
+		return PercentOfCacheUsed;
+	}
+
 	//called in execute() in CPU
 	void setCompletionTime(int tempCompTime) 
 	{
@@ -183,6 +194,10 @@ public:
 		WaitTime = TOTAL_WAIT_TIME;
 		TOTAL_WAIT_TIME += ProgramSize;
 	}
+	int getWaitTime()
+	{
+		return WaitTime;
+	}
 
 	int getIOCount() 
 	{
@@ -192,6 +207,15 @@ public:
 	void updateIOCount() 
 	{
 		IOCount += 1;
+	}
+
+	void updatePageFaults() 
+	{
+		PageFaults += 1;
+	}
+	int getPageFaults() 
+	{
+		return PageFaults;
 	}
 
 	//This currently is not used, but I think we will eventually use it

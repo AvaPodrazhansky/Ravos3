@@ -77,9 +77,6 @@
     <ClCompile Include="Scheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestExecute.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="ShortTermScheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MMU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestExecute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

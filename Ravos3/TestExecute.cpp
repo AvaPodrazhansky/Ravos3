@@ -85,7 +85,7 @@ void TestTheExecute()
 	d[9] = "0000000A";
 	d[10] = "00000055";
 
-	Computer *c = new Computer();
+	Computer *c = new Computer(4);
 	
 	for (int i = 0; i < 23; i++)
 	{

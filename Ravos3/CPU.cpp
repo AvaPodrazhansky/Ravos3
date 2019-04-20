@@ -336,7 +336,7 @@ bool CPU::Execute()
 					//if (!isExecuting) return true;
 					//clear registers
 					//std::cout << "Program " << m_PCB->process_ID << " is finished\n";
-					std::cout << m_PCB->process_ID << " \n";
+					//std::cout << m_PCB->process_ID << " \n";
 					for (unsigned int i = 0; i < MAX_REGISTERS; i++)
 					{
 						m_Register[i] = 0;

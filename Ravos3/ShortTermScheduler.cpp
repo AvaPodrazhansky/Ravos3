@@ -95,6 +95,7 @@ bool ShortTermScheduler::Dispatch(int CPU_Num)
 			theOS->m_Computer->m_CPU[CPU_Num].m_CPUMetrics = theOS->m_Computer->m_CPUMetrics_Map.at(CPU_Num);//assigns which CPUMetrics is associated with this CPU
 			theOS->m_Computer->m_CPU[CPU_Num].m_CPUMetrics->updateJobsInThisCPU(theOS->m_Computer->m_CPU[CPU_Num].m_PCB->getProcessID());//adds the process ID of this job to the vector holding all the jobs that are assigned to this CPU
 
+			
 			////https://en.cppreference.com/w/cpp/thread/condition_variable
 			//std::lock_guard<std::mutex> lk(theOS->m_Computer->m_CPU[CPU_Num].lock);
 			//theOS->m_Computer->m_CPU[CPU_Num].m_assignedToJob = true;

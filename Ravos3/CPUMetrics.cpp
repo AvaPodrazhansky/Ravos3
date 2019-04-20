@@ -3,6 +3,13 @@
 extern int TOTAL_WAIT_TIME;//used for overall averaging, not one CPU specific
 extern int TOTAL_JOBS_EXECUTED;//used in metrics and CPUmetrics
 extern int TOTAL_COMPLETION_TIME;//used for overall averaging, not one CPU specific 
+
+
+
+int CPUMetrics::getNumOfJobs() 
+{
+	return JobCount;
+}
 //increments job count by one
 bool CPUMetrics::updateJobCount()
 {
@@ -38,6 +45,6 @@ std::vector<int> CPUMetrics::getWhichJobsInThisCPU()
 //returns percentage of jobs in this CPU compared to all jobs executed
 int CPUMetrics::getPercentOfJobsAssigned()
 {
-	percentOfJobs = ((static_cast<double>(JobCount) / TOTAL_JOBS_EXECUTED) * 100);
+	percentOfJobs = ((static_cast<double>(JobCount) / 30) * 100);
 	return percentOfJobs;
 }

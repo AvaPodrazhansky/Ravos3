@@ -185,6 +185,7 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 	std::lock_guard<std::mutex> lock(m_Lock);
 	PageStruct *page = &pcb->PageTable[index / 4];
 	
+	pcb->updatePageFaults();
 	for (int i = 0; i < 256; i++)
 	{
 		if (FrameTracker[i] <= 0)

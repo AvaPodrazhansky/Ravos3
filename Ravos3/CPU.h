@@ -59,7 +59,7 @@ public:
 	bool printInstruction = false; //Prints formatted instruction if true
 	bool printContents = false; //Prints hex value of instruction if true
 	bool printLog = false;
-	bool testSchededuler = true;
+	bool testSchededuler = false;
 
 	void DumpMemoryAsInstructions(MemoryWord w, std::string i);
 

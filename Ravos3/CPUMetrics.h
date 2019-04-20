@@ -11,7 +11,9 @@ private:
 
 public:
 
-	CPUMetrics() {}//keeps track of the CPU metrics
+	CPUMetrics() { JobCount = 0; percentOfJobs = 0; }//keeps track of the CPU metrics
+
+	int getNumOfJobs();
 
 	//increments job count by one
 	bool updateJobCount();
