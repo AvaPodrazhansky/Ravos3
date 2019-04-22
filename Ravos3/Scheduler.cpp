@@ -167,6 +167,19 @@ bool Scheduler::WriteWholeProcessToRAM(PCB* pcb, int offset)
 //	}
 //}
 
+void Scheduler::WriteWholeNextProcessToRAM(int StartIndex)
+{
+	std::lock_guard<std::mutex> lock(theOS->m_JobQueueLock);
+	if (m_JobQueue.empty()) return;
+
+	int tempProcessID = m_JobQueue.top()->getProcessID();
+	PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
+
+	if (WriteWholeProcessToRAM(tempPCB, StartIndex))
+	{
+		theOS->m_ReadyQueue.push(tempPCB);
+	}
+}
 
 
 bool Scheduler::FillReadyQueue()
@@ -204,7 +217,8 @@ bool Scheduler::FillReadyQueue()
 				if (WriteWholeProcessToRAM(tempPCB, offset))
 				{
 					m_JobQueue.pop();
-					offset = offset + tempPCB->totalSpaceInRAM();
+					//offset = offset + tempPCB->totalSpaceInRAM();
+					offset = offset + 72;
 					tempPCB->state = Ready;
 					theOS->m_ReadyQueue.push(tempPCB);//add PCB of jobs that are in RAM into the ready queue
 				//std::cout << "Job pushed to ready queue\n";

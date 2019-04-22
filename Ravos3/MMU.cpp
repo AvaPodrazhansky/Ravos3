@@ -62,6 +62,18 @@ void MMU::printValidFrames()
 	}
 }
 
+
+void MMU::ClearWholeProcessFromRAM(PCB* pcb)
+{
+	for (int i = 0; i < 72; i++)
+	{
+		theOS->m_Computer->m_RAM.write(i, 0, pcb->getStartIndexRAM());
+	}
+
+	theOS->m_Scheduler.WriteWholeNextProcessToRAM(pcb->getStartIndexRAM());
+}
+
+
 void MMU::RemovePagesFromRAM(PCB* pcb)
 {
 	//for (int i = 0; i < 1024 / 4; i++)
@@ -185,7 +197,6 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 	std::lock_guard<std::mutex> lock(m_Lock);
 	PageStruct *page = &pcb->PageTable[index / 4];
 	
-	pcb->updatePageFaults();
 	for (int i = 0; i < 256; i++)
 	{
 		if (FrameTracker[i] <= 0)

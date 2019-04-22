@@ -41,4 +41,6 @@ public:
 	int DeleteLeastRecentlyUsedPage();
 
 	void AssignPageToFrame(int FrameNumber, int index, PCB* pcb);
+
+	void ClearWholeProcessFromRAM(PCB* pcb);
 };

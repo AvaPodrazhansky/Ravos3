@@ -45,7 +45,8 @@ class Scheduler
 	bool FillReadyQueue();
 
 	/*bool fillReadyQueue();*/
-
+	
+	void WriteWholeNextProcessToRAM(int StartIndex);
 
 };
 

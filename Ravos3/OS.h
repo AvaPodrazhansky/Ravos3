@@ -47,6 +47,6 @@ public:
 	// Test loader - until actual loader is done.  Does not work yet
 	// It is located in the 
 	//void TestLoad1();
-
+	std::mutex m_JobQueueLock;
 
 };

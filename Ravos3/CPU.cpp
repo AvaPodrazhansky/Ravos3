@@ -67,10 +67,13 @@ void CPU::CPU_Run_thread()
 void CPU::FlushBuffers()
 {
 	if (!m_MMU->ManageMemory)
-	for (int i = m_PCB->getProgramSize() + m_PCB->InputBufferSize; i < m_PCB->getProgramSize() + m_PCB->InputBufferSize + m_PCB->TempBufferSize + m_PCB->OutputBufferSize; i++)
 	{
-		MemoryWord w = m_Memory->readContents(i, m_PCB->getStartIndexRAM());
-		m_Disk->write(i, w, m_PCB->getStartIndexDisk());
+		for (int i = m_PCB->getProgramSize() + m_PCB->InputBufferSize; i < m_PCB->getProgramSize() + m_PCB->InputBufferSize + m_PCB->TempBufferSize + m_PCB->OutputBufferSize; i++)
+		{
+			MemoryWord w = m_Memory->readContents(i, m_PCB->getStartIndexRAM());
+			m_Disk->write(i, w, m_PCB->getStartIndexDisk()); // Write instructions and buffers back to disk
+		}
+		m_MMU->ClearWholeProcessFromRAM(m_PCB);
 		return;
 	}
 		
