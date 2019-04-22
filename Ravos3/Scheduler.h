@@ -35,8 +35,8 @@ class Scheduler
 
 //	bool CheckRAMSpace();
 
-	//bool WriteNewProcessToRAM(PCB* pcb);
-	bool WriteNewProcessToRAM(PCB* pcb, int offset); 
+	//bool WriteWholeProcessToRAM(PCB* pcb);
+	bool WriteWholeProcessToRAM(PCB* pcb, int offset); 
 
 	//moved to ShortTermScheduler
 	//void ClearOldProcessFromRAM(PCB* pcb);

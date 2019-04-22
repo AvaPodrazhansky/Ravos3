@@ -16,7 +16,7 @@
 //bool Scheduler::Dispatch(PCB *pcb)
 //{
 //	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true)
-//	if(WriteNewProcessToRAM(pcb));
+//	if(WriteWholeProcessToRAM(pcb));
 //	theOS->m_Computer->m_CPU[0].m_PCB = pcb;
 //	theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
 //	return theOS->m_Computer->m_CPU[0].Execute();//this will be moved to the short term scheduler
@@ -131,12 +131,12 @@ bool Scheduler::FillJobQueue()
 
 
 //takes care of writing multiple processes in RAM by offset
-bool Scheduler::WriteNewProcessToRAM(PCB* pcb, int offset)
+bool Scheduler::WriteWholeProcessToRAM(PCB* pcb, int offset)
 {
 	pcb->setStartIndexRAM(offset);
 	for (int i = 0; i < pcb->totalSpaceInRAM(); i++)
 	{
-		//theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk, -2, -2), offset, -2, -2);
+		theOS->m_Computer->m_RAM.write(i, theOS->m_Computer->m_Disk.read(i, pcb->StartIndexDisk), offset);
 	}
 	return true;
 
@@ -201,7 +201,7 @@ bool Scheduler::FillReadyQueue()
 		{
 			if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
 			{
-				if (WriteNewProcessToRAM(tempPCB, offset))
+				if (WriteWholeProcessToRAM(tempPCB, offset))
 				{
 					m_JobQueue.pop();
 					offset = offset + tempPCB->totalSpaceInRAM();
@@ -235,7 +235,7 @@ bool Scheduler::FillReadyQueue()
 
 		//if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
 		//{
-		//	if (WriteNewProcessToRAM(tempPCB, offset))
+		//	if (WriteWholeProcessToRAM(tempPCB, offset))
 		//		m_JobQueue.pop();
 		//	offset = offset + tempPCB->totalSpaceInRAM();
 		//	tempPCB->state = Ready;

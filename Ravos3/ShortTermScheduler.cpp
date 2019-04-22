@@ -7,7 +7,7 @@
 //bool ShortTermScheduler::Dispatch(PCB *pcb)
 //{
 //	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true)
-//	//if (WriteNewProcessToRAM(pcb));
+//	//if (WriteWholeProcessToRAM(pcb));
 //	
 //	theOS->m_Computer->m_CPU[0].m_PCB = pcb;
 //	theOS->m_Computer->m_CPU[0].m_PC = 0; // m_Computer->m_CPU[0].m_PCB->StartIndexRAM;
@@ -42,7 +42,7 @@ void ShortTermScheduler::ClearOldProcessFromRAM(PCB * pcb)
 //bool ShortTermScheduler::Dispatch()
 //{
 //	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true) **Not sure what you meant here**
-//	//if (WriteNewProcessToRAM(pcb));
+//	//if (WriteWholeProcessToRAM(pcb));
 //	do
 //	{
 //		if(theOS->m_Computer->m_CPU[0].m_C_State == IDLE)	
@@ -75,7 +75,7 @@ void ShortTermScheduler::ClearOldProcessFromRAM(PCB * pcb)
 bool ShortTermScheduler::Dispatch(int CPU_Num)
 {
 	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true) **Not sure what you meant here**
-	//if (WriteNewProcessToRAM(pcb));
+	//if (WriteWholeProcessToRAM(pcb));
 	//while(theOS->m_Terminated_PCBs.size() < theOS->m_PCB_Map.size())
 	//using namespace std::literals::chrono_literals;
 	//	//Need to add loop to check for IDLE CPU's
@@ -95,7 +95,6 @@ bool ShortTermScheduler::Dispatch(int CPU_Num)
 			theOS->m_Computer->m_CPU[CPU_Num].m_CPUMetrics = theOS->m_Computer->m_CPUMetrics_Map.at(CPU_Num);//assigns which CPUMetrics is associated with this CPU
 			theOS->m_Computer->m_CPU[CPU_Num].m_CPUMetrics->updateJobsInThisCPU(theOS->m_Computer->m_CPU[CPU_Num].m_PCB->getProcessID());//adds the process ID of this job to the vector holding all the jobs that are assigned to this CPU
 
-			
 			////https://en.cppreference.com/w/cpp/thread/condition_variable
 			//std::lock_guard<std::mutex> lk(theOS->m_Computer->m_CPU[CPU_Num].lock);
 			//theOS->m_Computer->m_CPU[CPU_Num].m_assignedToJob = true;
