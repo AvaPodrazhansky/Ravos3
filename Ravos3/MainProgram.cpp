@@ -308,32 +308,36 @@ void writeMetrics(OS *theOS)
 //This is ther Driver for now
 int main()
 {
-	
-	std::cout << "Enter Number of CPU's:";
-	int NumOfCPU;
-	std::cin >> NumOfCPU;
-	std::cout << NumOfCPU;
-	std::cout << "Enter Scheduling Algorithm (1 = FIFO, 2 = SJF, 3 = Priority) ";
-	int SchedAlgor;
-	std::cin >> SchedAlgor;
-	std::cout << "Paging or not paging? (y/n) ";
-	char paging;
-	std::cin >> paging; 
-
-	Computer *theComputer = new Computer(NumOfCPU);//will need to figure out how to change the array value
-	/*if(paging == 'y')*/
-	
-		OS theOS(theComputer);
-	
-	/*else
-		OS theOS(theComputer, false);
-*/
-	//Calls loader
-	if (!theOS.Boot("programfile.txt"))
+	int rerun;
+	std::cout << "Enter 1 to start OS: ";
+	std::cin >> rerun;
+	do
 	{
-		std::cout << "OS Could not boot\n";
-		return 0;
-	}
+		std::cout << "Enter Number of CPU's:";
+		int NumOfCPU;
+		std::cin >> NumOfCPU;
+		//std::cout << NumOfCPU;
+		std::cout << "Enter Scheduling Algorithm (1 = FIFO, 2 = SJF, 3 = Priority) ";
+		int SchedAlgor;
+		std::cin >> SchedAlgor;
+		std::cout << "Paging or not paging? (y/n) ";
+		char paging;
+		std::cin >> paging;
+
+		Computer *theComputer = new Computer(NumOfCPU);//will need to figure out how to change the array value
+		/*if(paging == 'y')*/
+
+		OS theOS(theComputer);
+
+		/*else
+			OS theOS(theComputer, false);
+	*/
+	//Calls loader
+		if (!theOS.Boot("programfile.txt"))
+		{
+			std::cout << "OS Could not boot\n";
+			return 0;
+		}
 
 
 		/*
@@ -375,73 +379,76 @@ int main()
 		//	theOS.m_MMU.printValidFrames();
 		//}
 		*/
-	switch (SchedAlgor)
-	{
-	case 1: theOS.m_Scheduler.SchedType = FIFO;
-		break;
-	case 2: theOS.m_Scheduler.SchedType = SJF;
-		break;
-	case 3: theOS.m_Scheduler.SchedType = PRIORITY;
-	}
-	//theOS.m_MMU.ManageMemory = true;
-	theOS.m_Scheduler.FillJobQueue();
-	theOS.m_Scheduler.FillReadyQueue();
-
-	while (!theOS.m_ReadyQueue.empty() || !theOS.m_Scheduler.m_JobQueue.empty())
-	{
-		while (!theOS.m_ReadyQueue.empty())
+		switch (SchedAlgor)
 		{
-			using namespace std::literals::chrono_literals;
+		case 1: theOS.m_Scheduler.SchedType = FIFO;
+			break;
+		case 2: theOS.m_Scheduler.SchedType = SJF;
+			break;
+		case 3: theOS.m_Scheduler.SchedType = PRIORITY;
+		}
+		//theOS.m_MMU.ManageMemory = true;
+		theOS.m_Scheduler.FillJobQueue();
+		theOS.m_Scheduler.FillReadyQueue();
 
-			for (int i = 0; i < NumOfCPU; i++)
+		while (!theOS.m_ReadyQueue.empty() || !theOS.m_Scheduler.m_JobQueue.empty())
+		{
+			while (!theOS.m_ReadyQueue.empty())
 			{
-				if (!theOS.m_ReadyQueue.empty())
+				using namespace std::literals::chrono_literals;
+
+				for (int i = 0; i < NumOfCPU; i++)
 				{
-					if (theComputer->m_CPU[i].GetState() == IDLE)
+					if (!theOS.m_ReadyQueue.empty())
 					{
-						//writeQueue.push(theOS.m_ReadyQueue.front());
-						theOS.m_ShortTerm.Dispatch(i);
-						theOS.m_Computer->m_CPU[i].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[i]);
+						if (theComputer->m_CPU[i].GetState() == IDLE)
+						{
+							//writeQueue.push(theOS.m_ReadyQueue.front());
+							theOS.m_ShortTerm.Dispatch(i);
+							theOS.m_Computer->m_CPU[i].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[i]);
+						}
 					}
 				}
+				/*for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
+					if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
+						theOS.m_Computer->m_CPU[c].m_thread_ptr->join();*/
 			}
-			/*for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
-				if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
-					theOS.m_Computer->m_CPU[c].m_thread_ptr->join();*/
 		}
-	}
 
-	std::cout << "Done! \n";
+		std::cout << "Done! \n";
 
-	//PCB* pcb1 = theOS.m_PCB_Map.at(1);
-	//theOS.m_ReadyQueue.push(pcb1);
-	//theOS.m_ShortTerm.Dispatch(0);
-	//theOS.m_Computer->m_CPU[0].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[0]);
+		//PCB* pcb1 = theOS.m_PCB_Map.at(1);
+		//theOS.m_ReadyQueue.push(pcb1);
+		//theOS.m_ShortTerm.Dispatch(0);
+		//theOS.m_Computer->m_CPU[0].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[0]);
 
 
-	for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
-		if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
-			theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
+		for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
+			if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
+				theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
 
-	OS *OS_Pointer = &theOS;
-	writeCoreDump(OS_Pointer);
-	writeMetrics(OS_Pointer);
+		OS *OS_Pointer = &theOS;
+		writeCoreDump(OS_Pointer);
+		writeMetrics(OS_Pointer);
 
-	std::cout << "Print Core dump? (y/n)";
-	char coreDump;
-	std::cin >> coreDump;
-	if (coreDump == 'y') 
-	{
-		printDisk(OS_Pointer);
-	}
-	std::cout << "Print Metrics? (y/n)";
-	char metrics;
-	std::cin >> metrics;
-	if (metrics == 'y') 
-	{
-		printMetrics(OS_Pointer);
-	}
-	
+		std::cout << "Print Core dump? (y/n)";
+		char coreDump;
+		std::cin >> coreDump;
+		if (coreDump == 'y')
+		{
+			printDisk(OS_Pointer);
+		}
+		std::cout << "Print Metrics? (y/n)";
+		char metrics;
+		std::cin >> metrics;
+		if (metrics == 'y')
+		{
+			printMetrics(OS_Pointer);
+		}
+		int rerun;
+		std::cout << "Enter 1 to restart OS: ";
+		std::cin >> rerun;
+	}while (rerun == 1);
 
 }
 	
