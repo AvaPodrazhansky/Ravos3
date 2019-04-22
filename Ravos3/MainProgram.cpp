@@ -422,8 +422,6 @@ int main()
 			}
 		}
 
-		std::cout << "Done! \n";
-
 		//PCB* pcb1 = theOS.m_PCB_Map.at(1);
 		//theOS.m_ReadyQueue.push(pcb1);
 		//theOS.m_ShortTerm.Dispatch(0);
@@ -433,6 +431,10 @@ int main()
 		for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
 			if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
 				theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
+
+
+		std::cout << "Done! \n";
+
 
 		OS *OS_Pointer = &theOS;
 		writeCoreDump(OS_Pointer);
