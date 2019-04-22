@@ -308,21 +308,28 @@ void writeMetrics(OS *theOS)
 //This is ther Driver for now
 int main()
 {
-	int rerun;
-	std::cout << "Enter 1 to start OS: ";
-	std::cin >> rerun;
+	int rerun = 1;
+	//std::cout << "Enter 1 to start OS: ";
+	//std::cin >> rerun;
 	do
 	{
-		std::cout << "Enter Number of CPU's:";
-		int NumOfCPU;
-		std::cin >> NumOfCPU;
+		int NumOfCPU = 0;
+		do
+		{
+			std::cout << "Enter Number of CPU's: (1 - 4) ";
+			std::cin >> NumOfCPU;
+			if (NumOfCPU > 4)
+				std::cout << "Too many CPUs\n";
+			if (NumOfCPU < 1)
+				std::cout << "Must have at least 1 CPU to run\n";
+		} while (NumOfCPU > 4 || NumOfCPU < 1);
 		//std::cout << NumOfCPU;
 		std::cout << "Enter Scheduling Algorithm (1 = FIFO, 2 = SJF, 3 = Priority) ";
 		int SchedAlgor;
 		std::cin >> SchedAlgor;
-		std::cout << "Paging or not paging? (y/n) ";
-		char paging;
-		std::cin >> paging;
+		//std::cout << "Paging or not paging? (y/n) ";
+		//char paging;
+		//std::cin >> paging;
 
 		Computer *theComputer = new Computer(NumOfCPU);//will need to figure out how to change the array value
 		/*if(paging == 'y')*/
