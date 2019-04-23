@@ -223,11 +223,7 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 	//Handle Full RAM
 	int newFrame = DeleteLeastRecentlyUsedPage();
 	AssignPageToFrame(newFrame, index, pcb);
-	//for (int j = 0; j < 4; j++)
-	//{
-	//	MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
-	//	theOS->m_Computer->m_RAM.write(newFrame * 4, m, j);
-	//}
+
 	return;
 
 }
