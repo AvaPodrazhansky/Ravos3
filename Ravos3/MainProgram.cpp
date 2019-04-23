@@ -323,69 +323,21 @@ int main()
 			if (NumOfCPU < 1)
 				std::cout << "Must have at least 1 CPU to run\n";
 		} while (NumOfCPU > 4 || NumOfCPU < 1);
-		//std::cout << NumOfCPU;
 		std::cout << "Enter Scheduling Algorithm (1 = FIFO, 2 = SJF, 3 = Priority) ";
 		int SchedAlgor;
 		std::cin >> SchedAlgor;
-		//std::cout << "Paging or not paging? (y/n) ";
-		//char paging;
-		//std::cin >> paging;
 
-		Computer *theComputer = new Computer(NumOfCPU);//will need to figure out how to change the array value
-		/*if(paging == 'y')*/
 
+		Computer *theComputer = new Computer(NumOfCPU);
 		OS theOS(theComputer);
 
-		/*else
-			OS theOS(theComputer, false);
-	*/
-	//Calls loader
+	   //Calls loader
 		if (!theOS.Boot("programfile.txt"))
 		{
 			std::cout << "OS Could not boot\n";
 			return 0;
 		}
 
-
-		/*
-		//PCB* pcb1 = theOS.m_PCB_Map.at(1);
-		//PCB* pcb2 = theOS.m_PCB_Map.at(2);
-
-		//for (int i = 0; i < 8; i++)
-		//{
-		//	theOS.m_MMU.ReadOrPageFault(i, pcb1);
-		//}
-		//
-		//for (int i = 0; i < 8; i++)
-		//{
-		//	theOS.m_MMU.ReadOrPageFault(i, pcb2);
-		//}
-
-		//theOS.m_MMU.WriteOrPageFault(4, MemoryWord(0xFFFFFFFF), pcb1);
-		//theOS.m_MMU.WriteOrPageFault(9, MemoryWord(0xAAAAAAAA), pcb1);
-		//theOS.m_MMU.WriteOrPageFault(2, MemoryWord(0xBBBBBBBB), pcb2);
-		//theOS.m_MMU.WriteOrPageFault(31, MemoryWord(0xCCCCCCCC), pcb2);
-		//theOS.m_MMU.printValidFrames();
-		//theOS.m_MMU.RemovePagesFromRAM(pcb1);
-		//for (int i = 0; i < 63; i++)
-		//{
-		//	std::cout << std::dec << i << " " << std::hex << theOS.m_Computer->m_Disk.read(i, 0).Contents << "\n";
-		//}
-		//
-		//theOS.m_MMU.printValidFrames();
-		*/
-		/*
-		//for (int i = 1; i <= 16; i++)
-		//{
-		//	printf("%4s %10s %5s %5s %5s\n", "Job", "Instruction", "Page", "Frame", "Index");
-		//	PCB* pcb1 = theOS.m_PCB_Map.at(i);
-		//	for (int i = 0; i < pcb1->totalSpaceInRAM(); i++)
-		//		{
-		//			theOS.m_MMU.ReadOrPageFault(i, pcb1);
-		//		}
-		//	theOS.m_MMU.printValidFrames();
-		//}
-		*/
 		switch (SchedAlgor)
 		{
 		case 1: theOS.m_Scheduler.SchedType = FIFO;
@@ -394,7 +346,6 @@ int main()
 			break;
 		case 3: theOS.m_Scheduler.SchedType = PRIORITY;
 		}
-		//theOS.m_MMU.ManageMemory = true;
 		theOS.m_Scheduler.FillJobQueue();
 		theOS.m_Scheduler.FillReadyQueue();
 
@@ -410,24 +361,15 @@ int main()
 					{
 						if (theComputer->m_CPU[i].GetState() == IDLE)
 						{
-							//writeQueue.push(theOS.m_ReadyQueue.front());
 							theOS.m_ShortTerm.Dispatch(i);
 							theOS.m_Computer->m_CPU[i].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[i]);
 						}
 					}
 				}
-				/*for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
-					if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
-						theOS.m_Computer->m_CPU[c].m_thread_ptr->join();*/
 			}
 		}
 
-		//PCB* pcb1 = theOS.m_PCB_Map.at(1);
-		//theOS.m_ReadyQueue.push(pcb1);
-		//theOS.m_ShortTerm.Dispatch(0);
-		//theOS.m_Computer->m_CPU[0].m_thread_ptr = new std::thread(&CPU::CPU_Run_thread, theOS.m_Computer->m_CPU[0]);
-
-
+		// Join threads
 		for (int c = 0; c < theComputer->GetNumCPUs(); ++c)
 			if (theOS.m_Computer->m_CPU[c].m_thread_ptr->joinable())
 				theOS.m_Computer->m_CPU[c].m_thread_ptr->join();
@@ -443,20 +385,21 @@ int main()
 		std::cout << "Print Core dump? (y/n)";
 		char coreDump;
 		std::cin >> coreDump;
-		if (coreDump == 'y')
+		if (coreDump == 'y' || coreDump == 'Y')
 		{
 			printDisk(OS_Pointer);
 		}
 		std::cout << "Print Metrics? (y/n)";
 		char metrics;
 		std::cin >> metrics;
-		if (metrics == 'y')
+		if (metrics == 'y' || metrics == 'Y')
 		{
 			printMetrics(OS_Pointer);
 		}
 		int rerun;
 		std::cout << "Enter 1 to restart OS: ";
 		std::cin >> rerun;
+		std::cout << rerun;
 	}while (rerun == 1);
 
 }
