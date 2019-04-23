@@ -399,7 +399,7 @@ int main()
 		int rerun;
 		std::cout << "Enter 1 to restart OS: ";
 		std::cin >> rerun;
-		std::cout << rerun;
+
 	}while (rerun == 1);
 
 }
