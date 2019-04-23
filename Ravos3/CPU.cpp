@@ -22,7 +22,7 @@ bool CPU::assignPCB(PCB* pcb)
 	//	m_Cache[i] = m_Memory->read(i, m_PCB->getStartIndexRAM(), -2, -2);
 	//}
 
-	m_PCB->setWaitTime();
+	//m_PCB->setWaitTime();
 
 	//m_CPUMetrics->updateJobsInThisCPU(m_PCB->getProcessID());
 

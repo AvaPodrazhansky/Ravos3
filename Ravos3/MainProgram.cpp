@@ -125,8 +125,8 @@ void writeMetrics(OS *theOS)
 		outfiles << "  Percent of Cache used : " << pcb->getPercentOfCacheUsed() << "\n";
 	}
 	outfiles << "\n Overall Averages " << "\n";
-	outfiles << " Average Wait Time : " << (avgWaitTime/30) * 100  << "\n";
-	outfiles << " Average Completion Time : " << (avgCompTime/30) * 100 << "\n";
+	outfiles << " Average Wait Time : " << (avgWaitTime/30)  << "\n";
+	outfiles << " Average Completion Time : " << (avgCompTime/30) << "\n";
 	outfiles << "\n CPU METRICS " << "\n";
 	for (int j = 0; j < theOS->m_Computer->m_CPUMetrics_Map.size(); j++) 
 	{

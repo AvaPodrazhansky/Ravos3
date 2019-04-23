@@ -189,10 +189,9 @@ public:
 		return CompletionTime;
 	}
 	//called before dispatched to cpu 
-	void setWaitTime()
+	void setWaitTime(int newWaitTime)
 	{
-		WaitTime = TOTAL_WAIT_TIME;
-		TOTAL_WAIT_TIME += ProgramSize;
+		WaitTime = newWaitTime;
 	}
 	int getWaitTime()
 	{
