@@ -67,6 +67,7 @@ void printMetrics(OS *theOS)
 {
 	int avgWaitTime = 0;
 	int avgCompTime = 0;
+	int avgPageFault = 0;
 	std::cout << " JOB METRICS " << "\n";
 	for (int i = 1; i <= theOS->m_PCB_Map.size(); i++)
 	{
@@ -78,6 +79,7 @@ void printMetrics(OS *theOS)
 		std::cout << "  Interupts : " << pcb->getIOCount() << "\n";
 		//outfile << "  Interupts : " << pcb->getInterupts();
 		std::cout << "  Page Faults : " << pcb->getPageFaults() << "\n";
+		avgPageFault += pcb->getPageFaults();
 		std::cout << "  Completion Time : " << pcb->getCompletionTime() << " sec \n";
 		avgCompTime += pcb->getCompletionTime();
 		std::cout << "  Percent of RAM used : " << pcb->getPercentOfRAMUsed() << " % \n";
@@ -86,6 +88,7 @@ void printMetrics(OS *theOS)
 	std::cout << "\n Overall Averages " << "\n";
 	std::cout << " Average Wait Time : " << (avgWaitTime / 30) << " instructions \n";
 	std::cout << " Average Completion Time : " << (avgCompTime / 30) << " sec \n";
+	std::cout << " Average Page Faults : " << (avgPageFault / 30) << " faults \n";
 	std::cout << "\n CPU METRICS " << "\n";
 	for (int j = 0; j < theOS->m_Computer->m_CPUMetrics_Map.size(); j++)
 	{
@@ -106,7 +109,7 @@ void writeMetrics(OS *theOS)
 {
 	int avgWaitTime = 0;
 	int avgCompTime = 0;
-
+	int avgPageFault = 0;
 	std::ofstream outfiles("Metrics.txt");
 	outfiles << " JOB METRICS " << "\n";
 	for (int i = 1; i <= theOS->m_PCB_Map.size(); i++) 
@@ -119,6 +122,7 @@ void writeMetrics(OS *theOS)
 		outfiles << "  Interupts : " << pcb->getIOCount() << "\n";
 		//outfile << "  Interupts : " << pcb->getInterupts();
 		outfiles << "  Page Faults : " << pcb->getPageFaults() << "\n";
+		avgPageFault += pcb->getPageFaults();
 		outfiles << "  Completion Time : " << pcb->getCompletionTime() << "\n";
 		avgCompTime += pcb->getCompletionTime();
 		outfiles << "  Percent of RAM used : " << pcb->getPercentOfRAMUsed() << "\n";
@@ -127,6 +131,7 @@ void writeMetrics(OS *theOS)
 	outfiles << "\n Overall Averages " << "\n";
 	outfiles << " Average Wait Time : " << (avgWaitTime/30)  << "\n";
 	outfiles << " Average Completion Time : " << (avgCompTime/30) << "\n";
+	outfiles << " Average Page Faults : " << (avgPageFault / 30) << " faults \n";
 	outfiles << "\n CPU METRICS " << "\n";
 	for (int j = 0; j < theOS->m_Computer->m_CPUMetrics_Map.size(); j++) 
 	{

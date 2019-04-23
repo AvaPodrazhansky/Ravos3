@@ -4,7 +4,7 @@
   Wait Time : 0
   Interupts : 12
   Page Faults : 14
-  Completion Time : 1
+  Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 82
 
@@ -12,7 +12,7 @@
   Wait Time : 0
   Interupts : 12
   Page Faults : 14
-  Completion Time : 3
+  Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 100
 
@@ -20,84 +20,84 @@
   Wait Time : 0
   Interupts : 12
   Page Faults : 13
-  Completion Time : 4
+  Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 85
 
  Job 4 - Metrics 
-  Wait Time : 23
+  Wait Time : 0
   Interupts : 12
   Page Faults : 9
-  Completion Time : 2
+  Completion Time : 3
   Percent of RAM used : 1
   Percent of Cache used : 67
 
  Job 5 - Metrics 
-  Wait Time : 28
+  Wait Time : 23
   Interupts : 12
   Page Faults : 14
-  Completion Time : 3
+  Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 100
 
  Job 6 - Metrics 
-  Wait Time : 24
+  Wait Time : 28
   Interupts : 12
   Page Faults : 13
-  Completion Time : 6
+  Completion Time : 1
   Percent of RAM used : 2
   Percent of Cache used : 85
 
  Job 7 - Metrics 
-  Wait Time : 42
+  Wait Time : 24
   Interupts : 12
   Page Faults : 9
-  Completion Time : 2
+  Completion Time : 1
   Percent of RAM used : 1
   Percent of Cache used : 67
 
  Job 8 - Metrics 
-  Wait Time : 56
+  Wait Time : 19
   Interupts : 12
   Page Faults : 9
-  Completion Time : 4
+  Completion Time : 1
   Percent of RAM used : 1
   Percent of Cache used : 67
 
  Job 9 - Metrics 
-  Wait Time : 48
+  Wait Time : 51
   Interupts : 12
   Page Faults : 13
-  Completion Time : 3
+  Completion Time : 0
   Percent of RAM used : 2
   Percent of Cache used : 85
 
  Job 10 - Metrics 
-  Wait Time : 61
+  Wait Time : 52
   Interupts : 12
   Page Faults : 14
-  Completion Time : 3
+  Completion Time : 1
   Percent of RAM used : 2
   Percent of Cache used : 100
 
  Job 11 - Metrics 
-  Wait Time : 75
+  Wait Time : 43
   Interupts : 12
   Page Faults : 14
-  Completion Time : 3
+  Completion Time : 1
   Percent of RAM used : 2
   Percent of Cache used : 82
 
  Job 12 - Metrics 
-  Wait Time : 72
+  Wait Time : 38
   Interupts : 12
   Page Faults : 14
-  Completion Time : 4
+  Completion Time : 3
   Percent of RAM used : 2
   Percent of Cache used : 100
 
  Job 13 - Metrics 
-  Wait Time : 89
+  Wait Time : 75
   Interupts : 12
   Page Faults : 13
   Completion Time : 3
@@ -105,79 +105,79 @@
   Percent of Cache used : 85
 
  Job 14 - Metrics 
-  Wait Time : 98
+  Wait Time : 80
   Interupts : 10
   Page Faults : 8
-  Completion Time : 4
+  Completion Time : 2
   Percent of RAM used : 1
   Percent of Cache used : 67
 
  Job 15 - Metrics 
-  Wait Time : 100
+  Wait Time : 66
   Interupts : 11
-  Page Faults : 13
-  Completion Time : 5
-  Percent of RAM used : 2
-  Percent of Cache used : 85
-
- Job 16 - Metrics 
-  Wait Time : 113
-  Interupts : 5
-  Page Faults : 7
-  Completion Time : 1
-  Percent of RAM used : 1
-  Percent of Cache used : 67
-
- Job 17 - Metrics 
-  Wait Time : 117
-  Interupts : 12
-  Page Faults : 14
-  Completion Time : 2
-  Percent of RAM used : 2
-  Percent of Cache used : 100
-
- Job 18 - Metrics 
-  Wait Time : 124
-  Interupts : 12
   Page Faults : 13
   Completion Time : 3
   Percent of RAM used : 2
   Percent of Cache used : 85
 
- Job 19 - Metrics 
-  Wait Time : 132
-  Interupts : 10
-  Page Faults : 13
-  Completion Time : 4
+ Job 16 - Metrics 
+  Wait Time : 66
+  Interupts : 5
+  Page Faults : 7
+  Completion Time : 0
+  Percent of RAM used : 1
+  Percent of Cache used : 67
+
+ Job 17 - Metrics 
+  Wait Time : 99
+  Interupts : 12
+  Page Faults : 14
+  Completion Time : 1
   Percent of RAM used : 2
   Percent of Cache used : 100
 
- Job 20 - Metrics 
-  Wait Time : 145
+ Job 18 - Metrics 
+  Wait Time : 99
   Interupts : 12
   Page Faults : 13
   Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 85
 
- Job 21 - Metrics 
-  Wait Time : 148
-  Interupts : 13
-  Page Faults : 9
-  Completion Time : 2
-  Percent of RAM used : 1
-  Percent of Cache used : 67
-
- Job 22 - Metrics 
-  Wait Time : 160
-  Interupts : 12
-  Page Faults : 14
+ Job 19 - Metrics 
+  Wait Time : 90
+  Interupts : 10
+  Page Faults : 13
   Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 100
 
+ Job 20 - Metrics 
+  Wait Time : 85
+  Interupts : 12
+  Page Faults : 13
+  Completion Time : 1
+  Percent of RAM used : 2
+  Percent of Cache used : 85
+
+ Job 21 - Metrics 
+  Wait Time : 127
+  Interupts : 13
+  Page Faults : 9
+  Completion Time : 1
+  Percent of RAM used : 1
+  Percent of Cache used : 67
+
+ Job 22 - Metrics 
+  Wait Time : 123
+  Interupts : 12
+  Page Faults : 14
+  Completion Time : 0
+  Percent of RAM used : 2
+  Percent of Cache used : 100
+
  Job 23 - Metrics 
-  Wait Time : 169
+  Wait Time : 118
   Interupts : 11
   Page Faults : 13
   Completion Time : 2
@@ -185,15 +185,15 @@
   Percent of Cache used : 82
 
  Job 24 - Metrics 
-  Wait Time : 167
+  Wait Time : 109
   Interupts : 12
   Page Faults : 13
-  Completion Time : 1
+  Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 85
 
  Job 25 - Metrics 
-  Wait Time : 188
+  Wait Time : 146
   Interupts : 7
   Page Faults : 11
   Completion Time : 2
@@ -201,15 +201,15 @@
   Percent of Cache used : 82
 
  Job 26 - Metrics 
-  Wait Time : 192
+  Wait Time : 151
   Interupts : 8
   Page Faults : 8
-  Completion Time : 2
+  Completion Time : 1
   Percent of RAM used : 1
   Percent of Cache used : 67
 
  Job 27 - Metrics 
-  Wait Time : 191
+  Wait Time : 141
   Interupts : 12
   Page Faults : 14
   Completion Time : 2
@@ -217,7 +217,7 @@
   Percent of Cache used : 82
 
  Job 28 - Metrics 
-  Wait Time : 211
+  Wait Time : 133
   Interupts : 12
   Page Faults : 14
   Completion Time : 2
@@ -225,15 +225,15 @@
   Percent of Cache used : 100
 
  Job 29 - Metrics 
-  Wait Time : 211
+  Wait Time : 169
   Interupts : 12
   Page Faults : 13
-  Completion Time : 1
+  Completion Time : 2
   Percent of RAM used : 2
   Percent of Cache used : 85
 
  Job 30 - Metrics 
-  Wait Time : 214
+  Wait Time : 170
   Interupts : 11
   Page Faults : 9
   Completion Time : 1
@@ -241,50 +241,55 @@
   Percent of Cache used : 67
 
  Overall Averages 
- Average Wait Time : 106
- Average Completion Time : 2
+ Average Wait Time : 77
+ Average Completion Time : 1
+ Average Page Faults : 12 faults 
 
  CPU METRICS 
 
  CPU 0 - Metrics 
-  Number of Jobs completed : 10
+  Number of Jobs completed : 8
   Jobs CPU 0 executed : 
     1
-    4
-    7
-    10
+    5
+    9
     13
-    16
-    19
-    22
+    17
+    21
     25
-    28
-  Percent of Jobs CPU 0 executed : 33
+    29
+  Percent of Jobs CPU 0 executed : 26
  CPU 1 - Metrics 
-  Number of Jobs completed : 10
+  Number of Jobs completed : 8
   Jobs CPU 1 executed : 
     2
-    5
-    8
-    11
+    6
+    10
     14
-    17
-    20
-    23
+    18
+    22
     26
-    29
-  Percent of Jobs CPU 1 executed : 33
+    30
+  Percent of Jobs CPU 1 executed : 26
  CPU 2 - Metrics 
-  Number of Jobs completed : 10
+  Number of Jobs completed : 7
   Jobs CPU 2 executed : 
     3
-    6
-    9
-    12
+    7
+    11
     15
-    18
-    21
-    24
+    19
+    23
     27
-    30
-  Percent of Jobs CPU 2 executed : 33
+  Percent of Jobs CPU 2 executed : 23
+ CPU 3 - Metrics 
+  Number of Jobs completed : 7
+  Jobs CPU 3 executed : 
+    4
+    8
+    12
+    16
+    20
+    24
+    28
+  Percent of Jobs CPU 3 executed : 23
