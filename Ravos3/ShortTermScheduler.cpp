@@ -74,21 +74,9 @@ void ShortTermScheduler::ClearOldProcessFromRAM(PCB * pcb)
 //will need to be changed when using multiple CPU's, could possibly pass the CPU number as param in future
 bool ShortTermScheduler::Dispatch(int CPU_Num)
 {
-	//copy process from ReadyQueue from disk to RAM (if that funciton returns true, then switch CPU's pointers. Then return true) **Not sure what you meant here**
-	//if (WriteWholeProcessToRAM(pcb));
-	//while(theOS->m_Terminated_PCBs.size() < theOS->m_PCB_Map.size())
-	//using namespace std::literals::chrono_literals;
-	//	//Need to add loop to check for IDLE CPU's
-	//while (theOS->m_Computer->m_CPU[CPU_Num].m_C_State==IDLE)
-	//{
-	//	std::this_thread::sleep_for(1s);
-	//}
-//	if (theOS->m_ReadyQueue.empty()) { return true; }
-
 		if (theOS->m_Computer->m_CPU[CPU_Num].m_C_State == IDLE)
 		{
 			// Set CPU's PCB to next PCB
-			// We need to put this in a critical section
 			theOS->m_Computer->m_CPU[CPU_Num].assignPCB(theOS->m_ReadyQueue.front()); //front returns the next value
 			theOS->m_ReadyQueue.pop(); //pop removes the next value (there is no return type)
 
@@ -98,26 +86,6 @@ bool ShortTermScheduler::Dispatch(int CPU_Num)
 			theOS->m_Computer->m_CPU[CPU_Num].m_PCB->setWaitTime(theOS->m_Computer->m_CPU[CPU_Num].m_CPUMetrics->getTotalWaitOnThisCPU());
 			theOS->m_Computer->m_CPU[CPU_Num].m_CPUMetrics->setTotalWaitOnThisCPU(theOS->m_Computer->m_CPU[CPU_Num].m_PCB->getProgramSize());
 			////https://en.cppreference.com/w/cpp/thread/condition_variable
-			//std::lock_guard<std::mutex> lk(theOS->m_Computer->m_CPU[CPU_Num].lock);
-			//theOS->m_Computer->m_CPU[CPU_Num].m_assignedToJob = true;
-
-			//theOS->m_Computer->m_CPU[CPU_Num].cv.notify_one();
-
-			//theOS->m_Computer->m_CPU[CPU_Num].Execute(); //this will be added to the thread method
-
-			
-			//new std::thread(&ShortTermScheduler::ClearOldProcessFromRAM, theOS->m_Computer->m_CPU[CPU_Num].m_PCB);
-			//theOS->m_ShortTerm.ClearOldProcessFromRAM(theOS->m_Computer->m_CPU[CPU_Num].m_PCB);
-
-			//// THIS 100% WILL NEED TO BE MOVED ********************************************************************************************************************
-			//if (theOS->m_Computer->m_CPU[CPU_Num].m_PCB->state == Terminated) //if process successfully executed
-			//{
-			//	ShortTermScheduler::ClearOldProcessFromRAM(theOS->m_Computer->m_CPU[0].m_PCB);//removes from RAM
-
-			//	//**Add TerminatedProcesses to Newly Terminated Processes
-			//	theOS->m_Terminated_PCBs.insert(std::pair<int, PCB*>(theOS->m_Computer->m_CPU[CPU_Num].m_PCB->getProcessID(), theOS->m_Computer->m_CPU[CPU_Num].m_PCB));
-			//	//Signal long term scheduler to write more to RAM
-			//}
 		}
 	return true;//returns true when all jobs are terminated 
 }
@@ -136,33 +104,3 @@ int ShortTermScheduler::getAverageCompletionTime()
 	return AverageCompletionTime;
 }
 
-
-// Will run until all programs have been terminated
-void ShortTermScheduler::ShortTerm_Schedule()
-{
-	using namespace std::literals::chrono_literals;
-
-	//loop through all CPU's until one is IDLE
-	while (!theOS->allJobsExecuted())
-	{
-		//while (theOS->m_ReadyQueue.empty())
-		//{
-		//	std::this_thread::sleep_for(1s);
-		//}
-
-		for (int i = 0; i < theOS->m_Computer->GetNumCPUs(); i++)
-		{
-			//std::cout << "checking for available CPUs\n";
-
-			if (theOS->m_Computer->m_CPU[i].m_C_State == IDLE)
-			{
-				if(!Dispatch(i)) std::cout<< "Dispatcher error\n";
-				theOS->m_Computer->m_CPU[i].m_C_State = BUSY;
-				if(!Start_the_CPU(i)) std::cout << "CPU start error\n";
-			}
-		}
-	}
-
-	return;
-	//If CPU==IDLE, Dispatch
-}

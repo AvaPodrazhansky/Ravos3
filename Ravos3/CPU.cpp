@@ -16,50 +16,17 @@ bool CPU::assignPCB(PCB* pcb)
 {
 	m_PCB = pcb;
 	m_PC = pcb->programCounter;
-	
-	//for (int i = 0; i < m_PCB->getProgramSize(); i++)
-	//{
-	//	m_Cache[i] = m_Memory->read(i, m_PCB->getStartIndexRAM(), -2, -2);
-	//}
-
-	//m_PCB->setWaitTime();
-
-	//m_CPUMetrics->updateJobsInThisCPU(m_PCB->getProcessID());
 
 	return true;
 }
 
 void CPU::CPU_Run_thread()
 {
-	//We need to add a loop so it continues after executing one job
-	using namespace std::literals::chrono_literals;
-
-	//std::unique_lock<std::mutex> lk(lock);
-	//cv.wait(lk, [] {return m_assignedToJob; });
-
-	//std::cout << "CPU " << CPU_ID << " has started.\n";
-
-	//while (!all_jobs_done)
-	//{
-
-		//while (!m_assignedToJob)
-		//{
-		//	//std::cout << "CPU " << CPU_ID << " is waiting.\n";
-		//	std::this_thread::sleep_for(1s);
-		//}
-
 	    m_C_State = BUSY;
 
-	    //if ready, execute
 		Execute();
 
 		m_C_State = IDLE;
-
-		return;
-		//std::cout << "CPU " << CPU_ID << " has been set to IDLE\n";
-
-	//}
-
 
 }
 
@@ -131,32 +98,18 @@ bool CPU::Execute()
 				case I_RD:
 				{
 					PreExecute(w, "I_RD", AssertInstructionTypeIO);
-					//do {} while (WRITE_KEY == true);//waits and does nothing while the write key is true
-					//if (READ_KEY == true)
 					{
 						if (w.Address16() != 0)
-						{
-							unsigned int offsetAddress = w.Address16() / 4;
-							//				if (1) std::cout << "   -- Read at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
+						{							
+							m_Register[w.RegR1()] = m_MMU->ReadOrPageFault(w.Address16() / 4, m_PCB).Contents;
 							
-							//m_Register[w.RegR1()] = m_Disk->readContents(offsetAddress, m_PCB->StartIndexDisk); //will probably have to offset based on start location in disk
-							
-							m_Register[w.RegR1()] = m_MMU->ReadOrPageFault(offsetAddress, m_PCB).Contents; //will probably have to offset based on start location in disk
-							
-																										   //if (1) std::cout << "   -- Read at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-			//				if (printLog) std::cout << "m_Register[" << w.RegR1() << "] = m_Disk[" << offsetAddress - m_PCB->ProgramSize << " offset " << m_PCB->StartIndexDisk << "]\n";
 						}
 						else
 						{
-							//				if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 - m_PCB->ProgramSize << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-							
-							/*m_Register[w.RegR1()] = m_Disk->readContents(m_Register[w.RegR2()] / 4, m_PCB->StartIndexDisk);*/
 							m_Register[w.RegR1()] = m_MMU->ReadOrPageFault(m_Register[w.RegR2()] / 4, m_PCB).Contents;
-							
-							//if (1) std::cout << "   -- Read at " << m_Register[w.RegR2()] / 4 << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-
+						
 						}
-						//Metrics::updateIOCount(m_PCB);
+						
 						m_PCB->updateIOCount();
 						break;
 					}
@@ -165,35 +118,18 @@ bool CPU::Execute()
 				case I_WR:
 				{
 					PreExecute(w, "I_WR", AssertInstructionTypeIO);
-					//do {} while (WRITE_KEY == true);//if WRIT_KEY is true then another process is writing so do nothing
-					//READ_KEY = false;
-					//m_CPUMetrics->setWriteKey(true);
-					//WRITE_KEY = true;
 
 					if (w.Address16() != 0)
 					{
-						unsigned int offsetAddress = w.Address16() / 4;
-						//				if (1) std::cout << "   -- Write at " << offsetAddress - m_PCB->ProgramSize << " (offset " << m_PCB->OutputBufferStart << ") value " << m_Register[w.RegR1()] << "\n";
-						
-						MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
-						//m_Disk->write(offsetAddress, temp, m_PCB->StartIndexDisk); //might possibly be reg1
-						
-						m_MMU->WriteOrPageFault(offsetAddress, temp, m_PCB);
-																				   ////
-																												//if (1) std::cout << "   -- Write at " << offsetAddress << " (offset " << m_PCB->StartIndexDisk << ") value " << m_Register[w.RegR1()] << "\n";
-						//m_Disk->write(w.Address16(), (MemoryWord)m_Register[w.RegR1()]); //converts MemoryWord in buffer to int to be stored in m_Register
+					
+						m_MMU->WriteOrPageFault(w.Address16() / 4, (MemoryWord)m_Register[w.RegR1()], m_PCB);
+															
 					}
 					else
 					{
-						MemoryWord temp = (MemoryWord)m_Register[w.RegR1()];
-						//m_Disk->write(m_Register[w.RegR2()] / 4, temp, m_PCB->StartIndexDisk);
-						m_MMU->WriteOrPageFault(m_Register[w.RegR2()] / 4, temp, m_PCB);
+						m_MMU->WriteOrPageFault(m_Register[w.RegR2()] / 4, (MemoryWord)m_Register[w.RegR1()], m_PCB);
 					}
 					m_PCB->updateIOCount();
-
-					//m_CPUMetrics->setWriteKey(false);
-					//READ_KEY = true;
-
 					break;
 
 				}
@@ -202,8 +138,7 @@ bool CPU::Execute()
 				{
 					PreExecute(w, "I_ST", AssertInstructionTypeI);
 
-					MemoryWord temp = (MemoryWord)m_Register[w.RegB()];
-					m_MMU->WriteOrPageFault(m_Register[w.RegD()] / 4, temp, m_PCB);
+					m_MMU->WriteOrPageFault(m_Register[w.RegD()] / 4, (MemoryWord)m_Register[w.RegB()], m_PCB);
 					break;
 				}
 				//Loads the content of an address into a reg
@@ -336,20 +271,14 @@ bool CPU::Execute()
 				case I_HLT:
 				{
 					PreExecute(w, "I_HLT", AssertInstructionTypeJ);
-					//if (!isExecuting) return true;
-					//clear registers
-					//std::cout << "Program " << m_PCB->process_ID << " is finished\n";
-					//std::cout << m_PCB->process_ID << " \n";
+
 					for (unsigned int i = 0; i < MAX_REGISTERS; i++)
 					{
 						m_Register[i] = 0;
 					}
 
-					//m_PC = NULL //dispatcher will set CPU's m_PC to the next PCB's program counter
-					m_PCB->programCounter = m_PC; //I dont know if this line is necessary
+					m_PCB->programCounter = m_PC; 
 					m_PC = NULL;
-					//signal scheduler
-					//Terminate PCB
 
 					FlushBuffers();
 
@@ -360,7 +289,6 @@ bool CPU::Execute()
 					auto completionTime = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
 					m_PCB->setCompletionTime(completionTime.count());//set difference as completion time
-					//Metrics::setCompletionTime(m_PCB, completionTime.count());
 
 					m_PCB = NULL;
 
@@ -470,7 +398,6 @@ bool CPU::Execute()
 		}
 		catch (RavosPagingFaultException &e)
 		{
-//			std::cout << "\nPage Fault: Process " << e.ProcessID << " page " << e.Page << " (PC=" << e.PC << ")\n";
 
 			// Process loading of new page into memory
 			m_PC = e.PC;  // Set the PC to the instruction executing when the page fault occurred
