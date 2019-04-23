@@ -29,15 +29,12 @@ private:
 
 	int InputBufferSize;
 	int InputBufferStart;  // Location on disk where it starts
-	//int InputBufferNext;   // Location on disk for next read, keeps track of where you are in buffer
 
 	int	OutputBufferSize;
 	int OutputBufferStart;
-	//int OutputBufferNext;
 
 	int TempBufferSize;
 	int TempBufferStart;
-	//int TempBufferNext;
 
 	int WaitTime;//num of instructions before current 
 	int IOCount;//number of IO instructions per job
