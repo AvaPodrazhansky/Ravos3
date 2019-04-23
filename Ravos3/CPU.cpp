@@ -138,6 +138,7 @@ bool CPU::Execute()
 					PreExecute(w, "I_ST", AssertInstructionTypeI);
 
 					m_MMU->WriteOrPageFault(m_Register[w.RegD()] / 4, (MemoryWord)m_Register[w.RegB()], m_PCB);
+					m_PCB->updateIOCount();
 					break;
 				}
 				//Loads the content of an address into a reg
@@ -145,6 +146,7 @@ bool CPU::Execute()
 				{
 					PreExecute(w, "I_LW", AssertInstructionTypeI);
 					m_Register[w.RegD()] = (m_MMU->ReadOrPageFault((m_Register[w.RegB()] + w.Address16()) / 4, m_PCB)).Contents;
+					m_PCB->updateIOCount();
 					break;
 				}
 				//Transfers the content of one register into another
