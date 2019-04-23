@@ -184,23 +184,11 @@ void Scheduler::WriteWholeNextProcessToRAM(int StartIndex)
 
 bool Scheduler::FillReadyQueue()
 {
-	using namespace std::literals::chrono_literals; //we should probably move this. Ask Rebekah how this will effect metrics if we move to header file
-	
-	int offset = 0;
-	int RAMSize = theOS->m_Computer->m_RAM.GetSize();
-
 	while (!m_JobQueue.empty())
 	{
-		////wait while there are no jobs in the job queue
-		//while (m_JobQueue.empty())
-		//{
-		//	std::this_thread::sleep_for(1s);
-		//}
 		int tempProcessID = m_JobQueue.top()->getProcessID();
 		PCB* tempPCB = theOS->m_PCB_Map.at(tempProcessID);
 
-		if (theOS->m_MMU.ManageMemory == true)
-		{
 			for (int i = 0; i < 16; i++)//write the first 4 pages into RAM to start 
 			{
 				MemoryWord k = theOS->m_Computer->m_Disk.read(i, tempPCB->getStartIndexDisk());
@@ -209,63 +197,8 @@ bool Scheduler::FillReadyQueue()
 			m_JobQueue.pop();
 			tempPCB->state = Ready;
 			theOS->m_ReadyQueue.push(tempPCB);
-		}
-		else 
-		{
-			if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
-			{
-				if (WriteWholeProcessToRAM(tempPCB, offset))
-				{
-					m_JobQueue.pop();
-					//offset = offset + tempPCB->totalSpaceInRAM();
-					offset = offset + 72;
-					tempPCB->state = Ready;
-					theOS->m_ReadyQueue.push(tempPCB);//add PCB of jobs that are in RAM into the ready queue
-				//std::cout << "Job pushed to ready queue\n";
-				}
-			}
-			else if ((tempPCB->totalSpaceInRAM() + offset) > RAMSize) //once the first group of Jobs goes through RAM and is cleared via dispatcher, we will have to start adding RAM from the first index of RAM
-			{
-				return true;//if RAM is full 
-				//offset = 0;//restarts the offset as 0 so the jobs can start to be written to the beginning index of RAM
-			}
-		}
-		////This will change once paging is implemented
-		//if (tempPCB->totalSpaceInRAM() + offset > RAMSize)
-		//{
-		//	//if(!theOS->m_Finished_PCBs.empty())
-		//	//	std::this_thread::sleep_for(2s);
-		//	//else
-		//	//{
-		//	//	theOS->m_ShortTerm.ClearOldProcessFromRAM(theOS->m_Finished_PCBs.front());
-		//	//}
-		//	return true;
-		//}
-		//////wait while thwere isn't enough space in RAM for job
-		////while (tempPCB->totalSpaceInRAM() + offset > RAMSize && !theOS->allJobsExecuted())
-		////{
-		////	std::this_thread::sleep_for(1s);
-		////}
+	}	
 
-		//if (tempPCB->totalSpaceInRAM() + offset <= RAMSize) //checks if there is enough space to put the whole process and io buffers in ram before writing
-		//{
-		//	if (WriteWholeProcessToRAM(tempPCB, offset))
-		//		m_JobQueue.pop();
-		//	offset = offset + tempPCB->totalSpaceInRAM();
-		//	tempPCB->state = Ready;
-		//	theOS->m_ReadyQueue.push(tempPCB);//add PCB of jobs that are in RAM into the ready queue
-		//	//std::cout << "Job pushed to ready queue\n";
-		//}
-
-
-		//if ((tempPCB->totalSpaceInRAM() + offset) > RAMSize) //once the first group of Jobs goes through RAM and is cleared via dispatcher, we will have to start adding RAM from the first index of RAM
-		//{
-		//	return true;//if RAM is full 
-		//	//offset = 0;//restarts the offset as 0 so the jobs can start to be written to the beginning index of RAM
-		//}
-
-	}
-	
 	return true;
 }
 
