@@ -141,7 +141,7 @@ bool CPU::Execute()
 					m_PCB->updateIOCount();
 					break;
 				}
-				//Loads the content of an address into a reg
+				//Loads the content of an address into a register 
 				case I_LW:
 				{
 					PreExecute(w, "I_LW", AssertInstructionTypeI);
