@@ -85,9 +85,8 @@ bool CPU::Execute()
 	auto start = std::chrono::high_resolution_clock::now();//start time of process
 	do
 	{
-		MemoryWord w = m_MMU->ReadOrPageFault(m_PC, m_PCB);
+		MemoryWord w = m_MMU->ReadOrPageFault(m_PC, m_PCB); // Fetch
 	
-		//MemoryWord w = m_Cache[m_PC]; //Fetch
 		Instruction i = Decode(w);
 		try
 		{
