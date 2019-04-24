@@ -86,10 +86,6 @@ public:
 		return ProgramSize;
 	}
 
-	//bool isExecuting() const
-	//{
-	//	return (state == Running);
-	//}
 
 	void setProcessID(int tp) 
 	{
@@ -146,7 +142,7 @@ public:
 		return StartIndexDisk;
 	}
 
-	int totalSpaceInRAM()// This will be incorrect when paging is implemented. *********************************************************************************************************
+	int totalSpaceInRAM()
 	{
 		return ProgramSize + InputBufferSize + OutputBufferSize + TempBufferSize; //might need to add output buffer depending on what all is being written to RAM
 	}
@@ -214,19 +210,14 @@ public:
 		return PageFaults;
 	}
 
-	//This currently is not used, but I think we will eventually use it
 	void blockProcess() 
 	{
 		state = Waiting;
-		//put in request to read next page
-		//wait until page is written to RAM
 	}
 
-	//This currently is not used, but I think we will eventually use it
 	void unblockProcess()
 	{
 		state = Ready;
-		//Push to ready queue
 	}
 
 };

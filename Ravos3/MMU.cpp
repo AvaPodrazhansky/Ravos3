@@ -176,8 +176,6 @@ void MMU::AssignPageToFrame(int FrameNumber, int index, PCB* pcb)
 {
 	PageStruct *page = &pcb->PageTable[index / 4];
 
-	//std::lock_guard<std::mutex> lock(m_Lock);
-//	std::cout << "Frame: " << FrameNumber << std::endl;
 	FrameTracker[FrameNumber] = pcb->getProcessID();
 	int index2 = index / 4;
 	//write page to RAM
@@ -188,7 +186,6 @@ void MMU::AssignPageToFrame(int FrameNumber, int index, PCB* pcb)
 	}
 	page->FrameNum = FrameNumber;
 	OccuranceTracker[pcb->getProcessID()]++;
-	//printPage(FrameNumber);
 	return;
 }
 
@@ -253,7 +250,6 @@ void MMU::WriteOrPageFault(int index, MemoryWord w, PCB* pcb)
 	// If no Page Fault
 	if (page->FrameNum >= 0)
 	{
-		//theOS->m_Computer->m_RAM.write(page->FrameNum * 4, w, index / 4);
 		page->timeSinceUsed = std::chrono::high_resolution_clock::now();
 		theOS->m_Computer->m_RAM.write(index % 4, w, page->FrameNum * 4);
 	}

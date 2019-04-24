@@ -42,9 +42,6 @@ public:
 
 	bool assignPCB(PCB* pcb);
 	
-	//std::mutex lock; //lock so CPU can wait to be assigned to job
-	///*volatile bool m_assignedToJob = false;*/
-	//std::condition_variable cv;
 	
 	bool MapPageIntoMemory(int ProcessID, int Page);
 
