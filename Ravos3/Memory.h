@@ -72,7 +72,6 @@ class PageStruct
 public:
 	int ProcessID;
 	int FrameNum = -1;
-	//auto start = std::chrono::high_resolution_clock::now();//start time of process
 	std::chrono::high_resolution_clock::time_point timeSinceUsed = std::chrono::high_resolution_clock::now();
 };
 
@@ -81,19 +80,12 @@ class Memory {
 	int Size;
 	MemoryWord *memory;
 
-	//PageStruct *PageMap = NULL;
-	//int VirtualMemory = -1;
-	//int *FrameMap;
-
 	std::mutex LockMutex;
 
 public:
 	Memory(int SIZE, int _VirtualMemory =-1); //constructor
 	void Clear();
 	int GetSize() { return Size; }
-
-	// Assures a page is in memory (i.e. has a frame) 
-	//int MapToFrame(int PageNum, int ProcessID=-1, int PC=-1);
 
 	void write(int index, MemoryWord t, int Offset);
 	MemoryWord read(int index, int Offset);
