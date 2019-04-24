@@ -130,12 +130,10 @@ bool OS::LoadProgramFromDisk(PCB *p)
 
 bool OS::Load(std::string filename)
 {
-	//PCB(int ID, int priority_Val, int status, int arr, int len)
-	//int for current job
 
 	int indexForInstruc = 0;//keeps track of the index in RAM
 	int indexForData = 0;//keeps rack of index in DISK
-	//std::ifstream in(Filename, ios::in);//opens file to be read
+	
 	std::ifstream infile(filename);
 	std::string str;
 	int isJobLine;
@@ -148,46 +146,28 @@ bool OS::Load(std::string filename)
 		isJobLine = str.find("JOB");//returns index where JOB is found
 		isDataLine = str.find("Data");//returns index where Data is found
 		isEndLine = str.find("END");
-		//std::getline(in, str, '\n');//(source, assigns to, delimiting char)
+		
 		if (isJobLine >= 0 )//if the string contains JOB
 		{
-			//std::string jobInfo = str.substr(7);
 			int jlen = assignPCB(tempcb, str);//parses and assigns info to PCB and returns length of instructions
-			//tempcb->StartIndexRAM = indexForInstruc;
 			tempcb->StartIndexDisk = indexForData;
 			for (int i = 0; i < jlen; i++)
 			{
 				std::getline(infile, str, '\n');
-				//std::istringstream iss2(instruct);
 				MemoryWord k = MemoryWord(HexNumToInt(str));
-				//MemoryWord k = MemoryWord(static_cast<int>(instruct));
-//				m_Computer->m_RAM.write((i + indexForInstruc), k, 0);//writes to ram   ***** Offset already added into indexForInstruct
-				//m_Computer->m_RAM.write(i, k, indexForInstruc);//writes to ram   ***** Offset already added into indexForInstruct
-				m_Computer->m_Disk.write(i, k, indexForData);//writes to ram   ***** Offset already added into indexForInstruct
+				m_Computer->m_Disk.write(i, k, indexForData);
 			}
 
 			indexForData += jlen;
-			//test part to read all instructions from RAM
-			/*for (int tram = 0; tram < jlen; tram++) 
-			{
-				int contOfRam = m_Computer->m_RAM.readContents(tram);
-			}*/
-			//indexForInstruc += jlen;//should be index for last instuction put in
 		}
 		if (isDataLine >= 0 )//if the string contains DATA
 		{
-			//std::string dataBufInfo = str.substr(8);
 			int blen = assignDataBuffToPCB(tempcb, str, indexForData);//parses and assigns info to PCB and returns length of instructions
-			//tempcb->StartIndexDisk = indexForData;
 			for (int j = 0; j < blen; j++)
 			{
 				std::getline(infile, str, '\n');//(source, destination, delimiter)
 				MemoryWord b = MemoryWord(HexNumToInt(str));
-//				m_Computer->m_Disk.write((j + indexForData), b, 0);//writes to disk
-				m_Computer->m_Disk.write(j, b, indexForData);//writes to disk *****
-
-				/*if (j < tempcb->InputBufferSize || j >= tempcb->InputBufferSize + tempcb->OutputBufferSize)
-					m_Computer->m_RAM.write(0,b,indexForInstruc++);*/
+				m_Computer->m_Disk.write(j, b, indexForData);//writes to disk ****
 			}
 			indexForData += blen ;
 			int newBlenDivisbleByFour;
@@ -202,17 +182,10 @@ bool OS::Load(std::string filename)
 			}
 			tempcb->setPercentOfCachePerProcess();
 			tempcb->setPercentofRAMPerProcess();
-			//tempcb->state = Waiting;
-			//Metrics::Metrics(tempcb);//asign base metrics to PCB once it's job info is filled 
-			//Metrics::TOTAL_WAIT_TIME = 0;//used for overall averaging, not one CPU specific
-			//Metrics::TOTAL_JOBS_EXECUTED = 0;//used in metrics and CPUmetrics
-			//Metrics::TOTAL_COMPLETION_TIME = 0;//used for overall averaging, not one CPU specific
 		}
 		if (isEndLine >= 0) 
 		{
 			tempcb = new PCB();//creates new PCB with same name so new memory address as well
-
-			//return true;  //*****
 		}
 	}
 	delete tempcb;
