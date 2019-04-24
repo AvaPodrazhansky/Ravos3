@@ -202,19 +202,6 @@ void MMU::HandlePageFault(int index, PCB* pcb)
 	{
 		if (FrameTracker[i] <= 0)
 		{
-			//std::lock_guard<std::mutex> lock(m_Lock);
-			//std::cout << "Frame: " << i << std::endl;
-			//FrameTracker[i] = pcb->getProcessID();
-			////write page to RAM
-			//for (int j = 0; j < 4; j++)
-			//{
-			//	MemoryWord m = theOS->m_Computer->m_Disk.read(index + j, pcb->getStartIndexDisk());
-			//	theOS->m_Computer->m_RAM.write(i * 4, m, j);
-			//}
-			//page->FrameNum = i;
-			//OccuranceTracker[pcb->getProcessID()]++;
-			//printPage(i);
-			//return;
 			AssignPageToFrame(i, index, pcb);
 			return;
 		}
