@@ -58,7 +58,6 @@ void printMetrics(OS *theOS)
 		std::cout << "  Wait Time : " << pcb->getWaitTime() << " instructions \n";
 		avgWaitTime += pcb->getWaitTime();
 		std::cout << "  Interupts : " << pcb->getIOCount() << "\n";
-		//outfile << "  Interupts : " << pcb->getInterupts();
 		std::cout << "  Page Faults : " << pcb->getPageFaults() << "\n";
 		avgPageFault += pcb->getPageFaults();
 		std::cout << "  Completion Time : " << pcb->getCompletionTime() << " sec \n";
@@ -101,7 +100,6 @@ void writeMetrics(OS *theOS)
 		outfiles << "  Wait Time : " << pcb->getWaitTime() << "\n";
 		avgWaitTime += pcb->getWaitTime();
 		outfiles << "  Interupts : " << pcb->getIOCount() << "\n";
-		//outfile << "  Interupts : " << pcb->getInterupts();
 		outfiles << "  Page Faults : " << pcb->getPageFaults() << "\n";
 		avgPageFault += pcb->getPageFaults();
 		outfiles << "  Completion Time : " << pcb->getCompletionTime() << "\n";
@@ -223,7 +221,7 @@ int main()
 		int rerun;
 		std::cout << "Enter 1 to restart OS: ";
 		std::cin >> rerun;
-
+		if (rerun != 1)break;
 	}while (rerun == 1);
 
 }
