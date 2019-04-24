@@ -11,8 +11,6 @@ OS::OS(Computer *theComputer, bool UseMMU) :m_Scheduler(this), m_ShortTerm(this)
 	{
 		m_Computer->m_CPU[i].m_MMU = &m_MMU;
 	}
-	//for(int i = 0; i<m_Computer->GetNumCPUs(); i++)
-	//	m_CPU_ReadyQueue.push(i);
 }
 
 bool OS::Boot(std::string filename)
@@ -27,13 +25,6 @@ bool OS::allJobsExecuted()
 	return m_PCB_Map.size() == m_Terminated_PCBs.size();
 }
 
-
-void OS::StartShortTermScheduler()
-{
-	//RUN CPU's
-
-	//Start Dispater
-}
 
 
 //new hexnum to int using char*
@@ -121,13 +112,6 @@ int OS::assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex)
 }
 
 
-/*
-bool OS::LoadProgramFromDisk(PCB *p)
-{
-	return true;
-}
-*/
-
 bool OS::Load(std::string filename)
 {
 
@@ -194,140 +178,4 @@ bool OS::Load(std::string filename)
 }
 
 
-void OS::Schedule_and_Run(ScheduleType schedule_algorithm)
-{
-	////Set schedule type
-	//m_Scheduler.SchedType = schedule_algorithm;
-	//
-	////Fill the job queue
-	//if(!m_Scheduler.FillJobQueue())std::cout << "Job Queue Fill Error\n";
-	//
-	//if(!m_Scheduler.FillReadyQueue()) std::cout << "Ready Queue Fill Error\n";
-	////Run CPU's on different threads
-	////if (m_ShortTerm.Start_the_CPU())
-	////{
-	////	std::cout << "CPU's have been started\n";
-	////}
-	//
-	////Tell the Short Term Scheudler to start checking the ready queue
-	//new std::thread(&ShortTermScheduler::ShortTerm_Schedule, m_ShortTerm);
-	//
-	////Start thread that fills the ready queue
-	////new std::thread(&Scheduler::FillReadyQueue, m_Scheduler);
-	//while(!allJobsExecuted())
-	//if (allJobsExecuted()) 
-	//	return;
-	using namespace std::literals::chrono_literals;
-	
-	m_Scheduler.SchedType = schedule_algorithm;
-	
-	m_Scheduler.FillJobQueue();
-
-	m_Scheduler.FillReadyQueue();
-	
-	while (!m_ReadyQueue.empty())
-	{
-
-		for (int i = 0; i < m_Computer->GetNumCPUs(); i++)
-		{
-			if (m_Computer->m_CPU[i].m_C_State == IDLE)
-			{
-				m_ShortTerm.Dispatch(i);
-				//m_Computer->m_CPU[i].m_C_State = BUSY;
-				//theOS.busyCPUs++;
-				m_Computer->m_CPU[i].CPU_Run_thread();
-				m_ShortTerm.Start_the_CPU(i);
-			}
-		}
-	}
-
-
-
-}
-
-//const char* Prog1 =
-//"C050005C"
-//"4B060000"
-//"4B010000"
-//"4B000000"
-//"4F0A005C"
-//"4F0D00DC"
-//"4C0A0004"
-//"C0BA0000"
-//"42BD0000"
-//"4C0D0004"
-//"4C060001"
-//"10658000"
-//"56810018"
-//"4B060000"
-//"4F0900DC"
-//"43970000"
-//"05070000"
-//"4C060001"
-//"4C090004"
-//"10658000"
-//"5681003C"
-//"C10000AC"
-//"92000000";
-///*
-//// Data 14 C C
-//0x0000000A
-//0x00000006
-//0x0000002C
-//0x00000045
-//0x00000001
-//0x00000007
-//0x00000000
-//0x00000001
-//0x00000005
-//0x0000000A
-//0x00000055
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//0x00000000
-//// END
-//*/
-//void OS::TestLoad1()
-//{
-//	PCB *c = new PCB();
-//	c->process_ID = 1;
-//	c->priority = 2;
-//	c->ProgramSize = 17;
-//	//  pcb->InputSize  = ??
-//	//  pcb->OutputSize = ??
-//	//  pcb->TempSize    = ??
-//	ReadProgString(m_Computer->m_RAM, Prog1);
-//	// Something like this...
-////  m_PCB_Map.insert(c->getProcessID, c);
-//}
 

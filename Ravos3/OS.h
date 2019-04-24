@@ -3,8 +3,6 @@
 
 class OS 
 {
-	//friend class ShortTermScheduler;
-//	friend FIFO_Compare;
 	friend Scheduler;
 public:
 	Computer *m_Computer;
@@ -17,17 +15,9 @@ public:
 
 	std::queue <PCB*> m_ReadyQueue; //Queue of PCB's
 
-	//std::queue <int> m_CPU_ReadyQueue; //Queue of CPU ID's
-
-	std::queue <PCB*> m_Finished_PCBs; //Queue of PCB's
-	
 	std::map<int, PCB*> m_Terminated_PCBs;
 
-	int busyCPUs = 0;
-
 	bool allJobsExecuted();
-
-	void Schedule_and_Run(ScheduleType default_type = FIFO);
 
 	// Initilizes the computer.  A Several things are happening:
 	//    (1) Uses Loader routines to read the boot file (containing the jobs) onto the disk
@@ -42,11 +32,7 @@ public:
 	int assignPCB(PCB *tpcb, std::string info);
 	int assignDataBuffToPCB(PCB* tpcb, std::string info, int startIndex);
 
-	void StartShortTermScheduler();
 
-	// Test loader - until actual loader is done.  Does not work yet
-	// It is located in the 
-	//void TestLoad1();
 	std::mutex m_JobQueueLock;
 
 };

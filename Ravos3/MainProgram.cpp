@@ -314,8 +314,6 @@ void writeMetrics(OS *theOS)
 int main()
 {
 	int rerun = 1;
-	//std::cout << "Enter 1 to start OS: ";
-	//std::cin >> rerun;
 	do
 	{
 		int NumOfCPU = 0;
